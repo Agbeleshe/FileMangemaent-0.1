@@ -1,0 +1,38 @@
+.bg {
+  /* background-color: rgb(58, 180, 9);*/
+  background: #77b550;
+}
+
+.col {
+  color: var(--txt-green, #5FA348);
+
+}
+
+.input-error {
+  border: 2px solid rgb(255, 203, 203);
+}
+/* Change the font of the input placeholder */
+input::placeholder {
+  font-family: "Poppins", sans-serif; /* Set your desired font-family */
+  font-size:16px;
+  color: rgba(0, 0, 0, 0.30);
+
+  /* Set your desired placeholder text color */
+}
+
+.input-nutral {
+  border: 2px solid rgb(233, 228, 228);
+}
+/* styles.css */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out;
+}

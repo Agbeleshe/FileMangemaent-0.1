@@ -1,0 +1,57 @@
+.Tab {
+  display: flex;
+  width: 189px;
+  padding: 16px 70px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: var(--P, #75c05f);
+  color: white;
+}
+.btnT {
+  display: flex;
+  width: 189px;
+  padding: 16px 70px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--ffffff, #fff);
+  color: red;
+}
+/*game counter side*/
+/* In your Tailwind CSS */
+/* Add these classes to your global styles or the component-specific CSS */
+
+.gamepad-counter {
+  width: 250px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.counter-display {
+  width: 100px;
+  height: 100px;
+  font-size: 2rem;
+  line-height: 100px;
+  background-color: #333;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.buttons .button {
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  margin: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

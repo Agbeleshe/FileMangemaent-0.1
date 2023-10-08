@@ -1,0 +1,17 @@
+/* styles.css */
+@keyframes giggle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25%, 75% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+.animate-giggle-on-load {
+  animation: giggle 2s ease-in-out; /* Adjust duration and timing function as needed */
+}
+

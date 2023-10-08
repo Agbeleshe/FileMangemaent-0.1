@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,400&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* index.css */
+.font-Poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.container div {
+  margin-bottom: 10px;
+}
+
+.bgh{
+  background-color: rgb(66, 136, 66)
+}
+:root {
+  --P: #75C05F; /* Set the custom variable with your desired background color */
+}
+
+/* Use the custom variable as a background color */
+.bg-custom-background {
+  background-color: var(--P);
+}
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
