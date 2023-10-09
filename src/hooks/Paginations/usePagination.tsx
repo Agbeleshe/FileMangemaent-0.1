@@ -1,11 +1,16 @@
 import { useState } from "react";
-import useInFor from "./UseInFor";
+import useFetchUsers from "../APIrequest/useFetchUsers";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const useAccountPagination = (initialPage = 1) => {
+const usePagination = (
+  initialPage = 1,
+  searchValue: string,
+  selectedFilter: string
+) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [postPerPage, setPostPerPage] = useState(4);
-  const { users } = useInFor();
+  const { users } = useFetchUsers(searchValue, selectedFilter); // Pass the searchValue
+
   const [viewAll, setViewAll] = useState(false);
 
   const lastPostIndex = currentPage * postPerPage;
@@ -127,4 +132,4 @@ const useAccountPagination = (initialPage = 1) => {
   };
 };
 
-export default useAccountPagination;
+export default usePagination;

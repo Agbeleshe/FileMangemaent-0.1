@@ -1,16 +1,12 @@
 import { useState } from "react";
-import useFetchUsers from "./useFetchUsers";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import useBilling from "../APIrequest/UseBilling";
 
-const usePagination = (
-  initialPage = 1,
-  searchValue: string,
-  selectedFilter: string
-) => {
+const useAccRcvPagination = (initialPage = 1) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [postPerPage, setPostPerPage] = useState(4);
-  const { users } = useFetchUsers(searchValue, selectedFilter); // Pass the searchValue
-
+  //take note of where you called your endpoint from
+  const { users } = useBilling();
   const [viewAll, setViewAll] = useState(false);
 
   const lastPostIndex = currentPage * postPerPage;
@@ -132,4 +128,4 @@ const usePagination = (
   };
 };
 
-export default usePagination;
+export default useAccRcvPagination;

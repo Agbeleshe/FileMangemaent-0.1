@@ -90,7 +90,7 @@ const Login: React.FC<LoginProps> = () => {
   };
 
   return (
-    <div className="flex justify-center flex-col items-center h-full  pb-20 bg font-Poppins">
+    <div className="flex justify-center flex-col items-center h-screen  pb-20 bg font-Poppins gap-5">
       {/* top nav */}
       <div className="w-full md:pb-28 z-20 ">
         <div className="px-10 bg-white w-full py-2  mb-20 top-0  fixed shadow-lg">
@@ -99,10 +99,10 @@ const Login: React.FC<LoginProps> = () => {
       </div>
 
       {/* form container */}
-      <div className="bg-white h-auto  rounded-xl shadow-custom mt-40 md:mt-0 w-[70%] md:w-[45%] lg:w-[36%] ">
+      <div className="bg-white h-auto  rounded-xl shadow-custom mt-40 md:mt-0 w-[70%] md:w-[45%] lg:w-[36%]">
         <div>
           <div className="border-b w-full flex justify-center font-meduim ">
-            <h1 className="md:text-[32px] text-[32px] mt-6 mb-4">
+            <h1 className="md:text-[22px] text-[15px] mt-6 mb-4">
               Super<span className="col ">Admin</span>
             </h1>
           </div>
@@ -110,7 +110,7 @@ const Login: React.FC<LoginProps> = () => {
 
           <form className="h-auto" onSubmit={handleSubmit}>
             {!isLoading && error && (
-              <div className="bg-red-500 p-5 mx-auto w-[90%] rounded-lg mt-5 font-semibold  text-white flex md:text-sm text-xs justify-start">
+              <div className="bg-red-500 animate-fade-in p-5 mx-auto w-[90%] rounded-lg mt-5 font-semibold  text-white flex md:text-sm text-xs justify-start">
                 <div className="flex gap-2  justify-start">
                   <span>
                     <BiSolidError size={35} />
@@ -122,7 +122,7 @@ const Login: React.FC<LoginProps> = () => {
               </div>
             )}
             {isLoading && (
-              <div className="bg-green-500 p-5 mx-auto w-[90%] text-green-300 border-2 border-[#75C05F] rounded-lg mt-5 font-semibold  flex md:text-sm text-xs justify-center">
+              <div className="bg-green-500 animate-fade-in p-5 mx-auto w-[90%] text-green-300 border-2 border-[#75C05F] rounded-lg mt-5 font-semibold  flex md:text-sm text-xs justify-center">
                 <div className="flex gap-2">
                   <span>
                     <BiSolidCheckCircle size={35} />
@@ -168,7 +168,7 @@ const Login: React.FC<LoginProps> = () => {
                   }
                 />
                 <span
-                  className="absolute top-5 right-4 cursor-pointer"
+                  className="absolute top-[45%] right-4 cursor-pointer"
                   onClick={togglePasswordVisibility}
                 >
                   {passwordVisible ? (

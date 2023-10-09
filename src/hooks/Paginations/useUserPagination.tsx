@@ -1,6 +1,6 @@
 import { useState } from "react";
-// import useInFor from "./UseInFor"; this is for diffrent tsx interface 
-import useLedger from "./useLedger";
+// import useInFor from "./UseInFor"; this is for diffrent tsx interface
+import useLedger from "../APIrequest/useLedger";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const useUserPagination = (initialPage = 1) => {
@@ -14,7 +14,7 @@ const useUserPagination = (initialPage = 1) => {
   const firstPostIndex = lastPostIndex - postPerPage;
 
   //const currentPost = viewAll
-   // ? users
+  // ? users
   // : users?.slice(firstPostIndex, lastPostIndex);
   const currentPost = viewAll
     ? users

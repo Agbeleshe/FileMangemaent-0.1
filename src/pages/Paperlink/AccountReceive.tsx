@@ -4,14 +4,14 @@ import folder from "../../assests/folder.png";
 
 import Loader from "./resources/Loader";
 
-import useBilling from "../../hooks/UseBilling";
+import useBilling from "../../hooks/APIrequest/UseBilling";
 import ErrorMessage from "./resources/ErrorMessage";
 
 import SearchGreen from "../../components/svg-icons/SearchGreen";
 import SearchBar from "./resources/SearchBar";
 import { TfiClose } from "react-icons/tfi";
 
-import useAccRcvPagination from "../../hooks/useAccRcvPagination";
+import useAccRcvPagination from "../../hooks/Paginations/useAccRcvPagination";
 import RecievableTabRow from "./resources/RecievableTabrow/RecievableTabRow";
 
 //year and month for the user.reciept

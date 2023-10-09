@@ -1,26 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux"; // Import useSelector to access Redux store
 import { RootState } from "../../store"; // Replace with the correct path to your root reducer
 import "./Header.css";
 //import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { redirect } from "react-router-dom";
-
 
 export default function Header() {
-  // const handleLogout = () => {
-  //   const confirmed = window.confirm("Are you sure you want to logout?");
-  //   if (confirmed) {
-  //     // Clear the user's authentication token (assuming it's stored in local storage)
-  //     localStorage.removeItem("token");
+  const [toggle, setToggle] = useState(false);
+  const handleLogout = () => {
+    const confirmed = window.confirm("Are you sure you want to logout?");
+    if (confirmed) {
+      // Clear the user's authentication token (assuming it's stored in local storage)
+      localStorage.removeItem("token");
 
-  //     // Redirect the user to the login page (or any other desired page)
-  //     window.location.href = "/authentication";
-  //   }
-  // };
-
-
-
+      //     // Redirect the user to the login page (or any other desired page)
+      window.location.href = "/authentication";
+    }
+  };
 
   // Use useSelector to get the user's email from the Redux store
   const userEmail = useSelector((state: RootState) => state.auth.userEmail); // Assuming your Redux slice is named 'auth'
@@ -39,18 +35,26 @@ export default function Header() {
             {userEmail}
           </h2>
           {/* Display the first letter of the email */}
-          <div className="w-10 h-10 flex-shrink-0 rounded-full border-4 cursor-pointer border-green-600 bg-green-600 hover:bg-green-300 animate-giggle">
+          <div
+            onClick={(e) => {
+              setToggle(!toggle);
+            }}
+            className="w-10 h-10 flex-shrink-0 rounded-full border-4 cursor-pointer border-green-600 bg-green-600 hover:bg-green-500 ease-in-out duration-500 animate-giggle"
+          >
             <p className="text-white text-center font-bold text-2xl font-lexend-deca">
               {userEmail ? userEmail.charAt(0).toUpperCase() : ""}
             </p>
-
-            {/**here *
-            <div className="">
-              <button className="text-red-500">
+          </div>
+          {toggle && (
+            <div className="w-full">
+              <button
+                className="text-red-500 ease-out duration-700 bg-red-200 text-xs rounded full p-2 justify-center flex items-center w-full font-extrabold "
+                onClick={handleLogout}
+              >
                 Logout
               </button>
-  </div>*/}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,14 +1,22 @@
 import { useEffect, useState, useCallback } from "react";
-import { UsersInfo } from "../pages/Paperlink/resources/UsersInfo";
-import { BASE_URL } from "../utils/axios-util";
+import { UsersInfo } from "../../pages/Paperlink/resources/UsersInfo";
+import { BASE_URL } from "../../utils/axios-util";
 import axios from "axios";
 
-const useFetchUsers = (searchValue: string, selectedFilter: string, startDate?: string|number , endDate?: string|number) => {
+const useFetchUsers = (
+  searchValue: string,
+  selectedFilter: string,
+  startDate?: string | number,
+  endDate?: string | number
+) => {
   const [users, setUsers] = useState<UsersInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const datefilter = startDate && endDate ? `&createdAt[$gte]=${startDate || ''}&createdAt[$lte]=${endDate || ''}` : ""
+  const datefilter =
+    startDate && endDate
+      ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
+      : "";
 
   const userUrl =
     BASE_URL +

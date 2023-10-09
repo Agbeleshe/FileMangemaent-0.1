@@ -14,13 +14,15 @@ export default function DateRangePickerCalendarExample(props) {
 
   const handleFocusChange = (newFocus) => {
     setFocus(newFocus || START_DATE);
-    getDateValue(timeStamp(startDate), timeStamp(endDate));
+    // getDateValue(timeStamp(startDate), timeStamp(endDate));
   };
 
   // Function to handle date selection
   const handleDateSelect = ({ startDate, endDate }) => {
     setStartDate(startDate);
     setEndDate(endDate);
+
+    //note...
     getDateValue(timeStamp(startDate), timeStamp(endDate));
   };
 
@@ -28,9 +30,10 @@ export default function DateRangePickerCalendarExample(props) {
     if (!val) return;
     // The input date string
     const dateString = val;
-
+    //console.log(dateString);
     // Create a Moment.js object from the input date string
     const dateMoment = moment(dateString).format("MM-DD-YYYY");
+    // console.log(dateMoment);
     return dateMoment;
   };
 

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import SearchGreen from "../../components/svg-icons/SearchGreen";
-import useInFor from "../../hooks/UseInFor";
+import useInFor from "../../hooks/APIrequest/UseInFor";
 import { Infor } from "./resources/Infor";
 import { TfiClose } from "react-icons/tfi";
 import SearchBar from "./resources/SearchBar";
 import Loader from "./resources/Loader";
 import ErrorMessage from "./resources/ErrorMessage";
-import useAccountPagination from "../../hooks/useAccountPagination";
+import useAccountPagination from "../../hooks/Paginations/useAccountPagination";
 import convertDateTime from "./resources/DateConverter";
 
 const makeStyle = (status: string) => {
@@ -35,7 +35,10 @@ const Teams = () => {
   const [inputClick, setInputClick] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
-  const { loading, users, error } = useInFor(searchValue);
+  const [searchFilter, setSelectedFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const { loading, users, error } = useInFor(searchValue, searchFilter , searchValue );
   const [filterAll, setFilterAll] = useState(false);
   const {
     currentPost,

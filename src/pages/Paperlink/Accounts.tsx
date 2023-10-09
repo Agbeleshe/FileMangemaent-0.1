@@ -7,17 +7,19 @@ import SearchGreen from "../../components/svg-icons/SearchGreen";
 import WhitePlus from "../../components/svg-icons/WhitePlus";
 import Tabrow from "../../utils/Tabrow";
 import Calender from "../../assests/Calendar.png";
-import useInFor from "../../hooks/UseInFor";
+import useInFor from "../../hooks/APIrequest/UseInFor";
 import convertDateTime from "./resources/DateConverter";
 import AddAccount from "./resources/AddAccount";
-import useUserPagination from "../../hooks/useUserPagination";
-import useAccountPagination from "../../hooks/useAccountPagination";
+import useUserPagination from "../../hooks/Paginations/useUserPagination";
+import useAccountPagination from "../../hooks/Paginations/useAccountPagination";
+import Arrow from "../../components/svg-icons/Arrow";
+import useAccApi from "../../hooks/APIrequest/useAccApi";
 
 const makeStyle = (status: string) => {
   let color = "";
   if (status === "New Trial") {
     color = "gray";
-  } else if (status === "active"|| "Active Paid") {
+  } else if (status === "active" || "Active Paid") {
     color = "green";
   } else if (status === "Pause") {
     color = "skyblue";
@@ -38,8 +40,11 @@ const Accounts = () => {
   const [modalOne, setModalOne] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [tabs, setTabs] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
   const [filterAll, setFilterAll] = useState(false);
-  const {
+  // const [searchTerms, setSearchTerms] = useState("");
+   const {
     currentPost,
     paginationButtons,
     nextButton,
@@ -48,7 +53,12 @@ const Accounts = () => {
   } = useAccountPagination();
 
   //fetching data
-  const { loading, users, error } = useInFor(searchValue);
+  const { loading, users, error } = useAccApi(searchValue, selectedFilter);
+  // const { loading, users, error } = useInFor(
+  //   searchValue,
+  //   selectedFilter,
+  //   searchTerms
+  // );
 
   const handleInputClick = () => {
     setInputClick(!inputClick);
@@ -97,6 +107,20 @@ const Accounts = () => {
 
   const handleModalClose = () => {
     setModalOne(false);
+  };
+
+  const handleStatusFilter = (e: any) => {
+    const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
+    setSelectedFilter(selectedValue); // Update the selected filter state
+    console.log(selectedValue);
+
+    //to see evry data concerning that field you use filter all which will reomve pagination
+    setFilterAll(true);
+  };
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+     setFilterAll(false);
   };
 
   return (
@@ -228,8 +252,61 @@ const Accounts = () => {
                         <th className="border-b  py-3 text-left font-medium text-darkGray text-sm">
                           Business Name
                         </th>
-                        <th className="border-b px-4 py-3  text-center font-medium text-darkGray text-sm">
-                          Status
+                        <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
+                          <span className="flex justify-center items-center align-middle">
+                            <div
+                              className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              onClick={toggleDropdown}
+                            >
+                              <p>Status</p>
+                              <Arrow />
+                            </div>
+                          </span>
+                          {isOpen && (
+                            <div className="absolute top-[70px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="active" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                active
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="Pause" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                Pause
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="Cancel" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                Cancel
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="Delete" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                Delete
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                All
+                              </div>
+                              <div
+                                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                onClick={toggleDropdown}
+                              >
+                                <TfiClose />
+                              </div>
+                            </div>
+                          )}
                         </th>
                       </tr>
                     </thead>

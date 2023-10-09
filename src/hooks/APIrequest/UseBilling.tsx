@@ -1,20 +1,19 @@
 import { useEffect, useState, useCallback } from "react";
-import { Infor } from "../pages/Paperlink/resources/Infor";
-import { BASE_URL } from "../utils/axios-util";
+import { Billing } from "../../pages/Paperlink/resources/Billing";
+import { BASE_URL } from "../../utils/axios-util";
 import axios from "axios";
 
-const useInFor = (searchTerms: string = "") => {
-  const [users, setUsers] = useState<Infor[]>([]);
+const useBilling = () => {
+  const [users, setUsers] = useState<Billing[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
- 
 
-  const paidUserUrl = BASE_URL + `/users?$sort[createdAt]=-1&role=paid_user&companyName[$like]=%${searchTerms}%`;
+  const userUrl = BASE_URL + "/billings";
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get<{ data:Infor[] }>(paidUserUrl)
+      .get<{ data: Billing[] }>(userUrl)
       .then((res) => {
         setUsers(res.data.data);
         setError(null);
@@ -26,9 +25,7 @@ const useInFor = (searchTerms: string = "") => {
       .finally(() => {
         setLoading(false);
       });
-  }, [searchTerms]);
-
-  
+  }, []);
 
   return {
     loading,
@@ -37,4 +34,4 @@ const useInFor = (searchTerms: string = "") => {
   };
 };
 
-export default useInFor;
+export default useBilling;

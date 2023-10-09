@@ -7,11 +7,11 @@ import ErrorMessage from "./resources/ErrorMessage";
 import { TfiClose } from "react-icons/tfi";
 import SearchBar from "./resources/SearchBar";
 import convertDateTime from "./resources/DateConverter";
-import useFetchUsers from "../../hooks/useFetchUsers";
-import usePagination from "../../hooks/usePagination";
+import useFetchUsers from "../../hooks/APIrequest/useFetchUsers";
+import usePagination from "../../hooks/Paginations/usePagination";
 import FileTabRow from "./resources/FileTabrow/FileTabRow";
 import Arrow from "../../components/svg-icons/Arrow";
-import DateRangePickerCalendarExample from "../../hooks/DateRangePicker";
+import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
 
 const makeStyle = (status: string) => {
   if (status === "Active") {
@@ -71,15 +71,6 @@ const File = () => {
   const handleSearch = (value: string) => {
     setSearchValue(value);
     setFilterAll(!filterAll);
-  };
-  const handleStatusFilter = (e: any) => {
-    const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
-    setSelectedFilter(selectedValue); // Update the selected filter state
-    setSearchValue(selectedValue); // Clear the search value
-    console.log(selectedValue);
-
-    //to see evry data concerning that field you use filter all which will reomve pagination
-    setFilterAll(true);
   };
 
   //this is the client side logic for search just incase something happens to the server the admin can still fetch available users
@@ -144,11 +135,24 @@ const File = () => {
   //handle modal of the date close
   const handleCloseSelectedDate = () => {
     setSelectedDate(!selectedDate);
+    console.log(selectedDate);
   };
 
   const getDateValuesFunc = (start: number, end: number) => {
     setTimeFilter([start, end]);
     start && end && handleCloseSelectedDate();
+    console.log(start,end);
+  };
+
+  //for status
+  const handleStatusFilter = (e: any) => {
+    const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
+    setSelectedFilter(selectedValue); // Update the selected filter state
+    setSearchValue(selectedValue); // Clear the search value
+    console.log(selectedFilter);
+
+    //to see evry data concerning that field you use filter all which will reomve pagination
+    setFilterAll(true);
   };
 
   return (
@@ -357,7 +361,12 @@ const File = () => {
                           {convertDateTime(user.createdAt)}
                         </span>
                         <div className=" flex text-[12px] px-2">
-                          {user.fileName}
+                          <a
+                            href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
+                          >
+                            {" "}
+                            {user.file.fileName}
+                          </a>
                         </div>
                       </div>
                     )}

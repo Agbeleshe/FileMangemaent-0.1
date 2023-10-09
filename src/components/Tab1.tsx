@@ -23,13 +23,13 @@ const options: Option[] = [
 //sorting options alphabetically
 options.sort((a, b) => a.label.localeCompare(b.label));
 
-
 interface Tab1Props {
   selectedUser: any | undefined;
   users: any[];
 }
 
 const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
@@ -44,9 +44,9 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     timezone: selectedUser.timezone,
     profilePicture: selectedUser.profilePicture,
   });
-  console.log(selectedUser);
+
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false); // New state variable for the tooltip
+  const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
@@ -64,6 +64,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     setErrorMsg(false);
     setSuccess(false);
   };
+
   const handleViewProfilePicture = () => {
     setShowProfilePictureModal(true);
   };
@@ -75,13 +76,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    // You can handle form submission here
 
     const UpdateAccountUrl = BASE_URL + `/users/${selectedUser.id}`;
-
-    //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
-    // Send the PUT request to update the user's data
-    console.log(selectedUser.id);
 
     axios
       .patch(UpdateAccountUrl, {
@@ -107,7 +103,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         }
       })
       .finally(() => {
-        setLoading(false); // Set loading to false when request is done
+        setLoading(false);
       });
   };
 
@@ -116,7 +112,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   };
 
   const handleConfirmCancel = () => {
-    // Reset all input fields to empty values
     setFormData({
       email: "",
       companyName: "",
@@ -125,7 +120,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
       timezone: "",
       profilePicture: "",
     });
-    setSelectedOption(""); // Reset the select input
+    setSelectedOption("");
     setShowCancelModal(false);
   };
 
@@ -135,7 +130,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 
   return (
     <div className="h-auto overflow-hidden font-Poppins pb-[100px] ">
-      {/* Background Overlay */}
       {showCancelModal && (
         <div className="fixed inset-0 backdrop-blur-md bg-gray-800 bg-opacity-50 z-50"></div>
       )}
@@ -149,48 +143,57 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             >
               Status:
             </label>
-            <select
-              id="select"
-              name="select"
-              value={selectedOption}
-              onChange={handleSelectChange}
-              className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
-            >
-              <option value={selectedUser.status || selectedUser.user}>
-                {selectedUser.status}
-              </option>
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+            {isEditing ? (
+              <select
+                id="select"
+                name="select"
+                value={selectedOption}
+                onChange={handleSelectChange}
+                className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
+              >
+                <option value={selectedUser.status || selectedUser.user}>
+                  {selectedUser.status}
                 </option>
-              ))}
-            </select>
+                {options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span>{selectedUser.status}</span>
+            )}
           </div>
 
-          {/* image placeHolder */}
           <div className="flex gap-2  items-center">
-            <span className="mr-5 pt-2 ">
-              <EditIcon/>
+            <span
+              onClick={() => setIsEditing(!isEditing)}
+              className="mr-5 pt-2 "
+            >
+              <button type="button">
+                <EditIcon />
+              </button>
             </span>
             <span>
               {formData.profilePicture ? (
                 <img
+                  onClick={handleViewProfilePicture}
                   src={formData.profilePicture}
                   alt="profile side"
                   className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
                 />
               ) : (
-                <span className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 ">
+                <span
+                  onClick={handleViewProfilePicture}
+                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
+                >
                   <AcctIcon />
                 </span>
               )}
-              {/* Profile Picture Modal */}
               {showProfilePictureModal && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
-                  {/* Background Overlay */}
                   <div className="fixed inset-0 bg-black opacity-40"></div>
 
-                  {/* Modal Content */}
                   <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg relative z-10">
                     <img
                       src={formData.profilePicture}
@@ -222,6 +225,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-2 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-2">
@@ -235,6 +239,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-4">
@@ -248,6 +253,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-4">
@@ -261,6 +267,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
@@ -274,7 +281,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             <img src={zone} alt="zone-location" className="mr-2" />
             <span>Time Zone Database</span>
           </div>
-          {/* TimeZone Tooltip */}
           {showTimeZoneTooltip && (
             <div className="fixed inset-0 flex items-center justify-center z-50">
               <div className="bg-white p-6 w-96 rounded-lg text-center shadow-lg">
@@ -301,7 +307,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               </div>
             </div>
           )}
-          {/**end of it */}
         </div>
         {success && (
           <div className="bg-green-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-green-800 p-2 flex gap-5 justify-center font-extralight">
@@ -317,7 +322,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         {errorMsg && (
           <div className="bg-red-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-red-800 p-2 flex md:justify-center font-extralight">
             <p className="flex justify-start md:justify-center w-[80%] md:w-full">
-              AN ERROR OCCOURED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
+              AN ERROR OCCURRED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
             </p>
             <button
               onClick={handleClear}
@@ -327,27 +332,29 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </button>
           </div>
         )}
-        {/* Buttons */}
         <div className="flex md:gap-10 gap-5 md:px-7  md:pb-5 flex-col md:flex-row items-center md:items-start ">
-          <button
-            typeof="submit"
-            className={`Tab outline-none active:bg-green-500 ${
-              loading && "bg-slate-500"
-            } `}
-          >
-            {loading ? "loading..." : "save"}
-          </button>
-
-          <button
-            onClick={handleCancel}
-            className="btnT outline-none hover:bg-red-500 hover:text-white"
-          >
-            Cancel
-          </button>
+          {isEditing ? (
+            <>
+              <button
+                typeof="submit"
+                className={`Tab outline-none active:bg-green-500 ${
+                  loading && "bg-slate-500"
+                } `}
+              >
+                {loading ? "loading..." : "save"}
+              </button>
+              <button
+                onClick={handleCancel}
+                className="btnT outline-none hover:bg-red-500 hover:text-white"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </form>
-
-      {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg">

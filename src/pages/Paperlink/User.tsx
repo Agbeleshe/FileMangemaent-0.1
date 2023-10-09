@@ -5,10 +5,11 @@ import { TfiClose } from "react-icons/tfi";
 import Loader from "./resources/Loader";
 import ErrorMessage from "./resources/ErrorMessage";
 import SearchBar from "./resources/SearchBar";
-import useInFor from "../../hooks/UseInFor";
-import useLedger from "../../hooks/useLedger";
-import useUserPagination from "../../hooks/useUserPagination";
+import useInFor from "../../hooks/APIrequest/UseInFor";
+import useLedger from "../../hooks/APIrequest/useLedger";
+import useUserPagination from "../../hooks/Paginations/useUserPagination";
 import convertDateTime from "./resources/DateConverter";
+import Arrow from "../../components/svg-icons/Arrow";
 
 import { Ledger } from "./resources/Ledger";
 
@@ -44,6 +45,9 @@ const User = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
   const [tabs, setTabs] = useState(true);
+  const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
+  const [isOpen, setIsOpen] = useState(false);
+
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const {
     currentPost,
@@ -54,7 +58,11 @@ const User = () => {
   } = useUserPagination();
 
   const { loading, users, error } = useLedger(searchValue);
-  console.log(users, "from User.tsx");
+  // console.log(users, "from User.tsx");
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
 
   // For Postman URL and calculating total pages
   const totalPages = calculateTotalPages(users);
@@ -71,36 +79,57 @@ const User = () => {
     // setFilterAll(true);
   };
 
+  const handleStatusFilter = (e: any) => {
+    const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
+    setSelectedFilter(selectedValue); // Update the selected filter state
+    setSearchValue(selectedValue); // Clear the search value
+    console.log(selectedValue);
+
+    //to see evry data concerning that field you use filter all which will reomve pagination
+    setFilterAll(true);
+  };
+
   const filteredUsers = filterAll
     ? users.filter(
-      (user: any) =>
-      user.user.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-      user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-      user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase()) ||
-      user.file.fileAction.toLowerCase().includes(searchValue.toLowerCase()) ||
-      user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
-  )
+        (user: any) =>
+          user.user.firstName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          user.file.paperLink
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          user.file.fileAction
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
+      )
     : currentPost.filter(
         (user: any) =>
-          user.user.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          user.user.firstName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
           user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.file.fileAction.toLowerCase().includes(searchValue.toLowerCase()) ||
+          user.file.paperLink
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          user.file.fileAction
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
           user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
       );
 
   // Page calculation
   function calculateTotalPages(users: Ledger[]) {
     let totalPages = 0;
-    console.log(users)
+    console.log(users);
     for (const user of users) {
       totalPages += user.file.pages;
-
     }
 
     return totalPages;
   }
-console.log(users)
+  console.log(users);
   const recordFound = filteredUsers.length > 0;
 
   // display of no records
@@ -112,8 +141,6 @@ console.log(users)
     }
   }, [filteredUsers, inputClick]);
 
-
-
   console.log(users);
 
   // Function to handle clicking on a user row and display additional information
@@ -121,15 +148,15 @@ console.log(users)
     setSelectedUserId(selectedUserId === userId ? null : userId); // Toggle selected user
   };
 
-  const handleEmail = () => {
-    alert("clicked");
-  };
+  // const handleEmail = () => {
+  //   alert("clicked");
+  // };
 
-  //tabs redirect
-  const handleTabs = (userId: any) => {
-    setSelectedUserId(userId);
-    setTabs(false);
-  };
+  // //tabs redirect
+  // const handleTabs = (userId: any) => {
+  //   setSelectedUserId(userId);
+  //   setTabs(false);
+  // };
 
   return (
     <div className="mb-20">
@@ -205,8 +232,55 @@ console.log(users)
                             {totalPages}
                           </span>
                         </th>
-                        <th className="border-b p-2 text-center font-medium text-darkGray text-sm">
-                          Action
+
+                        <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
+                          <span className="flex justify-center items-center align-middle">
+                            <div
+                              className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              onClick={toggleDropdown}
+                            >
+                              <p>Action</p>
+                              <Arrow />
+                            </div>
+                          </span>
+                          {isOpen && (
+                            <div className="absolute top-[70px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="complete" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                complete
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="sign" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                sign
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="confirm" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                confirm
+                              </div>
+                              <div
+                                onClick={handleStatusFilter}
+                                data-value="" // Assign a data attribute to store the value
+                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                              >
+                                All
+                              </div>
+                              <div
+                                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                onClick={toggleDropdown}
+                              >
+                                <TfiClose />
+                              </div>
+                            </div>
+                          )}
                         </th>
                       </tr>
                     </thead>
@@ -221,7 +295,7 @@ console.log(users)
                             {convertDateTime(user.updatedAt)}
                           </td>
                           <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal ">
-                            {user.user.firstName}
+                            {user.user.guestName}
                           </td>
                           <td
                             // onClick={() => handleTabs(user.id)}
