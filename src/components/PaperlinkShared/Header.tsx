@@ -40,11 +40,15 @@ export default function Header() {
               setToggle(!toggle);
             }}
             className="w-10 h-10 flex-shrink-0 rounded-full border-4 cursor-pointer border-green-600 bg-green-600 hover:bg-green-500 ease-in-out duration-500 animate-giggle"
+            style={{
+              boxShadow: toggle ? "0 0 10px 5px rgba(0, 255, 0, 0.7)" : "none",
+            }}
           >
             <p className="text-white text-center font-bold text-2xl font-lexend-deca">
               {userEmail ? userEmail.charAt(0).toUpperCase() : ""}
             </p>
           </div>
+
           {toggle && (
             <div className="w-full">
               <button
