@@ -15,7 +15,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
   const [papercount, setPaperCount] = useState<number>(1);
   const [fillablecount, setFillableCount] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [WhiteGloveService, setWhiteGloveService] = useState<number>(1);
   const incrementCount = () => {
     setCount(count + 1);
   };
@@ -41,6 +41,14 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
   const decrementFillableCount = () => {
     if (fillablecount > 0) {
       setFillableCount(fillablecount - 1);
+    }
+  };
+  const incrementWhiteCount = () => {
+    setWhiteGloveService(WhiteGloveService + 1);
+  };
+  const decrementWhiteCount = () => {
+    if (WhiteGloveService > 0) {
+      setWhiteGloveService(WhiteGloveService - 1);
     }
   };
 
@@ -257,24 +265,30 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                   </div>
                 </div>
                 <div className="grid-item border-none text-center">
-                  {/**empty for now */}
+                  {user.whiteGloveService}
                 </div>
                 <div className="grid-item text-center">
                   <div className=" flex justify-center  bg-counter w-24 mx-auto rounded-md text-black">
-                    <button className="w-16 hover:bg-gray-100 hover:rounded-md ">
+                    <button
+                      className="w-16 hover:bg-gray-100 hover:rounded-md "
+                      onClick={decrementWhiteCount}
+                    >
                       -
                     </button>
                     <div className="bg-white w-20 border rounded-md text-center">
-                      {/**empty for now */}
+                      {WhiteGloveService}
                     </div>
 
-                    <button className="w-16  hover:bg-gray-100 hover:rounded-md">
+                    <button
+                      className="w-16  hover:bg-gray-100 hover:rounded-md"
+                      onClick={incrementWhiteCount}
+                    >
                       +
                     </button>
                   </div>
                 </div>
                 <div className="grid-item  text-end md:mr-12">
-                  {user.isWhiteGloveService ? "true" : "false"}
+                  {WhiteGloveService * user.whiteGloveService}
                 </div>
               </div>
               {/* The div for end */}
@@ -291,6 +305,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                     {papercount * user.paperlink +
                       fillablecount * user.fillablePdf +
                       count * user.teamMembers +
+                      WhiteGloveService * user.whiteGloveService +
                       10}
                     .00
                   </span>

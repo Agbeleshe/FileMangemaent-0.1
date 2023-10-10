@@ -10,10 +10,12 @@ import Calender from "../../assests/Calendar.png";
 import useInFor from "../../hooks/APIrequest/UseInFor";
 import convertDateTime from "./resources/DateConverter";
 import AddAccount from "./resources/AddAccount";
-import useUserPagination from "../../hooks/Paginations/useUserPagination";
 import useAccountPagination from "../../hooks/Paginations/useAccountPagination";
 import Arrow from "../../components/svg-icons/Arrow";
 import useAccApi from "../../hooks/APIrequest/useAccApi";
+
+
+
 
 const makeStyle = (status: string) => {
   let color = "";
@@ -44,7 +46,7 @@ const Accounts = () => {
   const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
   const [filterAll, setFilterAll] = useState(false);
   // const [searchTerms, setSearchTerms] = useState("");
-   const {
+  const {
     currentPost,
     paginationButtons,
     nextButton,
@@ -120,7 +122,7 @@ const Accounts = () => {
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-     setFilterAll(false);
+    setFilterAll(false);
   };
 
   return (

@@ -160,10 +160,10 @@ const User = () => {
   // };
 
   //tabs redirect
-  const handleTabs = (userId: any) => {
-    setSelectedUserId(userId);
-    setTabs(true);
-  };
+   const handleTabs = (userId: any) => {
+     setSelectedUserId(userId);
+     setTabs(false);
+   };
 
   const dataToMap = filterAll ? users : currentPost;
 
@@ -310,7 +310,7 @@ const User = () => {
                           <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
                             {user.user.guestName
                               ? user.user.guestName
-                              : "Empty"}
+                              : "No Guest Name"}
                           </td>
                           <td
                             onClick={() => handleTabs(user.id)}

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+//import AcctIcon from "./svg-icons/AcctIcon";
 import AcctIcon from "../../../../components/svg-icons/AcctIcon";
 import zone from "../../../../assests/zone.png";
 import location from "../../../../assests/location.png";
 import "../../../../assests/styles/tab.css";
+
 import axios from "axios";
 import { BASE_URL } from "../../../../utils/axios-util";
+import EditIcon from "../../../../components/svg-icons/EditIcon";
 
 interface Option {
   value: string;
@@ -12,15 +15,14 @@ interface Option {
 }
 
 const options: Option[] = [
+  { value: "New Trial", label: "New Trial" },
   { value: "active", label: "active" },
   { value: "Pause", label: "Pause" },
-  { value: "Removed", label: "Removed" },
   { value: "Suspend", label: "Suspend" },
   { value: "Cancel", label: "Cancel" },
   { value: "Delete", label: "Delete" },
-  { value: "New Trial", label: "New Trial" },
 ];
-//sorting options alphabetically
+// Sorting options alphabetically
 options.sort((a, b) => a.label.localeCompare(b.label));
 
 interface Tab1Props {
@@ -29,21 +31,28 @@ interface Tab1Props {
 }
 
 const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
+  const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
+
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [formData, setFormData] = useState({
     email: selectedUser.user.email || null,
-    companyName: selectedUser.user.company_name|| null,
+    companyName: selectedUser.user.company_name || null,
     firstName: selectedUser.user.firstName || null,
-    lastName:  selectedUser.user.lastName || null,
+    lastName: selectedUser.user.lastName || null,
     timezone: selectedUser.timezone || null,
     profilePicture: selectedUser.profilePicture || null,
   });
   console.log(selectedUser);
+
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false); // New state variable for the tooltip
+  const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);
+
+  // Store the initial form data when editing is enabled
+  const [initialFormData, setInitialFormData] = useState({ ...formData });
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
@@ -57,37 +66,70 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     });
   };
 
+  const toggleEditing = () => {
+    if (!isEditing) {
+      setFormData({ ...initialFormData }); // Reset formData to initial values
+    }
+    setIsEditing(!isEditing);
+  };
+
   const handleClear = () => {
     setErrorMsg(false);
     setSuccess(false);
   };
 
+  const handleViewProfilePicture = () => {
+    setShowProfilePictureModal(true);
+  };
+
+  const handleCloseProfilePictureModal = () => {
+    setShowProfilePictureModal(false);
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    // You can handle form submission here
 
-    const UpdateAccountUrl =
-      BASE_URL + `/files/${selectedUser.id}`;
+    // Obtain your access token or API key from your authentication mechanism
+    const token = localStorage.getItem("token");
 
-    //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
-    // Send the PUT request to update the user's data
-    console.log(selectedUser.id);
+    // Check if accessToken is available and not expired
+    if (!token) {
+      console.error("Access token is missing or expired");
+      // Handle token missing or expired error here
+      setLoading(false);
+      return;
+    }
+
+    const UpdateAccountUrl = BASE_URL + `/files/${selectedUser.id}`;
+
+    // Set the request headers with the bearer token
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json", // Adjust the content type as needed
+    };
 
     axios
-      .patch(UpdateAccountUrl, {
-        email: formData.email,
-        companyName: formData.companyName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        status: selectedOption,
-        timezone: formData.timezone,
-        profilePicture: formData.profilePicture,
-      })
+      .patch(
+        UpdateAccountUrl,
+        {
+          email: formData.email,
+          companyName: formData.companyName,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          fileAction: selectedOption,
+          timezone: formData.timezone,
+          profilePicture: formData.profilePicture,
+        },
+        {
+          headers: headers, // Include the headers in the request
+        }
+      )
       .then((res) => {
         setSuccess(true);
         setErrorMsg(false);
         console.log("PATCH request successful", res.data);
+        setInitialFormData({ ...formData }); // Reset initialFormData to saved data
       })
       .catch((err) => {
         console.error("Error updating data: ", err);
@@ -98,41 +140,44 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         }
       })
       .finally(() => {
-        setLoading(false); // Set loading to false when request is done
+        setLoading(false);
       });
   };
 
-  const handleCancel = () => {
-    setShowCancelModal(true);
-  };
+  //const handleCancel = () => {
+  //  setShowCancelModal(true);
+  // };
 
+  const handleCancel = () => {
+    //console.log("handleCancel called");
+    setFormData({ ...initialFormData }); // Reset formData to initial values
+    //setSelectedOption("");
+    setIsEditing(false);
+    setShowCancelModal(true); // Close the cancel modal
+  };
   const handleConfirmCancel = () => {
-    // Reset all input fields to empty values
-    setFormData({
-      email: "",
-      companyName: "",
-      firstName: "",
-      lastName: "",
-      timezone: "",
-      profilePicture: "",
-    });
-    setSelectedOption(""); // Reset the select input
-    setShowCancelModal(false);
+    //  console.log("handleConfirmCancel called");
+    // Perform the cancellation action here
+    // For example, reset the form fields or close the modal
+    setFormData({ ...initialFormData }); // Reset formData to initial values
+    setSelectedOption("");
+    setIsEditing(false);
+    setShowCancelModal(false); // Close the cancel modal
   };
 
   const handleCancelModalClose = () => {
+    // console.log("handleCancelModalClose called");
     setShowCancelModal(false);
   };
 
   return (
     <div className="h-auto overflow-hidden font-Poppins pb-[100px] ">
-      {/* Background Overlay */}
       {showCancelModal && (
         <div className="fixed inset-0 backdrop-blur-md bg-gray-800 bg-opacity-50 z-50"></div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4 md:p-5 md:w-full ">
-        <div className="inline-block md:flex md:justify-between  w-full items-center text-center justify-center">
+        <div className="inline-block md:flex md:justify-between mr-6 ml-6  w-full items-center text-center justify-center">
           <div className="mt-4 flex gap-5 w-full md:w-auto  items-center mb-5 justify-center">
             <label
               htmlFor="select"
@@ -140,37 +185,69 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             >
               Action:
             </label>
-            <select
-              id="select"
-              name="select"
-              value={selectedOption}
-              onChange={handleSelectChange}
-              className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
-            >
-              <option value={selectedUser.fileAction}>
-                {selectedUser.fileAction}
-              </option>
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+
+            {isEditing ? (
+              <select
+                id="select"
+                name="select"
+                value={selectedOption}
+                onChange={handleSelectChange}
+                className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
+              >
+                <option value={selectedUser.fileAction}>
+                  {selectedUser.fileAction}
                 </option>
-              ))}
-            </select>
+                {options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span>{selectedUser.fileAction}</span>
+            )}
           </div>
 
-          {/* image placeHolder */}
-          <div className="">
+          <div className="flex gap-2  items-center">
+            <span onClick={() => toggleEditing()} className="mr-5 pt-2 ">
+              <button type="button">
+                <EditIcon />
+              </button>
+            </span>
             <span>
               {formData.profilePicture ? (
                 <img
+                  onClick={handleViewProfilePicture}
                   src={formData.profilePicture}
                   alt="profile side"
-                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 "
+                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
                 />
               ) : (
-                <span className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 ">
+                <span
+                  onClick={handleViewProfilePicture}
+                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
+                >
                   <AcctIcon />
                 </span>
+              )}
+              {showProfilePictureModal && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                  <div className="fixed inset-0 bg-black opacity-40"></div>
+
+                  <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg relative z-10">
+                    <img
+                      src={formData.profilePicture}
+                      alt="profile side"
+                      className="mx-auto h-48 w-48 rounded-full bg-slate-100"
+                    />
+                    <button
+                      onClick={handleCloseProfilePictureModal}
+                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 mt-4"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               )}
             </span>
           </div>
@@ -183,30 +260,31 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </label>
             <input
               type="email"
-              id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
+              className="md:w-full px-2 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-2">
-            <label htmlFor="businessName" className="block py-5 text-gray-700">
+            <label htmlFor="companyName" className="block py-5 text-gray-700">
               Business Name:
             </label>
             <input
               type="text"
-              name="ompanyName"
+              name="companyName"
               value={formData.companyName}
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-4">
             <label htmlFor="contactName" className="block py-5 text-gray-700">
-              First Name:
+              Contact Name:
             </label>
             <input
               type="text"
@@ -215,6 +293,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-4">
@@ -228,6 +307,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
@@ -241,7 +321,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             <img src={zone} alt="zone-location" className="mr-2" />
             <span>Time Zone Database</span>
           </div>
-          {/* TimeZone Tooltip */}
           {showTimeZoneTooltip && (
             <div className="fixed inset-0 flex items-center justify-center z-50">
               <div className="bg-white p-6 w-96 rounded-lg text-center shadow-lg">
@@ -268,7 +347,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               </div>
             </div>
           )}
-          {/**end of it */}
         </div>
         {success && (
           <div className="bg-green-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-green-800 p-2 flex gap-5 justify-center font-extralight">
@@ -284,7 +362,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         {errorMsg && (
           <div className="bg-red-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-red-800 p-2 flex md:justify-center font-extralight">
             <p className="flex justify-start md:justify-center w-[80%] md:w-full">
-              AN ERROR OCCOURED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
+              AN ERROR OCCURRED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
             </p>
             <button
               onClick={handleClear}
@@ -294,27 +372,30 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </button>
           </div>
         )}
-        {/* Buttons */}
         <div className="flex md:gap-10 gap-5 md:px-7  md:pb-5 flex-col md:flex-row items-center md:items-start ">
-          <button
-            typeof="submit"
-            className={`Tab outline-none active:bg-green-500 ${
-              loading && "bg-slate-500"
-            } `}
-          >
-            {loading ? "loading..." : "save"}
-          </button>
-
-          <button
-            onClick={handleCancel}
-            className="btnT outline-none hover:bg-red-500 hover:text-white"
-          >
-            Cancel
-          </button>
+          {isEditing ? (
+            <>
+              <button
+                typeof="submit"
+                className={`Tab outline-none active:bg-green-500 ${
+                  loading && "bg-slate-500"
+                } `}
+              >
+                {loading ? "loading..." : "save"}
+              </button>
+              <button
+                onClick={handleCancel}
+                className="btnT outline-none hover:bg-red-500 hover:text-white"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </form>
-
-      {/* Cancel Modal */}
+      {/**The clear modal */}
       {showCancelModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg">
@@ -323,7 +404,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </p>
             <div>
               <p>
-                <em>This will clear all input in the field.</em>
+                <em>This will clear all what you editted.</em>
               </p>
             </div>
             <div className="mt-6">

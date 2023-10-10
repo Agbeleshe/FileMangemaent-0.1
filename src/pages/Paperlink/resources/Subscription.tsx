@@ -33,6 +33,7 @@ export interface Subscription {
      updatedAt: string;
      user: UserData;
      uuid: number;
+     whiteGloveService: number;
    }
   
   interface UserData {
