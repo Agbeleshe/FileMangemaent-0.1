@@ -152,7 +152,7 @@ const User = () => {
   //   alert("clicked");
   // };
 
-  // //tabs redirect
+  //tabs redirect
   // const handleTabs = (userId: any) => {
   //   setSelectedUserId(userId);
   //   setTabs(false);
@@ -307,7 +307,7 @@ const User = () => {
                             <a
                               href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
                             >
-                              {" "}
+                             
                               {user.file.fileName}
                             </a>
                           </td>

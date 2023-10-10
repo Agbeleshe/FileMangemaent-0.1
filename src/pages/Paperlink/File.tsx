@@ -141,7 +141,7 @@ const File = () => {
   const getDateValuesFunc = (start: number, end: number) => {
     setTimeFilter([start, end]);
     start && end && handleCloseSelectedDate();
-    console.log(start,end);
+    console.log(start, end);
   };
 
   //for status
@@ -307,8 +307,12 @@ const File = () => {
                           </p>
                         </div>
                       </td>
-                      <td className=" border-t py-4 text-left text-lightGray font-Poppins text-sm font-normal">
-                        {user.fileName}
+                      <td className=" border-t py-4 text-left text-lightGray  hover:text-green-500 font-Poppins text-sm font-normal">
+                        <a
+                          href={`https://dev.paperlink.app/pdf/${user.paperLink}`}
+                        >
+                          {user.fileName}
+                        </a>
                       </td>
                       <td
                         onClick={() => handleTabs(user.id)}
@@ -360,12 +364,11 @@ const File = () => {
                         <span className="text-black flex text-[12px]">
                           {convertDateTime(user.createdAt)}
                         </span>
-                        <div className=" flex text-[12px] px-2">
+                        <div className=" flex text-[12px] px-2  text-lightGray hover:text-green-500">
                           <a
-                            href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
+                            href={`https://dev.paperlink.app/pdf/${user.paperLink}`}
                           >
-                            {" "}
-                            {user.file.fileName}
+                            {user.fileName}
                           </a>
                         </div>
                       </div>
