@@ -153,10 +153,10 @@ const User = () => {
   // };
 
   //tabs redirect
-  // const handleTabs = (userId: any) => {
-  //   setSelectedUserId(userId);
-  //   setTabs(false);
-  // };
+   const handleTabs = (userId: any) => {
+     setSelectedUserId(userId);
+     setTabs(false);
+   };
 
   return (
     <div className="mb-20">
@@ -297,11 +297,11 @@ const User = () => {
                           <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
                             {user.user.guestName
                               ? user.user.guestName
-                              : "Empty"}
+                              : "No Guest Name"}
                           </td>
 
                           <td
-                            // onClick={() => handleTabs(user.id)}
+                             onClick={() => handleTabs(user.id)}
                             className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
                           >
                             {user.user.email}

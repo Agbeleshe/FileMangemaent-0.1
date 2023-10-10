@@ -20,7 +20,7 @@ const options: Option[] = [
   { value: "Cancel", label: "Cancel" },
   { value: "Delete", label: "Delete" },
 ];
-//sorting options alphabetically
+// Sorting options alphabetically
 options.sort((a, b) => a.label.localeCompare(b.label));
 
 interface Tab1Props {
@@ -48,6 +48,9 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);
 
+  // Store the initial form data when editing is enabled
+  const [initialFormData, setInitialFormData] = useState({ ...formData });
+
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
@@ -58,6 +61,13 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
       ...formData,
       [name]: value,
     });
+  };
+
+  const toggleEditing = () => {
+    if (!isEditing) {
+      setFormData({ ...initialFormData }); // Reset formData to initial values
+    }
+    setIsEditing(!isEditing);
   };
 
   const handleClear = () => {
@@ -82,7 +92,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     axios
       .patch(UpdateAccountUrl, {
         email: formData.email,
-        companyName: formData.companyName,
+        companyName:formData.companyName,
         firstName: formData.firstName,
         phone: formData.phone,
         status: selectedOption,
@@ -93,6 +103,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         setSuccess(true);
         setErrorMsg(false);
         console.log("PATCH request successful", res.data);
+        setInitialFormData({ ...formData }); // Reset initialFormData to saved data
       })
       .catch((err) => {
         console.error("Error updating data: ", err);
@@ -107,24 +118,29 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
       });
   };
 
-  const handleCancel = () => {
-    setShowCancelModal(true);
-  };
+  //const handleCancel = () => {
+  //  setShowCancelModal(true);
+  // };
 
+  const handleCancel = () => {
+    //console.log("handleCancel called");
+    setFormData({ ...initialFormData }); // Reset formData to initial values
+    //setSelectedOption("");
+    setIsEditing(false);
+    setShowCancelModal(true); // Close the cancel modal
+  };
   const handleConfirmCancel = () => {
-    setFormData({
-      email: "",
-      companyName: "",
-      firstName: "",
-      phone: "",
-      timezone: "",
-      profilePicture: "",
-    });
+    //  console.log("handleConfirmCancel called");
+    // Perform the cancellation action here
+    // For example, reset the form fields or close the modal
+    setFormData({ ...initialFormData }); // Reset formData to initial values
     setSelectedOption("");
-    setShowCancelModal(false);
+    setIsEditing(false);
+    setShowCancelModal(false); // Close the cancel modal
   };
 
   const handleCancelModalClose = () => {
+    // console.log("handleCancelModalClose called");
     setShowCancelModal(false);
   };
 
@@ -166,10 +182,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
 
           <div className="flex gap-2  items-center">
-            <span
-              onClick={() => setIsEditing(!isEditing)}
-              className="mr-5 pt-2 "
-            >
+            <span onClick={() => toggleEditing()} className="mr-5 pt-2 ">
               <button type="button">
                 <EditIcon />
               </button>
@@ -355,6 +368,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           )}
         </div>
       </form>
+      {/**The clear modal */}
       {showCancelModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg">
@@ -363,7 +377,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </p>
             <div>
               <p>
-                <em>This will clear all input in the field.</em>
+                <em>This will clear all what you editted.</em>
               </p>
             </div>
             <div className="mt-6">
