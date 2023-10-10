@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Tabs from './RcvTab1'
-import Tab1 from "./RcvTab1";
-import Tab2 from "./RcvTab2";
+import Tabs from './UsTabs';
+import Tab1 from "./UsTab1";
+import Tab2 from "./UsTab2";
 
-interface FileTabRowProps {
+interface TabrowProps {
   selectedUserId: number | null;
   users: any[]; // Replace 'YourUserType' with the actual type of your users
 }
 
-const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
+const Tabrow: React.FC<TabrowProps> = ({ selectedUserId, users }) => {
   const selectedUser = users.find((user) => user.id === selectedUserId);
   const [activeTab, setActiveTab] = useState("tab1");
 
@@ -17,18 +17,18 @@ const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
   };
 
   return (
-    <div className="border-radius-[0.9375rem] bg-white width-[65.75rem]  h-auto overflow-hidden font-Poppins">
+    <div className="border-radius-[0.9375rem] bg-white w-1852  h-auto overflow-hidden font-Poppins">
       <div className="bg-secondaryColor flex justify-between height-[5.3125rem] px-4 py-2 rounded-t-lg pb-0">
         <div className="hidden md:inline border-b-0 text-lightGray font-medium leading-normal text-2xl">
           Accounts
         </div>
         <div className="flex w-full justify-end items-baseline">
-          <div className="flex justify-between  items-baseline w-[80%] mx-auto end-0 h-full pt-5">
+          <div className="flex justify-between  items-baseline w-[80%] mx-auto end-0 h-full pt-6">
             <div className="flex justify-between gap-4 md:gap-7 border-b w-full text-sm md:text-[15px] ">
               <button
-                className={`flex  ${
+                className={`flex ml-10 ${
                   activeTab === "tab1"
-                    ? "border-b-2 border-black "
+                    ? "border-b-2 border-black font-extrabold "
                     : "text-gray-500"
                 }`}
                 onClick={() => handleTabClick("tab1")}
@@ -36,7 +36,7 @@ const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
                 <p className="md:inline hidden mr-2">Account </p> Profile
               </button>
               <button
-                className={`${
+                className={`mr-12 ${
                   activeTab === "tab2"
                     ? "border-b-2 border-black "
                     : "text-gray-500"
@@ -46,7 +46,7 @@ const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
                 Subscription
               </button>
               <button
-                className={`${
+                className={`mr-9 ${
                   activeTab === "tab3"
                     ? "border-b-2 border-black "
                     : "text-gray-500"
@@ -88,4 +88,4 @@ const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
   );
 };
 
-export default FileTabRow;
+export default Tabrow;

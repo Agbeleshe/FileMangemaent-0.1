@@ -10,6 +10,7 @@ import useLedger from "../../hooks/APIrequest/useLedger";
 import useUserPagination from "../../hooks/Paginations/useUserPagination";
 import convertDateTime from "./resources/DateConverter";
 import Arrow from "../../components/svg-icons/Arrow";
+import UserTabrow from "../Paperlink/resources/UserTabeow/UserTabrow";
 
 import { Ledger } from "./resources/Ledger";
 
@@ -44,7 +45,7 @@ const User = () => {
   const [filterAll, setFilterAll] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
-  const [tabs, setTabs] = useState(true);
+  const [tabs, setTabs] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,7 +59,8 @@ const User = () => {
   } = useUserPagination();
 
   const { loading, users, error } = useLedger(searchValue);
-  // console.log(users, "from User.tsx");
+  console.log(users, "from User.tsx");
+
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -71,11 +73,15 @@ const User = () => {
   const handleInputClick = () => {
     setInputClick(!inputClick);
     setSearchValue("");
-    // setFilterAll(false);
+
+    //this logic is very important to help us make the pagination button disapear when searching for users and appear when done that is whe the 'x' button is clicked
+    setFilterAll(!filterAll);
+    // console.log(filterAll, 'when i click on the seach icon')
   };
 
   const handleSearch = (value: string) => {
-    setSearchValue(value);
+    const trimmedValue = value.trim();
+    setSearchValue(trimmedValue);
     // setFilterAll(true);
   };
 
@@ -91,38 +97,37 @@ const User = () => {
 
   const filteredUsers = filterAll
     ? users.filter(
-        (user: any) =>
-          user.user.firstName
+        (users: any) =>
+          users.user.firstName
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
-          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.file.paperLink
+          users.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          users.file.paperLink
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
-          user.file.fileAction
+          users.file.fileAction
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
-          user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
+          users.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
       )
     : currentPost.filter(
-        (user: any) =>
-          user.user.firstName
+        (users: any) =>
+          users.user.firstName
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
-          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.file.paperLink
+          users.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          users.file.paperLink
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
-          user.file.fileAction
+          users.file.fileAction
             .toLowerCase()
             .includes(searchValue.toLowerCase()) ||
-          user.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
+          users.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
       );
 
   // Page calculation
   function calculateTotalPages(users: Ledger[]) {
     let totalPages = 0;
-    console.log(users);
     for (const user of users) {
       totalPages += user.file.pages;
     }
@@ -130,11 +135,13 @@ const User = () => {
     return totalPages;
   }
   console.log(users);
-  const recordFound = filteredUsers.length > 0;
+
+  //because length start fron 0
+  const recordFound = filteredUsers.length > -1;
 
   // display of no records
   useEffect(() => {
-    if (filteredUsers.length === 0 && inputClick) {
+    if (filteredUsers.length > -1 && inputClick) {
       setRecords(true);
     } else {
       setRecords(false);
@@ -153,14 +160,19 @@ const User = () => {
   // };
 
   //tabs redirect
-  // const handleTabs = (userId: any) => {
-  //   setSelectedUserId(userId);
-  //   setTabs(false);
-  // };
+  const handleTabs = (userId: any) => {
+    setSelectedUserId(userId);
+    setTabs(true);
+  };
 
+  const dataToMap = filterAll ? users : currentPost;
+
+  console.log("Search Value:", searchValue);
+  console.log("Data to Filter:", users); // or currentPost
+  console.log("Filtered Users:", filteredUsers);
   return (
     <div className="mb-20">
-      {tabs ? (
+      {!tabs ? (
         <div className=" md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-t-lg">
           <div className="bg-secondaryColor flex justify-between md:h-[4.1875rem] rounded-t-lg px-4 py-2">
             <div className="border-b-0 text-lightGray font-medium leading-normal text-lg md:text-2xl">
@@ -244,7 +256,7 @@ const User = () => {
                             </div>
                           </span>
                           {isOpen && (
-                            <div className="absolute top-[70px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
+                            <div className="absolute top-[65px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
                               <div
                                 onClick={handleStatusFilter}
                                 data-value="complete" // Assign a data attribute to store the value
@@ -286,11 +298,12 @@ const User = () => {
                     </thead>
                     {/* i removed 200px pb from bellow */}
                     <tbody className="cursor-pointer  ">
-                      {users.map((user: any) => (
+                      {dataToMap.map((user: any) => (
                         <tr
                           key={user.id}
-                          className="border-gray-200 hover:bg-gray-100 "
+                          className="border-gray-200 hover:bg-gray-100"
                         >
+                    
                           <td className="border-t py-4 p-1 text-left font-Poppins text-lightGray">
                             {convertDateTime(user.updatedAt)}
                           </td>
@@ -299,9 +312,8 @@ const User = () => {
                               ? user.user.guestName
                               : "Empty"}
                           </td>
-
                           <td
-                            // onClick={() => handleTabs(user.id)}
+                            onClick={() => handleTabs(user.id)}
                             className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
                           >
                             {user.user.email}
@@ -310,8 +322,7 @@ const User = () => {
                             <a
                               href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
                             >
-                             
-                              {user.file.fileName}
+                              {user.fileName}
                             </a>
                           </td>
                           <td className="border-t py-4 p-2 text-center text-lightGray font-Poppins text-sm font-normal px-6">
@@ -332,7 +343,8 @@ const User = () => {
                 ) : (
                   <div>{error && <ErrorMessage message={error} />}</div>
                 )}
-                {records && (
+                {/* the correct logic to show no users please make this a hook next time to avoid copy and paste */}
+                {users.length === 0 && (
                   <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
                     Search complete. No record found
                   </div>
@@ -391,23 +403,25 @@ const User = () => {
                   <div>{error && <ErrorMessage message={error} />}</div>
                 )}
                 {/* if there are no search */}
-                {!records ? (
-                  ""
-                ) : (
-                  <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
+                {records && (
+                  <div className="text-center py-4 w-full bg-green-300 text-sm text-green-700">
                     Search complete. No record found
                   </div>
                 )}
               </div>
             )}
           </div>
-          <div className="w-full bg-slate-100 flex justify-center ">
-            {prevButton} {paginationButtons} {viewAllButton} {nextButton}
-          </div>
+
+          {(!filterAll || !records) && (
+            // This condition will make pagination disappear when filter or search is triggered.
+            <div className="w-full bg-slate-100 flex justify-center">
+              {prevButton} {paginationButtons} {viewAllButton} {nextButton}
+            </div>
+          )}
         </div>
       ) : (
         <div>
-          {/* <Tabrow selectedUserId={selectedUserId} users={users} /> */}
+          <UserTabrow selectedUserId={selectedUserId} users={users} />
         </div>
       )}
     </div>

@@ -5,7 +5,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const useUserPagination = (initialPage = 1) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [postPerPage, setPostPerPage] = useState(4);
+  const [postPerPage, setPostPerPage] = useState(5);
   const { users } = useLedger();
   const [viewAll, setViewAll] = useState(false);
 
