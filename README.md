@@ -1,1 +1,1 @@
-Welcome to PaperDaz
+Let's get started with the  default configuration
