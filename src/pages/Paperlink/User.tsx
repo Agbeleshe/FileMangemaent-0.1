@@ -294,9 +294,12 @@ const User = () => {
                           <td className="border-t py-4 p-1 text-left font-Poppins text-lightGray">
                             {convertDateTime(user.updatedAt)}
                           </td>
-                          <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal ">
-                            {user.user.guestName}
+                          <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
+                            {user.user.guestName
+                              ? user.user.guestName
+                              : "Empty"}
                           </td>
+
                           <td
                             // onClick={() => handleTabs(user.id)}
                             className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"

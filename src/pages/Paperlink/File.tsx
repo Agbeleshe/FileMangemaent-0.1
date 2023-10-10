@@ -364,7 +364,6 @@ const File = () => {
                           <a
                             href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
                           >
-                            {" "}
                             {user.file.fileName}
                           </a>
                         </div>
