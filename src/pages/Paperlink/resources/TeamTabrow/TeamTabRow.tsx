@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Tabs from './Tab1'
-import Tab1 from "./Tab1";
-import Tab2 from "./Tab2";
+import Tabs from './TmTab1'
+import Tab1 from "./TmTab1";
+import Tab2 from "./TmTab2";
 
 interface TeamTabRowProps {
   selectedUserId: number | null;

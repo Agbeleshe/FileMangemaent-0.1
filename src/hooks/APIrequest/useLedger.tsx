@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Ledger } from "../../pages/Paperlink/resources/Ledger";
 import axiosInstance from "../../utils/axiosInstance"; // Import your Axios instance
 
-const useLedger = (searchString: string = "") => {
+const useLedger = (searchString: string ="") => {
   const [users, setUsers] = useState<Ledger[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ const useLedger = (searchString: string = "") => {
         // setUsers((user) => [...user, res.data]);
         setError(null);
         //  console.log(res.data);c
-        console.log("Success fetching your data");
+        console.log("Success fetching your data", searchString);
       })
       .catch((err) => {
         setError("There was an error fetching data.");
