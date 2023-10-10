@@ -46,9 +46,13 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get<{ data: Billing[] }>("/billings")
+      .get<{ data: Billing[] }>(
+        `/billings?userId=${selectedUser.id}&$sort[createdAt]=-1`
+      )
       .then((res) => {
-        setUsers(res.data.data);
+        const singleBilling = [res.data.data[0]] as Billing[];
+        setUsers(singleBilling);
+        // setUsers(res.data.data);
         setLoading(false); // Set loading to false after the data has been fetched
         // console.log("Selectedusers :", selectedUser);
         // console.log(" userId :", users)

@@ -57,7 +57,7 @@ const User = () => {
     viewAllButton,
   } = useUserPagination();
 
-  const { loading, users, error } = useLedger(searchValue);
+const { loading, users, error } = useLedger(searchValue);
   // console.log(users, "from User.tsx");
 
   const toggleDropdown = () => {
@@ -78,6 +78,7 @@ const User = () => {
     setSearchValue(value);
     // setFilterAll(true);
   };
+
 
   const handleStatusFilter = (e: any) => {
     const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
