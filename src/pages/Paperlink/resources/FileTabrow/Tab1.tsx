@@ -8,6 +8,8 @@ import "../../../../assests/styles/tab.css";
 import axios from "axios";
 import { BASE_URL } from "../../../../utils/axios-util";
 import EditIcon from "../../../../components/svg-icons/EditIcon";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { TfiFaceSad } from "react-icons/tfi";
 
 interface Option {
   value: string;
@@ -209,7 +211,11 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
 
           <div className="flex gap-2  items-center">
-            <span onClick={() => toggleEditing()} className="mr-5 pt-2 ">
+            <span
+              onClick={() => setIsEditing(!isEditing)}
+              // remeber to remove justify-center flex w-full if you are adding profile pic
+              className={`mr-5 pt-2  ${!isEditing && "vibrate-button"} `}
+            >
               <button type="button">
                 <EditIcon />
               </button>
@@ -348,28 +354,43 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </div>
           )}
         </div>
+        {/* copy and paste to remainig div */}
         {success && (
-          <div className="bg-green-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-green-800 p-2 flex gap-5 justify-center font-extralight">
-            <p>SUCCESSFULLY UPDATED!</p>
-            <button
-              onClick={handleClear}
-              className="bg-green-300 absolute top-0 right-0 h-full md:w-20 w-10"
-            >
-              clear
-            </button>
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+
+            <div className="bg-white p-8 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-full flex justify-center items-center mb-2">
+                <BsCheckCircleFill color="green" size={50} />
+              </div>
+              <p className="text-green">SUCCESSFULLY UPDATED!</p>
+              <button
+                onClick={handleClear}
+                className="bg-green-300 text-white px-4 py-2 rounded-md hover:bg-green-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
           </div>
         )}
         {errorMsg && (
-          <div className="bg-red-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-red-800 p-2 flex md:justify-center font-extralight">
-            <p className="flex justify-start md:justify-center w-[80%] md:w-full">
-              AN ERROR OCCURRED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
-            </p>
-            <button
-              onClick={handleClear}
-              className="bg-red-300 absolute top-0 right-0 h-full w-20 "
-            >
-              clear
-            </button>
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+
+            <div className="bg-white p-5 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-[50%] mx-auto flex justify-center items-center mb-2">
+                <TfiFaceSad color="red" size={50} />
+              </div>
+              <p className="text-red-500 flex w-[70%] mx-auto items-center justify-center">
+                Ops something went wrong, check your inputs and try again!
+              </p>
+              <button
+                onClick={handleClear}
+                className="bg-red-300 text-white px-4 py-2 rounded-md hover:bg-red-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
           </div>
         )}
         <div className="flex md:gap-10 gap-5 md:px-7  md:pb-5 flex-col md:flex-row items-center md:items-start ">

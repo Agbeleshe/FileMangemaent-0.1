@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Tabs from './UsTabs';
+import Tabs from "./UsTabs";
 import Tab1 from "./UsTab1";
 import Tab2 from "./UsTab2";
 
@@ -11,7 +11,7 @@ interface TabrowProps {
 const Tabrow: React.FC<TabrowProps> = ({ selectedUserId, users }) => {
   const selectedUser = users.find((user) => user.id === selectedUserId);
   const [activeTab, setActiveTab] = useState("tab1");
-
+  console.log(selectedUserId);
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };

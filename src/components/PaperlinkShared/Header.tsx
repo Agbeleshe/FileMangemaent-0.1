@@ -45,7 +45,7 @@ export default function Header() {
             }}
           >
             <p className="text-white text-center font-bold text-2xl font-lexend-deca">
-              {userEmail ? userEmail.charAt(0).toUpperCase() : ""}
+              {userEmail ? userEmail.charAt(0).toUpperCase() : "👻"}
             </p>
           </div>
 

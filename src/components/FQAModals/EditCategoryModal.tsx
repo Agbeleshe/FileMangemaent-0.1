@@ -29,7 +29,7 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
 
     if (categoryToEdit) {
       axiosInstance
-        .put(`/categories/${categoryToEdit.id}`, {
+        .put(`/categories/${categoryToEdit.id}?$sort[position]=1&for=paperlink`, {
           name: categoryName,
         })
         .then((response) => {

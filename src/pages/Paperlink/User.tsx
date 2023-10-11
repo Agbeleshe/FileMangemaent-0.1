@@ -61,8 +61,8 @@ const User = () => {
   const { loading, users, error } = useLedger(searchValue);
   console.log(users, "from User.tsx");
 
-
   const toggleDropdown = () => {
+    setFilterAll(!filterAll)
     setIsOpen(!isOpen);
   };
 
@@ -74,7 +74,7 @@ const User = () => {
     setInputClick(!inputClick);
     setSearchValue("");
 
-    //this logic is very important to help us make the pagination button disapear when searching for users and appear when done that is whe the 'x' button is clicked
+    //this logic is very IMPORTANT to help us make the pagination button disapear when searching for users and appear when done that is whe the 'x' button is clicked
     setFilterAll(!filterAll);
     // console.log(filterAll, 'when i click on the seach icon')
   };
@@ -82,7 +82,7 @@ const User = () => {
   const handleSearch = (value: string) => {
     const trimmedValue = value.trim();
     setSearchValue(trimmedValue);
-    // setFilterAll(true);
+    setFilterAll(true);
   };
 
   const handleStatusFilter = (e: any) => {
@@ -92,7 +92,7 @@ const User = () => {
     console.log(selectedValue);
 
     //to see evry data concerning that field you use filter all which will reomve pagination
-    setFilterAll(true);
+    setIsOpen(false)
   };
 
   const filteredUsers = filterAll
@@ -160,10 +160,11 @@ const User = () => {
   // };
 
   //tabs redirect
-   const handleTabs = (userId: any) => {
-     setSelectedUserId(userId);
-     setTabs(false);
-   };
+  const handleTabs = (userId: any) => {
+    setSelectedUserId(userId);
+    setTabs(true);
+    //  alert('clciked')
+  };
 
   const dataToMap = filterAll ? users : currentPost;
 
@@ -303,19 +304,20 @@ const User = () => {
                           key={user.id}
                           className="border-gray-200 hover:bg-gray-100"
                         >
-                    
                           <td className="border-t py-4 p-1 text-left font-Poppins text-lightGray">
                             {convertDateTime(user.updatedAt)}
                           </td>
                           <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
-                            {user.user.guestName
-                              ? user.user.guestName
-                              : "No Guest Name"}
+                            {user.guestName
+                              ? user.guestName
+                              : <p className="text-gray-300 cursor-not-allowed">No Guest Name</p>}
                           </td>
+                        
                           <td
                             onClick={() => handleTabs(user.id)}
                             className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
                           >
+                            
                             {user.user.email}
                           </td>
                           <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
@@ -412,7 +414,7 @@ const User = () => {
             )}
           </div>
 
-          {(!filterAll || !records) && (
+          {filteredUsers.length === 5 && (
             // This condition will make pagination disappear when filter or search is triggered.
             <div className="w-full bg-slate-100 flex justify-center">
               {prevButton} {paginationButtons} {viewAllButton} {nextButton}
