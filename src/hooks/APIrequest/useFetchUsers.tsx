@@ -12,6 +12,7 @@ const useFetchUsers = (
   const [users, setUsers] = useState<UsersInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDatePicked, setIsDatePicked] = useState<boolean | null >(null);
 
   const datefilter =
     startDate && endDate
@@ -48,6 +49,8 @@ const useFetchUsers = (
     error,
     userUrl,
     searchValue,
+    isDatePicked,
+    setIsDatePicked
   };
 };
 

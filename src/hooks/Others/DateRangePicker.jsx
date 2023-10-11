@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format, parse } from "date-fns";
+import { format, parse, setDate } from "date-fns";
 import moment from "moment";
 import { enGB } from "date-fns/locale";
 import DateRangeHook from "./useDateRangeHook";
@@ -7,24 +7,35 @@ import { DateRangePickerCalendar, START_DATE } from "react-nice-dates";
 import "./ReactdatePicker.css";
 
 export default function DateRangePickerCalendarExample(props) {
-  const { getDateValue } = props;
+  const { getDateValue, setIsDatePicked, selectedDate } = props;
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [focus, setFocus] = useState(START_DATE);
 
   const handleFocusChange = (newFocus) => {
     setFocus(newFocus || START_DATE);
-    // getDateValue(timeStamp(startDate), timeStamp(endDate));
+    getDateValue(timeStamp(startDate), timeStamp(endDate));
+    // console.log('start date: ',startDate &&  'end dtate: ',endDate)
+
+    // console.log("new focus", newFocus);
+    if (startDate && endDate ) {
+      setIsDatePicked(true);
+    } else {
+      setIsDatePicked(false);
+    }
   };
+
+console.log('is date selected: ',selectedDate);
 
   // Function to handle date selection
-  const handleDateSelect = ({ startDate, endDate }) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
-
-    //note...
-    getDateValue(timeStamp(startDate), timeStamp(endDate));
-  };
+  // const handleDateSelect = ({ startDate, endDate }) => {
+  //  setStartDate(startDate);
+  ///  setEndDate(endDate);
+  //  console.log("working");
+  //note...
+  //  getDateValue(timeStamp(startDate), timeStamp(endDate));
+  //  console.log("working");
+  // };
 
   const timeStamp = (val) => {
     if (!val) return;
@@ -34,6 +45,7 @@ export default function DateRangePickerCalendarExample(props) {
     // Create a Moment.js object from the input date string
     const dateMoment = moment(dateString).format("MM-DD-YYYY");
     // console.log(dateMoment);
+
     return dateMoment;
   };
 
@@ -62,7 +74,7 @@ export default function DateRangePickerCalendarExample(props) {
           onEndDateChange={setEndDate}
           onFocusChange={handleFocusChange}
           locale={enGB}
-          onRangeFocusChange={handleDateSelect} // Call handleDateSelect when a date range is selected
+          //onRangeFocusChange={handleDateSelect} // Call handleDateSelect when a date range is selected
         />
       </div>
       {/* Pass the startDate and endDate to other components as props */}

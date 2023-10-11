@@ -49,6 +49,10 @@ const File = () => {
     setIsOpen(!isOpen);
   };
 
+  //fetch from axios api
+  const { users, error, loading, setIsDatePicked, isDatePicked } =
+    useFetchUsers(searchValue, selectedFilter, timeFilter[0], timeFilter[1]);
+
   //paginated data
   const {
     currentPost,
@@ -56,15 +60,16 @@ const File = () => {
     prevButton,
     nextButton,
     viewAllButton,
-  } = usePagination(1, searchValue, selectedFilter);
-
-  //fetch from axios api
-  const { users, error, loading } = useFetchUsers(
+  } = usePagination(
+    1,
     searchValue,
     selectedFilter,
-    timeFilter[0],
-    timeFilter[1]
+    users,
+    filterAll,
+    isDatePicked!
   );
+
+  console.log("is date picked: ", isDatePicked);
 
   const totalPages = calculateTotalPages(users);
 
@@ -74,22 +79,8 @@ const File = () => {
   };
 
   //this is the client side logic for search just incase something happens to the server the admin can still fetch available users
-  const filteredUsers = filterAll
-    ? users.filter(
-        (user: any) =>
-          user.fileName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.paperLink.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.fileAction.toLowerCase().includes(selectedFilter.toLowerCase())
-      )
-    : currentPost.filter(
-        (user: any) =>
-          user.fileName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.paperLink.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.fileAction.toLowerCase().includes(selectedFilter.toLowerCase())
-      );
 
+  console.log(users);
   // Page calculation
   function calculateTotalPages(users: UsersInfo[]) {
     let totalPages = 0;
@@ -109,12 +100,12 @@ const File = () => {
 
   // display of no records
   useEffect(() => {
-    if (filteredUsers.length === 0 && inputClick) {
+    if (currentPost.length === 0 && inputClick) {
       setRecords(true);
     } else {
       setRecords(false);
     }
-  }, [filteredUsers, inputClick]);
+  }, [currentPost, inputClick]);
 
   // Function to handle clicking on a user row and display additional information
   const handleMobileUserClick = (userId: number) => {
@@ -134,14 +125,25 @@ const File = () => {
 
   //handle modal of the date close
   const handleCloseSelectedDate = () => {
-    setSelectedDate(!selectedDate);
+    setSelectedDate(false);
     console.log(selectedDate);
+
+    // //condition to close modal TEST COMMAND
+    // if (event.target === event.currentTarget) {
+    //    setSelectedDate(!selectedDate);
+    //    console.log(selectedDate);
+    // }
   };
 
   const getDateValuesFunc = (start: number, end: number) => {
     setTimeFilter([start, end]);
     start && end && handleCloseSelectedDate();
-    console.log(start, end);
+
+    // emergency
+    // setTimeout(() => {
+    //   handleCloseSelectedDate();
+    // }, 1000);
+    // console.log(start, end);
   };
 
   //for status
@@ -220,12 +222,15 @@ const File = () => {
                             onClick={handleCloseSelectedDate}
                             className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
                           ></div>
+
                           <div
                             onClick={handleCloseSelectedDate}
                             className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
                           ></div>
                           <DateRangePickerCalendarExample
                             getDateValue={getDateValuesFunc}
+                            setIsDatePicked={setIsDatePicked}
+                            selectedDate={selectedDate}
                           />
                         </div>
                       )}
@@ -295,7 +300,7 @@ const File = () => {
                 </thead>
                 {/* Desktop view */}
                 <tbody className="cursor-pointer">
-                  {filteredUsers.map((user: any) => (
+                  {currentPost.map((user: any) => (
                     <tr
                       key={user.id}
                       className=" border-gray-200 hover:bg-gray-100"
@@ -353,7 +358,7 @@ const File = () => {
               <ErrorMessage message={error} />
             ) : (
               <div className="md:hidden max-h-[400px] p-3 text-xs">
-                {filteredUsers.map((user: any) => (
+                {currentPost.map((user: any) => (
                   <div
                     onClick={() => handleMobileUserClick(user.id)} // Handle user row click
                     key={user.id}
