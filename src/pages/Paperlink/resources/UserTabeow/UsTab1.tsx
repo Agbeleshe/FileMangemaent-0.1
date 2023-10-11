@@ -4,8 +4,12 @@ import zone from "../../../../assests/zone.png";
 import location from "../../../../assests/location.png";
 import "../../../../assests/styles/tab.css";
 import axios from "axios";
+import axiosInstance from "../../../../utils/axiosInstance";
 import { BASE_URL } from "../../../../utils/axios-util";
 import EditIcon from "../../../../components/svg-icons/EditIcon";
+import { Ledger } from "../Ledger";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { TfiFaceSad } from "react-icons/tfi";
 
 interface Option {
   value: string;
@@ -13,18 +17,15 @@ interface Option {
 }
 
 const options: Option[] = [
-  { value: "New Trial", label: "New Trial" },
-  { value: "active", label: "active" },
-  { value: "Pause", label: "Pause" },
-  { value: "Suspend", label: "Suspend" },
-  { value: "Cancel", label: "Cancel" },
-  { value: "Delete", label: "Delete" },
+  { value: "complete", label: "complete" },
+  { value: "sign", label: "sign" },
+  { value: "confirm", label: "confirm" },
 ];
 //sorting options alphabetically
 options.sort((a, b) => a.label.localeCompare(b.label));
 
 interface Tab1Props {
-  selectedUser: any | undefined;
+  selectedUser: Ledger;
   users: any[];
 }
 
@@ -37,16 +38,18 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [formData, setFormData] = useState({
-    email: selectedUser.email || null,
-    companyName: selectedUser.companyName || null,
-    firstName: selectedUser.firstName || null,
-    phone: selectedUser.phone || null,
-    timezone: selectedUser.timezone,
-    profilePicture: selectedUser.profilePicture,
+    email: selectedUser.user.email || "",
+    lastName: selectedUser.user.lastName || "",
+    firstName: selectedUser.user.firstName || "",
+    guestName: selectedUser.guestName || "",
+    // timezone: selectedUser.timezone || null,
+    profile_picture: selectedUser.user.profile_picture,
   });
 
+  console.log("selected user", selectedUser);
+
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);
+  // const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
@@ -77,17 +80,22 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     event.preventDefault();
     setLoading(true);
 
-    const UpdateAccountUrl = BASE_URL + `/users/${selectedUser.id}`;
+    const token = localStorage.getItem("token");
+    console.log(token);
+    // Set up Axios headers with the token
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-    axios
-      .patch(UpdateAccountUrl, {
+    const UpdateUsers = BASE_URL + `/ledger/${selectedUser.id}`;
+
+    axiosInstance
+      .patch(UpdateUsers, {
         email: formData.email,
-        companyName: formData.companyName,
+        lastName: formData.lastName,
         firstName: formData.firstName,
-        phone: formData.phone,
+        guestName: formData.guestName,
         status: selectedOption,
-        timezone: formData.timezone,
-        profilePicture: formData.profilePicture,
+        // timezone: formData.timezone,
+        // profilePicture: formData.profilePicture,
       })
       .then((res) => {
         setSuccess(true);
@@ -114,11 +122,11 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const handleConfirmCancel = () => {
     setFormData({
       email: "",
-      companyName: "",
+      lastName: "",
       firstName: "",
-      phone: "",
-      timezone: "",
-      profilePicture: "",
+      guestName: "",
+      // timezone: "",
+      profile_picture: "",
     });
     setSelectedOption("");
     setShowCancelModal(false);
@@ -141,19 +149,19 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               htmlFor="select"
               className="text-gray-700 font-Poppins text-20 font-normal"
             >
-              Status:
+              Action:
             </label>
             {isEditing ? (
               <select
-                id="select"
                 name="select"
                 value={selectedOption}
                 onChange={handleSelectChange}
                 className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
               >
-                <option value={selectedUser.status || selectedUser.user}>
-                  {selectedUser.status}
+                <option value={selectedUser.action}>
+                  {selectedUser.action}
                 </option>
+
                 {options.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -161,24 +169,25 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                 ))}
               </select>
             ) : (
-              <span>{selectedUser.status}</span>
+              <span>{selectedUser.action}</span>
             )}
           </div>
-
-          <div className="flex gap-2  items-center">
+          {/* remove the w-[50%] when appling profile picture */}
+          <div className="flex gap-2  items-center ">
             <span
               onClick={() => setIsEditing(!isEditing)}
-              className="mr-5 pt-2 "
+              // remeber to remove justify-center flex w-full if you are adding profile pic
+              className={`mr-5 pt-2  ${!isEditing && "vibrate-button"} `}
             >
               <button type="button">
                 <EditIcon />
               </button>
             </span>
             <span>
-              {formData.profilePicture ? (
+              {formData.profile_picture ? (
                 <img
                   onClick={handleViewProfilePicture}
-                  src={formData.profilePicture}
+                  src={formData.profile_picture}
                   alt="profile side"
                   className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
                 />
@@ -195,11 +204,23 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                   <div className="fixed inset-0 bg-black opacity-40"></div>
 
                   <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg relative z-10">
-                    <img
-                      src={formData.profilePicture}
-                      alt="profile side"
-                      className="mx-auto h-48 w-48 rounded-full bg-slate-100"
-                    />
+                    {formData.profile_picture ? (
+                      <img
+                        onClick={handleViewProfilePicture}
+                        src={formData.profile_picture}
+                        alt="profile side"
+                        className="mx-auto h-48 w-48 rounded-full bg-slate-100"
+                      />
+                    ) : (
+                      <span
+                        onClick={handleViewProfilePicture}
+                        className="inline-flex items-center justify-center mx-auto md:items-left h-12 w-12 md:w-[150px] md:h-[150px] flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop "
+                      >
+                        <AcctIcon />
+                      </span>
+                    )}
+
+                    <br />
                     <button
                       onClick={handleCloseProfilePictureModal}
                       className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 mt-4"
@@ -230,12 +251,12 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-2">
             <label htmlFor="companyName" className="block py-5 text-gray-700">
-              Business Name:
+              Last Name:
             </label>
             <input
               type="text"
-              name="companyName"
-              value={formData.companyName}
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
@@ -244,7 +265,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-4">
             <label htmlFor="contactName" className="block py-5 text-gray-700">
-              Contact Name:
+              First Name:
             </label>
             <input
               type="text"
@@ -258,23 +279,23 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-4">
             <label htmlFor="contactNumber" className="block py-5 text-gray-700">
-              Contact Number:
+              Guest Name:
             </label>
             <input
-              type="number"
-              name="phone"
-              value={formData.phone}
+              type="text"
+              name="guestName"
+              value={formData.guestName}
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
               disabled={!isEditing}
             />
           </div>
-          <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
+          {/* <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
             <img src={location} alt="google map location" className="mr-2" />
             <span>Google maps location</span>
-          </div>
-          <div
+          </div> */}
+          {/* <div
             className="md:w-1/2 px-4 mb-6 flex items-center space-x-2"
             onClick={() => setShowTimeZoneTooltip(!showTimeZoneTooltip)}
           >
@@ -306,30 +327,46 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
+
+        {/* copy and paste to remainig div */}
         {success && (
-          <div className="bg-green-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-green-800 p-2 flex gap-5 justify-center font-extralight">
-            <p>SUCCESSFULLY UPDATED!</p>
-            <button
-              onClick={handleClear}
-              className="bg-green-300 absolute top-0 right-0 h-full md:w-20 w-10"
-            >
-              clear
-            </button>
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+
+            <div className="bg-white p-8 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-full flex justify-center items-center mb-2">
+                <BsCheckCircleFill color="green" size={50} />
+              </div>
+              <p className="text-green">SUCCESSFULLY UPDATED!</p>
+              <button
+                onClick={handleClear}
+                className="bg-green-300 text-white px-4 py-2 rounded-md hover:bg-green-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
           </div>
         )}
         {errorMsg && (
-          <div className="bg-red-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-red-800 p-2 flex md:justify-center font-extralight">
-            <p className="flex justify-start md:justify-center w-[80%] md:w-full">
-              AN ERROR OCCURRED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
-            </p>
-            <button
-              onClick={handleClear}
-              className="bg-red-300 absolute top-0 right-0 h-full w-20 "
-            >
-              clear
-            </button>
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+
+            <div className="bg-white p-5 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-[50%] mx-auto flex justify-center items-center mb-2">
+                <TfiFaceSad color="red" size={50} />
+              </div>
+              <p className="text-red-500 flex w-[70%] mx-auto items-center justify-center">
+                Ops something went wrong, check your inputs and try again!
+              </p>
+              <button
+                onClick={handleClear}
+                className="bg-red-300 text-white px-4 py-2 rounded-md hover:bg-red-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
           </div>
         )}
         <div className="flex md:gap-10 gap-5 md:px-7  md:pb-5 flex-col md:flex-row items-center md:items-start ">
@@ -355,8 +392,10 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           )}
         </div>
       </form>
+
+      {/* copy and paste to remaining div */}
       {showCancelModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in">
           <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg">
             <p className="text-red-500 text-lg font-semibold mb-4">
               Are you sure you want to cancel input?

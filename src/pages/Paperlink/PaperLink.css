@@ -1,32 +1,50 @@
-
 @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
   }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
-  @keyframes spinTwo {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(-360deg);
-    }
+@keyframes spinTwo {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .spin {
-    animation: spin 2s linear infinite;
+  100% {
+    transform: rotate(-360deg);
   }
+}
 
-  .opsspin {
-    animation: spinTwo 2s linear infinite;
-  }
+.spin {
+  animation: spin 2s linear infinite;
+}
 
+.opsspin {
+  animation: spinTwo 2s linear infinite;
+}
 
-  .room{
-    color: blue;
+.emoji-container {
+  position: relative;
+  width: 100px;
+  height: 50px;
+  overflow: hidden;
+}
+
+.emoji {
+  position: absolute;
+  font-size: 2rem;
+  animation: bounce 4s infinite linear;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateX(0);
   }
-  
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

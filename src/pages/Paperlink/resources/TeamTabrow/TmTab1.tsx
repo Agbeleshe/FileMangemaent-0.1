@@ -5,6 +5,8 @@ import location from "../assests/location.png";
 import "../assests/styles/tab.css";
 import axios from "axios";
 import { BASE_URL } from "../../../../utils/axios-util";
+import { TfiFaceSad } from "react-icons/tfi";
+import { BsCheckCircleFill } from "react-icons/bs";
 
 interface Option {
   value: string;
@@ -67,7 +69,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     const UpdateAccountUrl =
       BASE_URL + `/users/${selectedUser.id}?sort[createdAt]=-1&role=paid_user`;
 
-      //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
+    //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
     // Send the PUT request to update the user's data
     console.log(selectedUser.id);
 
@@ -157,7 +159,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 
           {/* image placeHolder */}
           <div className="">
-            <span >
+            <span>
               {formData.profilePicture ? (
                 <img
                   src={formData.profilePicture}
@@ -165,10 +167,9 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                   className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 "
                 />
               ) : (
-              <span className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 ">
-
-                    <AcctIcon />
-                    </span>
+                <span className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 ">
+                  <AcctIcon />
+                </span>
               )}
             </span>
           </div>
@@ -271,28 +272,43 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           )}
           {/**end of it */}
         </div>
+        {/* copy and paste to remainig div */}
         {success && (
-          <div className="bg-green-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-green-800 p-2 flex gap-5 justify-center font-extralight">
-            <p>SUCCESSFULLY UPDATED!</p>
-            <button
-              onClick={handleClear}
-              className="bg-green-300 absolute top-0 right-0 h-full md:w-20 w-10"
-            >
-              clear
-            </button>
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+
+            <div className="bg-white p-8 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-full flex justify-center items-center mb-2">
+                <BsCheckCircleFill color="green" size={50} />
+              </div>
+              <p className="text-green">SUCCESSFULLY UPDATED!</p>
+              <button
+                onClick={handleClear}
+                className="bg-green-300 text-white px-4 py-2 rounded-md hover:bg-green-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
           </div>
         )}
         {errorMsg && (
-          <div className="bg-red-100 relative md:w-[95%] w-[90%] mx-auto text-[10px] md:text-sm text-red-800 p-2 flex md:justify-center font-extralight">
-            <p className="flex justify-start md:justify-center w-[80%] md:w-full">
-              AN ERROR OCCOURED, PLEASE CHECK YOUR INPUTS AND TRY AGAIN
-            </p>
-            <button
-              onClick={handleClear}
-              className="bg-red-300 absolute top-0 right-0 h-full w-20 "
-            >
-              clear
-            </button>
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+
+            <div className="bg-white p-5 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-[50%] mx-auto flex justify-center items-center mb-2">
+                <TfiFaceSad color="red" size={50} />
+              </div>
+              <p className="text-red-500 flex w-[70%] mx-auto items-center justify-center">
+                Ops something went wrong, check your inputs and try again!
+              </p>
+              <button
+                onClick={handleClear}
+                className="bg-red-300 text-white px-4 py-2 rounded-md hover:bg-red-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
           </div>
         )}
         {/* Buttons */}
