@@ -134,7 +134,7 @@ const File = () => {
     //    console.log(selectedDate);
     // }
   };
-
+//handling the date picker
   const getDateValuesFunc = (start: number, end: number) => {
     setTimeFilter([start, end]);
     start && end && handleCloseSelectedDate();

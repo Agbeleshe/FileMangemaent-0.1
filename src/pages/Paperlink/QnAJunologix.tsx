@@ -17,7 +17,8 @@ import {
   DropResult,
   DraggableProvided,
 } from "react-beautiful-dnd";
-import { constants } from "http2";
+//import { constants } from "http2";
+import Loader from "./resources/Loader";
 
 const QnAJunologix = () => {
   const [modalOne, setModalOne] = useState(false);
@@ -29,6 +30,7 @@ const QnAJunologix = () => {
   const [editFAQ, setEditFAQ] = useState<FAQ | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editCategory, setEditCategory] = useState<PaperLinkFAQ | null>(null);
+  const [loading, setLoading] = useState(false); // Set it to true initially or use an appropriate initial value
 
   // State for dragged item for category
   const [draggedItem, setDraggedItem] = useState<FAQ | null>(null);
@@ -40,15 +42,21 @@ const QnAJunologix = () => {
   // Calling APIs
   useEffect(() => {
     // Fetch PaperLink FAQs
+        setLoading(true);
+
     axiosInstance
       .get(`/categories?$sort[position]=1&for=junologix`)
       //  {{base_url}}/categories?$sort[position]=1&for=paperlink
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
+                setLoading(false);
+
       })
       .catch((error) => {
         console.error("Error fetching PaperLink FAQs:", error);
+                setLoading(false);
+
       });
 
     // Fetch FAQs
@@ -56,9 +64,13 @@ const QnAJunologix = () => {
       .get(`/faq?$sort[position]=1&for=junologix`)
       .then((response) => {
         setFAQs(response.data as FAQ[]);
+                setLoading(false);
+
       })
       .catch((error) => {
         console.error("Error fetching FAQs:", error);
+                setLoading(false);
+
       });
   }, []);
 
@@ -285,8 +297,9 @@ const QnAJunologix = () => {
     <div className="mb-32 md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-lg">
       <div className="bg-secondaryColor flex justify-between h-[4.1875rem] rounded-t-lg px-4 py-2">
         <div className="border-b-0 text-black font-medium leading-normal text-2xl">
-          QnA
+          QnA Junologix
         </div>
+
         <div className="">
           <span
             onClick={handleModalOne}
@@ -296,185 +309,196 @@ const QnAJunologix = () => {
           </span>
         </div>
       </div>
-      {modalOne ? (
-        <FirstModalJunologix
-          setModalOne={setModalOne}
-          handleModalClose={handleModalClose}
-          updateCategories={updateCategories}
-        />
+      {/**HERE THE MAIN */}
+      {loading ? (
+        <Loader />
       ) : (
-        ""
-      )}
+        <div>
+          {modalOne ? (
+            <FirstModalJunologix
+              setModalOne={setModalOne}
+              handleModalClose={handleModalClose}
+              updateCategories={updateCategories}
+            />
+          ) : (
+            ""
+          )}
 
-      <div className="p-3">
-        <div className="shadow-full mb-4 ">
-          <h1 className="font-semibold py-3  px-4  text-black">Category</h1>
-          <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm">
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="categories" direction="vertical">
-                {(provided: DroppableProvided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps}>
-                    {/* Ensure that the placeholder is rendered within the Droppable */}
-                    {provided.placeholder}
-                    {paperLinkFAQs.map((faq, index) => (
-                      <Draggable
-                        key={faq.id}
-                        draggableId={faq.id.toString()}
-                        index={index}
-                      >
-                        {(provided: any) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onClick={() => togglePaperLink(index)}
-                            onDragOver={(e) => handleDragOver(e, index)}
-                            onDrop={() => handleDrop(index)}
-                            className="bg-white rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center"
+          <div className="p-3">
+            <div className="shadow-full mb-4 ">
+              <h1 className="font-semibold py-3  px-4  text-black">Category</h1>
+              <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm">
+                <DragDropContext onDragEnd={handleDragEnd}>
+                  <Droppable droppableId="categories" direction="vertical">
+                    {(provided: DroppableProvided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {/* Ensure that the placeholder is rendered within the Droppable */}
+                        {provided.placeholder}
+                        {paperLinkFAQs.map((faq, index) => (
+                          <Draggable
+                            key={faq.id}
+                            draggableId={faq.id.toString()}
+                            index={index}
                           >
-                            <div className="w-full">
-                              <div className="'w-full p-2 flex justify-between ">
-                                <p className="flex gap-3">
-                                  <span className="ml-2">
-                                    <Dots />
-                                  </span>
-                                  {faq.name}
-                                </p>
-                                <p className="flex gap-5 px-2 z-10">
-                                  <span
-                                    className="cursor-pointer"
-                                    onClick={() => setEditCategory(faq)}
-                                  >
-                                    <EditIcon />
-                                  </span>
-
-                                  <span
-                                    className="cursor:pointer z-20"
-                                    onClick={() => handleDeleteCategory(faq.id)}
-                                  >
-                                    <DeleteIcon />
-                                  </span>
-                                </p>
-                              </div>
-                              {editCategory && (
-                                <EditCategoryJunologix
-                                  categoryToEdit={editCategory}
-                                  onClose={() => setEditCategory(null)}
-                                  onCategoryUpdated={(updatedCategory) => {
-                                    handleCategoryUpdated(updatedCategory);
-                                    setEditCategory(null);
-                                  }}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </div>
-        </div>
-      </div>
-
-      {/* Send side */}
-      <div className="shadow-full">
-        <div className="flex justify-between mb-1">
-          <h1 className="font-semibold px-5 text-black">Questions & Answers</h1>
-
-          <span
-            onClick={handleModalTwo}
-            className="inline-flex items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
-          >
-            <PlusGreen />
-          </span>
-        </div>
-        {modalTwo ? (
-          <SecondModalJunologix
-            setModalTwo={setModalTwo}
-            handleModalClose={handleModalClose}
-            setFAQs={setFAQs}
-            FAQs={FAQs}
-          />
-        ) : (
-          ""
-        )}
-        <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm mb-5">
-          {/* Mapped arrays */}
-          <DragDropContext onDragEnd={handleFAQDragEnd}>
-            <Droppable droppableId="faq-list">
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  <div className="shadow-full w-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm ">
-                    {FAQs.map((qna, index) => (
-                      <Draggable
-                        key={qna.id}
-                        draggableId={qna.id.toString()}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="flex w-full justify-between border border-gray-50"
-                          >
-                            <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
+                            {(provided: any) => (
                               <div
-                                className="w-full"
-                                onClick={() => toggleFQA(index)}
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                onClick={() => togglePaperLink(index)}
+                                onDragOver={(e) => handleDragOver(e, index)}
+                                onDrop={() => handleDrop(index)}
+                                className="bg-white rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center"
                               >
-                                <p className="flex gap-3">
-                                  <span className="ml-2">
-                                    <Dots />
-                                  </span>
-                                  {qna.question}
-                                </p>
-                                {showFQA[index] && (
-                                  <div className="py-5">
-                                    <div className="px-5">
-                                      <p className="text-gray-700">
-                                        Answers: {qna.answer}
-                                      </p>
-                                    </div>
+                                <div className="w-full">
+                                  <div className="'w-full p-2 flex justify-between ">
+                                    <p className="flex gap-3">
+                                      <span className="ml-2">
+                                        <Dots />
+                                      </span>
+                                      {faq.name}
+                                    </p>
+                                    <p className="flex gap-5 px-2 z-10">
+                                      <span
+                                        className="cursor-pointer"
+                                        onClick={() => setEditCategory(faq)}
+                                      >
+                                        <EditIcon />
+                                      </span>
+
+                                      <span
+                                        className="cursor:pointer z-20"
+                                        onClick={() =>
+                                          handleDeleteCategory(faq.id)
+                                        }
+                                      >
+                                        <DeleteIcon />
+                                      </span>
+                                    </p>
                                   </div>
-                                )}
+                                  {editCategory && (
+                                    <EditCategoryJunologix
+                                      categoryToEdit={editCategory}
+                                      onClose={() => setEditCategory(null)}
+                                      onCategoryUpdated={(updatedCategory) => {
+                                        handleCategoryUpdated(updatedCategory);
+                                        setEditCategory(null);
+                                      }}
+                                    />
+                                  )}
+                                </div>
                               </div>
-                              <p className="flex gap-5 px-2">
-                                <span
-                                  onClick={() => openEditModal(qna)}
-                                  className="cursor-pointer"
-                                >
-                                  <EditIcon />
-                                </span>
-                                <span
-                                  onClick={() => handleDeleteFAQ(qna.id)}
-                                  className="cursor-pointer"
-                                >
-                                  <DeleteIcon />
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  </div>
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+                            )}
+                          </Draggable>
+                        ))}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </div>
+            </div>
+          </div>
+
+          {/* Send side */}
+          <div className="shadow-full">
+            <div className="flex justify-between mb-1">
+              <h1 className="font-semibold px-5 text-black">
+                Questions & Answers
+              </h1>
+
+              <span
+                onClick={handleModalTwo}
+                className="inline-flex items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
+              >
+                <PlusGreen />
+              </span>
+            </div>
+            {modalTwo ? (
+              <SecondModalJunologix
+                setModalTwo={setModalTwo}
+                handleModalClose={handleModalClose}
+                setFAQs={setFAQs}
+                FAQs={FAQs}
+              />
+            ) : (
+              ""
+            )}
+            <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm mb-5">
+              {/* Mapped arrays */}
+              <DragDropContext onDragEnd={handleFAQDragEnd}>
+                <Droppable droppableId="faq-list">
+                  {(provided) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                      <div className="shadow-full w-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm ">
+                        {FAQs.map((qna, index) => (
+                          <Draggable
+                            key={qna.id}
+                            draggableId={qna.id.toString()}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="flex w-full justify-between border border-gray-50"
+                              >
+                                <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
+                                  <div
+                                    className="w-full"
+                                    onClick={() => toggleFQA(index)}
+                                  >
+                                    <p className="flex gap-3">
+                                      <span className="ml-2">
+                                        <Dots />
+                                      </span>
+                                      {qna.question}
+                                    </p>
+                                    {showFQA[index] && (
+                                      <div className="py-5">
+                                        <div className="px-5">
+                                          <p className="text-gray-700">
+                                            Answers: {qna.answer}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <p className="flex gap-5 px-2">
+                                    <span
+                                      onClick={() => openEditModal(qna)}
+                                      className="cursor-pointer"
+                                    >
+                                      <EditIcon />
+                                    </span>
+                                    <span
+                                      onClick={() => handleDeleteFAQ(qna.id)}
+                                      className="cursor-pointer"
+                                    >
+                                      <DeleteIcon />
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      </div>
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+          </div>
+          {isEditing && (
+            <EditFqaJunologix
+              faqToEdit={editFAQ}
+              onClose={closeEditModal}
+              onFAQUpdated={handleFAQUpdated}
+            />
+          )}
         </div>
-      </div>
-      {isEditing && (
-        <EditFqaJunologix
-          faqToEdit={editFAQ}
-          onClose={closeEditModal}
-          onFAQUpdated={handleFAQUpdated}
-        />
       )}
     </div>
   );

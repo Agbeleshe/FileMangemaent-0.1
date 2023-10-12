@@ -13,9 +13,7 @@ import AddAccount from "./resources/AddAccount";
 import useAccountPagination from "../../hooks/Paginations/useAccountPagination";
 import Arrow from "../../components/svg-icons/Arrow";
 import useAccApi from "../../hooks/APIrequest/useAccApi";
-
-
-
+import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
 
 const makeStyle = (status: string) => {
   let color = "";
@@ -46,60 +44,101 @@ const Accounts = () => {
   const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
   const [filterAll, setFilterAll] = useState(false);
   // const [searchTerms, setSearchTerms] = useState("");
-  const {
-    currentPost,
-    paginationButtons,
-    nextButton,
-    prevButton,
-    viewAllButton,
-  } = useAccountPagination();
+  const [selectedDate, setSelectedDate] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<any>([null, null]);
 
   //fetching data
-  const { loading, users, error } = useAccApi(searchValue, selectedFilter);
+  const { loading, users, error, setIsDatePicked, isDatePicked } = useAccApi(
+    searchValue,
+    selectedFilter,
+    timeFilter[0],
+    timeFilter[1]
+  );
   // const { loading, users, error } = useInFor(
   //   searchValue,
   //   selectedFilter,
   //   searchTerms
   // );
 
-  const handleInputClick = () => {
-    setInputClick(!inputClick);
-    setSearchValue("");
-    // setFilterAll(false);
-  };
+  //paginated data
+  const {
+    currentPost,
+    paginationButtons,
+    nextButton,
+    prevButton,
+    viewAllButton,
+  } = useAccountPagination(
+    1,
+    searchValue,
+    selectedFilter,
+    users,
+    filterAll,
+    isDatePicked!
+  );
+  console.log("is date picked: ", isDatePicked);
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    // setFilterAll(true);
+  };
+  const handleInputClick = () => {
+    setInputClick(!inputClick);
+    setSearchValue("");
   };
 
-  const filteredUsers = filterAll
-    ? users.filter(
-        (user: any) =>
-          user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.status.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : currentPost.filter(
-        (user: any) =>
-          user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.status.toLowerCase().includes(searchValue.toLowerCase())
-      );
+  // const filteredUsers = filterAll
+  //   ? users.filter(
+  //       (user: any) =>
+  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
+  //     )
+  //   : currentPost.filter(
+  //       (user: any) =>
+  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
+  //     );
 
-  const recordFound = filteredUsers.length > 0;
+  const recordFound = currentPost.length > 0;
 
   useEffect(() => {
-    if (filteredUsers.length === 0 && inputClick) {
+    if (currentPost.length === 0 && inputClick) {
       setRecords(true);
     } else {
       setRecords(false);
     }
-  }, [filteredUsers, inputClick]);
-
+  }, [currentPost, inputClick]);
+  //tabs redirect
   const handleTabs = (userId: number) => {
     setSelectedUserId(userId);
     setTabs(false);
+  };
+  //handle modal of the date open
+  const handleSelectedDate = () => {
+    setSelectedDate(true);
+  };
+
+  //handle modal of the date close
+  const handleCloseSelectedDate = () => {
+    setSelectedDate(false);
+    console.log(selectedDate);
+
+    // //condition to close modal TEST COMMAND
+    // if (event.target === event.currentTarget) {
+    //    setSelectedDate(!selectedDate);
+    //    console.log(selectedDate);
+    // }
+  };
+  // handling the date picker
+  const getDateValuesFunc = (start: number, end: number) => {
+    setTimeFilter([start, end]);
+    start && end && handleCloseSelectedDate();
+
+    // emergency
+    // setTimeout(() => {
+    //   handleCloseSelectedDate();
+    // }, 1000);
+    // console.log(start, end);
   };
 
   // Green plus sign modal
@@ -110,7 +149,7 @@ const Accounts = () => {
   const handleModalClose = () => {
     setModalOne(false);
   };
-
+  //for status
   const handleStatusFilter = (e: any) => {
     const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
     setSelectedFilter(selectedValue); // Update the selected filter state
@@ -153,6 +192,7 @@ const Accounts = () => {
                   )}
                   {!inputClick ? (
                     <button
+                      type="button"
                       onClick={handleInputClick}
                       className="inline-flex items-center justify-center h-7 w-7 md:w-12 md:h-12 flex-shrink-0 fill-current bg-white rounded-full shadow-drop outline-none"
                     >
@@ -160,6 +200,7 @@ const Accounts = () => {
                     </button>
                   ) : (
                     <button
+                      type="button"
                       onClick={handleInputClick}
                       className="inline-flex items-center justify-center h-7 w-7 md:w-12 md:h-12 flex-shrink-0 fill-current bg-slate-700 transition-all ease-in-out duration-700 hover:bg-red-500 rounded-full shadow-drop outline-none"
                     >
@@ -194,7 +235,7 @@ const Accounts = () => {
                 {/* if there are records display this */}
                 {recordFound ? (
                   <div className="flex flex-col w-full p-3 justify-center align-middle text-sm ">
-                    {filteredUsers.map((user) => (
+                    {currentPost.map((user) => (
                       <div
                         key={user.id}
                         className="shadow-xl my-5 rounded-xl w-full hover:bg-slate-200 "
@@ -242,11 +283,34 @@ const Accounts = () => {
                   <table className="w-full table-hover user-table">
                     <thead className="p-5">
                       <tr>
-                        <th className="flex py-5 px-8 gap-2 p-2  text-left font-medium text-darkGray text-sm ">
-                          Date/Time
-                          <span className="">
+                        <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
+                          <span
+                            className="flex   gap-2  w-full h-full "
+                            onClick={handleSelectedDate}
+                          >
+                            Date/Time
                             <img src={Calender} alt="" />
                           </span>
+
+                          {/* date modal */}
+                          {selectedDate && (
+                            <div className="">
+                              <div
+                                onClick={handleCloseSelectedDate}
+                                className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
+                              ></div>
+
+                              <div
+                                onClick={handleCloseSelectedDate}
+                                className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
+                              ></div>
+                              <DateRangePickerCalendarExample
+                                getDateValue={getDateValuesFunc}
+                                setIsDatePicked={setIsDatePicked}
+                                selectedDate={selectedDate}
+                              />
+                            </div>
+                          )}
                         </th>
                         <th className="border-b px-4 py-3 text-left font-medium text-darkGray text-sm">
                           Account Email
@@ -313,7 +377,7 @@ const Accounts = () => {
                       </tr>
                     </thead>
                     <tbody className="cursor-pointer">
-                      {users.map((user) => (
+                      {currentPost.map((user) => (
                         <tr
                           key={user.id}
                           className=" border-gray-200 hover:bg-gray-100"
@@ -354,13 +418,11 @@ const Accounts = () => {
                     {error && <ErrorMessage message={error} />}
                   </div>
                 )}
-                {!records ? (
-                  ""
-                ) : (
+                {!currentPost.length &&
                   <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
                     Search complete. No record found
                   </div>
-                )}
+                }
               </div>
             </>
           )}
