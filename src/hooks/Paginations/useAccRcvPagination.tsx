@@ -11,7 +11,7 @@ const useAccRcvPagination = (
   isDatePicked?: boolean
 ) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [postPerPage, setPostPerPage] = useState(4);
+  const [postPerPage, setPostPerPage] = useState(5);
   //take note of where you called your endpoint from
   // const { users } = useBilling();
   const [viewAll, setViewAll] = useState(false);

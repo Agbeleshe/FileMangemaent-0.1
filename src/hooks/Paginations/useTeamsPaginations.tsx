@@ -10,7 +10,7 @@ const useTeamsPagination = (
   filterAll: boolean
 ) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [postPerPage, setPostPerPage] = useState(4);
+  const [postPerPage, setPostPerPage] = useState(5);
   // const { users } = useTeamsApi();
   const [viewAll, setViewAll] = useState(false);
 
