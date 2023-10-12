@@ -3,10 +3,18 @@ import { useState } from "react";
 import useLedger from "../APIrequest/useLedger";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const useUserPagination = (initialPage = 1) => {
+const useUserPagination = (
+  initialPage = 1,
+  searchValue: string,
+  selectedFilter: string,
+  users: any[],
+  filterAll: boolean,
+  isDatePicked?: boolean
+) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [postPerPage, setPostPerPage] = useState(5);
-  const { users } = useLedger();
+  // const { users } = useLedger();
+
   const [viewAll, setViewAll] = useState(false);
 
   // console.log(users, 'from the pagination')
@@ -16,11 +24,53 @@ const useUserPagination = (initialPage = 1) => {
   //const currentPost = viewAll
   // ? users
   // : users?.slice(firstPostIndex, lastPostIndex);
-  const currentPost = viewAll
-    ? users
-    : Array.isArray(users)
-    ? users.slice(firstPostIndex, lastPostIndex)
-    : [];
+
+  const filteredUsers =
+    isDatePicked && !filterAll
+      ? users?.slice(firstPostIndex, lastPostIndex)
+      : filterAll
+      ? users
+          ?.slice(firstPostIndex, lastPostIndex)
+          .filter(
+            (users: any) =>
+              users.user.firstName
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.user.email
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.file.paperLink
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.file.fileAction
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.file.paperLink
+                .toLowerCase()
+                .includes(searchValue.toLowerCase())
+          )
+      : users
+          ?.slice(firstPostIndex, lastPostIndex)
+          .filter(
+            (users: any) =>
+              users.user.firstName
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.user.email
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.file.paperLink
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.file.fileAction
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()) ||
+              users.file.paperLink
+                .toLowerCase()
+                .includes(searchValue.toLowerCase())
+          );
+
+  const currentPost = viewAll ? users : filteredUsers;
 
   const totalPages = Math.ceil(users.length / postPerPage);
 

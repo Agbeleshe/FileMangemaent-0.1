@@ -1,20 +1,45 @@
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import useBilling from "../APIrequest/UseBilling";
+// import useBilling from "../APIrequest/UseBilling";
 
-const useAccRcvPagination = (initialPage = 1) => {
+const useAccRcvPagination = (
+  initialPage = 1,
+  searchValue: string,
+  selectedFilter: string,
+  users: any[],
+  filterAll: boolean,
+  isDatePicked?: boolean
+) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [postPerPage, setPostPerPage] = useState(4);
   //take note of where you called your endpoint from
-  const { users } = useBilling();
+  // const { users } = useBilling();
   const [viewAll, setViewAll] = useState(false);
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
 
-  const currentPost = viewAll
-    ? users
-    : users.slice(firstPostIndex, lastPostIndex);
+  const filteredUsers =
+    isDatePicked && !filterAll
+      ? users?.slice(firstPostIndex, lastPostIndex)
+      : filterAll
+      ? users?.slice(firstPostIndex, lastPostIndex).filter(
+          (user: any) =>
+            user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.user.role.toLowerCase().includes(searchValue.toLowerCase())
+          // || user.status.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      : users?.slice(firstPostIndex, lastPostIndex).filter(
+          (users: any) =>
+            users.user.email
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            users.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
+            users.user.role.toLowerCase().includes(searchValue.toLowerCase())
+          // || user.status.toLowerCase().includes(searchValue.toLowerCase())
+        );
+  const currentPost = viewAll ? users : filteredUsers;
 
   const totalPages = Math.ceil(users.length / postPerPage);
 

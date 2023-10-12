@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useFetchUsers from "../APIrequest/useFetchUsers";
+// import useFetchUsers from "../APIrequest/useFetchUsers";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const usePagination = (
@@ -18,6 +18,8 @@ const usePagination = (
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
+
+
 
   //logic for filteration cut from file
   const filteredUsers =

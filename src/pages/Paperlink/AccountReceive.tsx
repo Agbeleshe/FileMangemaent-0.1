@@ -13,6 +13,7 @@ import { TfiClose } from "react-icons/tfi";
 
 import useAccRcvPagination from "../../hooks/Paginations/useAccRcvPagination";
 import RecievableTabRow from "./resources/RecievableTabrow/RecievableTabRow";
+import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
 
 //year and month for the user.reciept
 function extractYearAndMonth(dateTimeString: string) {
@@ -25,12 +26,23 @@ function extractYearAndMonth(dateTimeString: string) {
 }
 
 const AccountReceive = () => {
-  const { loading, users, error } = useBilling();
+  const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
+
   const [inputClick, setInputClick] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [filterAll, setFilterAll] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [tabs, setTabs] = useState(true);
+  //Date State
+  const [selectedDate, setSelectedDate] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<any>([null, null]);
+
+  const { loading, users, error, setIsDatePicked, isDatePicked } = useBilling(
+    searchValue,
+    selectedFilter,
+    timeFilter[0],
+    timeFilter[1]
+  );
 
   const {
     currentPost,
@@ -38,7 +50,14 @@ const AccountReceive = () => {
     nextButton,
     prevButton,
     viewAllButton,
-  } = useAccRcvPagination();
+  } = useAccRcvPagination(
+    1,
+    searchValue,
+    selectedFilter,
+    users,
+    filterAll,
+    isDatePicked!
+  );
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -50,23 +69,23 @@ const AccountReceive = () => {
   };
 
   //filename and file action are not part o
-  const filteredUsers = filterAll
-    ? users.filter(
-        (user: any) =>
-          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.user.role.toLowerCase().includes(searchValue.toLowerCase())
-        // || user.status.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : currentPost.filter(
-        (user: any) =>
-          user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user.user.role.toLowerCase().includes(searchValue.toLowerCase())
-        // || user.status.toLowerCase().includes(searchValue.toLowerCase())
-      );
+  // const filteredUsers = filterAll
+  //   ? users.filter(
+  //       (user: any) =>
+  //         user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.user.role.toLowerCase().includes(searchValue.toLowerCase())
+  //       // || user.status.toLowerCase().includes(searchValue.toLowerCase())
+  //     )
+  //   : currentPost.filter(
+  //       (user: any) =>
+  //         user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //         user.user.role.toLowerCase().includes(searchValue.toLowerCase())
+  //       // || user.status.toLowerCase().includes(searchValue.toLowerCase())
+  //     );
 
-  const results = filteredUsers.length > 0;
+  const results = currentPost.length > -1;
 
   function convertDateTime(dateTimeString: string) {
     const originalDate = new Date(dateTimeString);
@@ -91,6 +110,30 @@ const AccountReceive = () => {
   const handleTabs = (userId: any) => {
     setSelectedUserId(userId);
     setTabs(false);
+  };
+
+  //Date Selection LOogic
+
+  //handle modal of the date open
+  const handleSelectedDate = () => {
+    setSelectedDate(true);
+  };
+
+  //handle modal of the date close
+  const handleCloseSelectedDate = () => {
+    setSelectedDate(false);
+    console.log(selectedDate);
+  };
+
+  const getDateValuesFunc = (start: number, end: number) => {
+    setTimeFilter([start, end]);
+    start && end && handleCloseSelectedDate();
+
+    // emergency
+    // setTimeout(() => {
+    //   handleCloseSelectedDate();
+    // }, 1000);
+    // console.log(start, end);
   };
 
   return (
@@ -151,11 +194,34 @@ const AccountReceive = () => {
                 <table className="w-full table-hover user-table ">
                   <thead>
                     <tr className="">
-                      <th className="py-5 px-8 gap-3 border-gray-100 p-2  text-left font-medium text-darkGray text-sm flex">
-                        Date/Time
-                        <span className="">
+                      <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
+                        <span
+                          className="flex   gap-2  w-full h-full "
+                          onClick={handleSelectedDate}
+                        >
+                          Date/Time
                           <img src={Calender} alt="" />
                         </span>
+
+                        {/* date modal */}
+                        {selectedDate && (
+                          <div className="">
+                            <div
+                              onClick={handleCloseSelectedDate}
+                              className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
+                            ></div>
+
+                            <div
+                              onClick={handleCloseSelectedDate}
+                              className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
+                            ></div>
+                            <DateRangePickerCalendarExample
+                              getDateValue={getDateValuesFunc}
+                              setIsDatePicked={setIsDatePicked}
+                              selectedDate={selectedDate}
+                            />
+                          </div>
+                        )}
                       </th>
                       <th className=" border-gray-100 p-2 text-left font-medium text-darkGray text-sm">
                         Account Email
@@ -173,7 +239,7 @@ const AccountReceive = () => {
                   </thead>
                   {results ? (
                     <tbody className="cursor-pointer">
-                      {filteredUsers.map((user) => (
+                      {currentPost.map((user) => (
                         <tr
                           key={user.id}
                           className="border-gray-100 hover:bg-gray-100"
@@ -215,7 +281,7 @@ const AccountReceive = () => {
               {results && (
                 <div className="md:hidden h-auto text-xs">
                   <div className=" p-3 shadow-xl">
-                    {filteredUsers.map((user) => (
+                    {currentPost.map((user) => (
                       <div className="bg-white hover:bg-slate-200 shadow-xl rounded-xl gap-3 mb-5  ">
                         <div className="border-b bg-green-100  text-white px-2 rounded-tr-xl rounded-tl-xl ">
                           <h1 className=" p-2 flex justify-between  text-green-600 ">
@@ -246,8 +312,8 @@ const AccountReceive = () => {
                   </div>
                 </div>
               )}
-              {error && <ErrorMessage message={error} />}
-              {!results && inputClick === true && (
+              {!currentPost && error && <ErrorMessage message={error} />}
+              {!currentPost && inputClick === true && (
                 <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
                   Search complete. No record found
                 </div>

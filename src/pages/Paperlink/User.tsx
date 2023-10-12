@@ -15,6 +15,7 @@ import UserTabrow from "../Paperlink/resources/UserTabeow/UserTabrow";
 import { Ledger } from "./resources/Ledger";
 
 import "./User.css";
+import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
 
 const makeStyle = (status: string) => {
   if (status === "complete") {
@@ -46,8 +47,19 @@ const User = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
   const [tabs, setTabs] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
+
+  //selected date to toggle the date modal  when clicked.
+  const [selectedDate, setSelectedDate] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<any>([null, null]);
+
+  const { loading, users, error, setIsDatePicked, isDatePicked } = useLedger(
+    searchValue,
+    selectedFilter,
+    timeFilter[0],
+    timeFilter[1]
+  );
 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const {
@@ -56,13 +68,17 @@ const User = () => {
     nextButton,
     prevButton,
     viewAllButton,
-  } = useUserPagination();
-
-  const { loading, users, error } = useLedger(searchValue);
+  } = useUserPagination(
+    1,
+    searchValue,
+    selectedFilter,
+    users,
+    filterAll,
+    isDatePicked!
+  );
   console.log(users, "from User.tsx");
 
   const toggleDropdown = () => {
-    setFilterAll(!filterAll)
     setIsOpen(!isOpen);
   };
 
@@ -85,7 +101,6 @@ const User = () => {
     setFilterAll(true);
   };
 
-
   const handleStatusFilter = (e: any) => {
     const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
     setSelectedFilter(selectedValue); // Update the selected filter state
@@ -93,38 +108,8 @@ const User = () => {
     console.log(selectedValue);
 
     //to see evry data concerning that field you use filter all which will reomve pagination
-    setIsOpen(false)
+    setIsOpen(false);
   };
-
-  const filteredUsers = filterAll
-    ? users.filter(
-        (users: any) =>
-          users.user.firstName
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          users.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          users.file.paperLink
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          users.file.fileAction
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          users.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : currentPost.filter(
-        (users: any) =>
-          users.user.firstName
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          users.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-          users.file.paperLink
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          users.file.fileAction
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          users.file.paperLink.toLowerCase().includes(searchValue.toLowerCase())
-      );
 
   // Page calculation
   function calculateTotalPages(users: Ledger[]) {
@@ -138,16 +123,16 @@ const User = () => {
   console.log(users);
 
   //because length start fron 0
-  const recordFound = filteredUsers.length > -1;
+  const recordFound = currentPost.length > -1;
 
   // display of no records
   useEffect(() => {
-    if (filteredUsers.length > -1 && inputClick) {
+    if (currentPost.length > -1 && inputClick) {
       setRecords(true);
     } else {
       setRecords(false);
     }
-  }, [filteredUsers, inputClick]);
+  }, [currentPost, inputClick]);
 
   console.log(users);
 
@@ -171,7 +156,31 @@ const User = () => {
 
   console.log("Search Value:", searchValue);
   console.log("Data to Filter:", users); // or currentPost
-  console.log("Filtered Users:", filteredUsers);
+  console.log("current post Users:", currentPost);
+
+  //data filteration logic will be here
+  //handle modal of the date close
+  const handleCloseSelectedDate = () => {
+    setSelectedDate(false);
+    console.log(selectedDate);
+  };
+
+  const getDateValuesFunc = (start: number, end: number) => {
+    setTimeFilter([start, end]);
+    start && end && handleCloseSelectedDate();
+
+    // emergency
+    // setTimeout(() => {
+    //   handleCloseSelectedDate();
+    // }, 1000);
+    // console.log(start, end);
+  };
+
+  //handle modal of the date open
+  const handleSelectedDate = () => {
+    setSelectedDate(true);
+  };
+
   return (
     <div className="mb-20">
       {!tabs ? (
@@ -222,14 +231,34 @@ const User = () => {
                   <table className="md:w-full md:table-hover md:user-table">
                     <thead>
                       <tr>
-                        <th
-                          className=" px-4 py-4 text-left font-medium text-darkGray text-sm"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          Date/Time
-                          <span className="inline-flex items-center ml-2">
+                        <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
+                          <span
+                            className="flex   gap-2  w-full h-full "
+                            onClick={handleSelectedDate}
+                          >
+                            Date/Time
                             <img src={Calender} alt="" />
                           </span>
+
+                          {/* date modal */}
+                          {selectedDate && (
+                            <div className="">
+                              <div
+                                onClick={handleCloseSelectedDate}
+                                className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
+                              ></div>
+
+                              <div
+                                onClick={handleCloseSelectedDate}
+                                className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
+                              ></div>
+                              <DateRangePickerCalendarExample
+                                getDateValue={getDateValuesFunc}
+                                setIsDatePicked={setIsDatePicked}
+                                selectedDate={selectedDate}
+                              />
+                            </div>
+                          )}
                         </th>
                         <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
                           User
@@ -309,16 +338,19 @@ const User = () => {
                             {convertDateTime(user.updatedAt)}
                           </td>
                           <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
-                            {user.guestName
-                              ? user.guestName
-                              : <p className="text-gray-300 cursor-not-allowed">No Guest Name</p>}
+                            {user.guestName ? (
+                              user.guestName
+                            ) : (
+                              <p className="text-gray-300 cursor-not-allowed">
+                                No Guest Name
+                              </p>
+                            )}
                           </td>
-                        
+
                           <td
                             onClick={() => handleTabs(user.id)}
                             className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
                           >
-                            
                             {user.user.email}
                           </td>
                           <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
@@ -364,7 +396,7 @@ const User = () => {
               // i also removed padding bottom from here
               <div className="md:hidden max-h-[400px] text-xs overflow-y-auto">
                 {recordFound ? (
-                  filteredUsers.map((user: any) => (
+                  currentPost.map((user: any) => (
                     <div
                       onClick={() => handleMobileUserClick(user.id)} // Handle user row click
                       key={user.id}
@@ -415,12 +447,9 @@ const User = () => {
             )}
           </div>
 
-          {filteredUsers.length === 5 && (
-            // This condition will make pagination disappear when filter or search is triggered.
-            <div className="w-full bg-slate-100 flex justify-center">
-              {prevButton} {paginationButtons} {viewAllButton} {nextButton}
-            </div>
-          )}
+          <div className="w-full bg-slate-100 flex justify-center">
+            {prevButton} {paginationButtons} {viewAllButton} {nextButton}
+          </div>
         </div>
       ) : (
         <div>

@@ -32,8 +32,8 @@ const PaperLink = () => {
 
   return (
     <div className="emoji-container h-full w-full">
-      <h1 className='font-extralight w-[100%] text-center mx-auto cursor-not-allowed' >Beware Of The Ghost That Haunts The Empty Dashboard!!</h1>
-      <div className="emoji" style={{ left: `${positionX}px`, top: `${positionY}px` }}>
+      <h1 className='font-extralight w-[100%] text-center mx-auto ' >Beware Of The Ghost That Haunts The Empty Dashboard!!</h1>
+      <div title='wwwhooooaaaooo...!!!!' className="emoji cursor-not-allowed" style={{ left: `${positionX}px`, top: `${positionY}px` }}>
         👻
       </div>
     </div>

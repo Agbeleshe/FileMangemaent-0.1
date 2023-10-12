@@ -2,10 +2,22 @@ import { useEffect, useState } from "react";
 import { Ledger } from "../../pages/Paperlink/resources/Ledger";
 import axiosInstance from "../../utils/axiosInstance"; // Import your Axios instance
 
-const useLedger = (searchString: string ="") => {
+const useLedger = (
+  searchString: string,
+  selectedFilter: string,
+  startDate?: string | number,
+  endDate?: string | number
+) => {
   const [users, setUsers] = useState<Ledger[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDatePicked, setIsDatePicked] = useState<boolean | null>(null);
+
+  //logic to filer a range of users
+  const datefilter =
+    startDate && endDate
+      ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
+      : "";
 
   useEffect(() => {
     setLoading(true);
@@ -16,7 +28,8 @@ const useLedger = (searchString: string ="") => {
 
     // Use your Axios instance to make authenticated requests
     axiosInstance
-      .get(`/ledger?fileName[$like]=%${searchString}%`)
+      .get(
+        `/ledger?fileName[$like]=%${searchString}%${datefilter}`)
       .then((res) => {
         // console.log(res.data)
         setUsers(res.data.data as Ledger[]);
@@ -32,14 +45,18 @@ const useLedger = (searchString: string ="") => {
       .finally(() => {
         setLoading(false);
       });
-  }, [searchString]);
-  console.log(loading);
-  console.log(error);
+  }, [searchString, selectedFilter, datefilter]);
+
+  // console.log(loading);
+  // console.log(error);
   // console.log(users);
   return {
     loading,
     users,
     error,
+    searchString,
+    isDatePicked,
+    setIsDatePicked,
   };
 };
 
