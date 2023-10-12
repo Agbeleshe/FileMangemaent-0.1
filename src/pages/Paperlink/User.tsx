@@ -79,6 +79,7 @@ const User = () => {
   console.log(users, "from User.tsx");
 
   const toggleDropdown = () => {
+    setFilterAll(!filterAll);
     setIsOpen(!isOpen);
   };
 

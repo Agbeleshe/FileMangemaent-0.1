@@ -1,49 +1,46 @@
 import { useState } from "react";
 import useAccApi from "../APIrequest/useAccApi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
-const useAccountPagination = (
+import useTeamsApi from "../APIrequest/useTeamsApi";
+const useTeamsPagination = (
   initialPage = 1,
   searchValue: string,
-  selectedFilter: string,
+  searchFilter: string,
   users: any[],
-  filterAll: boolean,
-  isDatePicked?: boolean
+  filterAll: boolean
 ) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [postPerPage, setPostPerPage] = useState(5);
-  // const { users } = useAccApi();
+  const [postPerPage, setPostPerPage] = useState(4);
+  // const { users } = useTeamsApi();
   const [viewAll, setViewAll] = useState(false);
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
+  //logic for filteration cut from Teams
+  const filteredUsers = !filterAll
+    ? users?.slice(firstPostIndex, lastPostIndex)
+    : filterAll
+    ? users
+        ?.slice(firstPostIndex, lastPostIndex)
+        .filter(
+          (users: any) =>
+            users.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+            users.companyName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            users.status.toLowerCase().includes(searchValue.toLowerCase())
+        )
+    : users?.slice(firstPostIndex, lastPostIndex).filter(
+        (users: any) =>
+          users.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          users.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          users.status.toLowerCase().includes(searchValue.toLowerCase())
+        // users.status.toLowerCase().includes(selectedFilter.toLowerCase())
+      );
 
-  //logic for filteration cut from Accounts
-  const filteredUsers =
-    isDatePicked && !filterAll
-      ? users?.slice(firstPostIndex, lastPostIndex)
-      : filterAll
-      ? users
-          ?.slice(firstPostIndex, lastPostIndex)
-          .filter(
-            (users: any) =>
-              users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-              users.companyName
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.status.toLowerCase().includes(selectedFilter.toLowerCase())
-          )
-      : users
-          ?.slice(firstPostIndex, lastPostIndex)
-          .filter(
-            (users: any) =>
-              users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-              users.companyName
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.status.toLowerCase().includes(selectedFilter.toLowerCase())
-          );
-
+  //const currentPost = viewAll  ? users : users.slice(firstPostIndex, lastPostIndex);
   //const currentPost = viewAll ? users : users.slice(firstPostIndex, lastPostIndex);
   const currentPost = viewAll ? users : filteredUsers;
 
@@ -159,4 +156,4 @@ const useAccountPagination = (
   };
 };
 
-export default useAccountPagination;
+export default useTeamsPagination;
