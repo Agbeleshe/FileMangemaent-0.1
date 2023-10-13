@@ -19,33 +19,35 @@ const useLedger = (
       ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
       : "";
 
-  useEffect(() => {
-    setLoading(true);
-    const token = localStorage.getItem("token");
-    console.log(token);
-    // Set up Axios headers with the token
-    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    // Use your Axios instance to make authenticated requests
-    axiosInstance
-      .get(
-        `/ledger?fileName[$like]=%${searchString}%${datefilter}`)
-      .then((res) => {
-        // console.log(res.data)
-        setUsers(res.data.data as Ledger[]);
-        // setUsers((user) => [...user, res.data]);
-        setError(null);
-        //  console.log(res.data);c
-        console.log("Success fetching your data", searchString);
-      })
-      .catch((err) => {
-        setError("There was an error fetching data.");
-        console.log("There was an issue: ", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [searchString, selectedFilter, datefilter]);
+      useEffect(() => {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        console.log(token);
+      
+        // Set up Axios headers with the token
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      
+        // Use your Axios instance to make authenticated requests
+        axiosInstance
+          .get(`/ledger?fileName[$like]=%${searchString}%${datefilter}`)
+          .then((res) => {
+            setUsers(res.data.data as Ledger[]);
+            setError(null);
+            console.log("Success fetching your data", searchString);
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              // Handle the 401 Unauthorized error here
+              setError("Your session has timed out, and you are unauthorized. Try logging in again.");
+            } else {
+              setError("There was an error fetching data. Try refreshing this page.");
+            }
+            console.log("There was an issue: ", error,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }, [searchString, selectedFilter, datefilter]);
 
   // console.log(loading);
   // console.log(error);

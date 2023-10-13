@@ -37,7 +37,7 @@ const ErrorMessage = ({ message }) => {
 
   return (
     <div className="text-yellow-700 font-bold bg-yellow-100 flex justify-center text-center gap-5 py-4 px-2 items-center">
-      Sorry! {funnyReason}. Just kidding, {message}. Try refreshing this page.
+      Sorry! {funnyReason}. Just kidding, {message}.
     </div>
   );
 };

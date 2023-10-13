@@ -17,6 +17,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
   const [papercount, setPaperCount] = useState<number>(1);
   const [fillablecount, setFillableCount] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [WhiteGloveService, setWhiteGloveService] = useState<number>(1);
 
 
   const incrementCount = () => {
@@ -46,6 +47,15 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
       setFillableCount(fillablecount - 1);
     }
   };
+  const incrementWhiteCount = () => {
+    setWhiteGloveService(WhiteGloveService + 1);
+  };
+  const decrementWhiteCount = () => {
+    if (WhiteGloveService > 0) {
+      setWhiteGloveService(WhiteGloveService - 1);
+    }
+  };
+
 
   useEffect(() => {
     setLoading(true);
@@ -247,38 +257,46 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
             </div>
             {/* Fourth div (2) */}
             <div className="grid border-b border-[#BABABA]  grid-cols-4 py-3 px-3 text-sm">
-              {/* ... Other content */}
-              <div className="grid-item border-none  ">
-                <div className=" flex items-center">
-                  <h1 className="font-normal  md:font-semibold text-sm ">
-                    White Glove Service
-                    <span className="text-[8px] text-[#707070] ml-2 ">
-                      (One time charge)
-                    </span>
-                  </h1>
-                </div>
-              </div>
-              <div className="grid-item border-none text-center">
-                {/**empty for now */}
-              </div>
-              <div className="grid-item text-center">
-                <div className=" flex justify-center  bg-counter w-24 mx-auto rounded-md text-black">
-                  <button className="w-16 hover:bg-gray-100 hover:rounded-md ">
-                    -
-                  </button>
-                  <div className="bg-white w-20 border rounded-md text-center">
-                    {/**empty for now */}
+                {/* ... Other content */}
+                <div className="grid-item border-none  ">
+                  <div className=" flex items-center">
+                    <h1 className="font-normal  md:font-semibold text-sm flex ">
+                      White Glove Service
+                      <span className="text-[8px] hidden md:flex text-[#707070] ml-2 ">
+                        (One time charge)
+                      </span>
+                    </h1>
                   </div>
+                </div>
+                <div className="grid-item border-none text-center">
+                  {user.whiteGloveService}
+                </div>
+                <div className="grid-item text-center">
+                  <div className=" flex justify-center  bg-counter w-24 mx-auto rounded-md text-black">
+                    <button
+                      className="w-16 hover:bg-gray-100 hover:rounded-md "
+                      onClick={decrementWhiteCount}
+                    >
+                      -
+                    </button>
+                    <div className="bg-white w-20 border rounded-md text-center">
+                      {WhiteGloveService}
+                    </div>
 
-                  <button className="w-16  hover:bg-gray-100 hover:rounded-md">
-                    +
-                  </button>
+                    <button
+                      className="w-16  hover:bg-gray-100 hover:rounded-md"
+                      onClick={incrementWhiteCount}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="grid-item  text-end md:mr-12">
+                  {WhiteGloveService * user.whiteGloveService}
                 </div>
               </div>
-              <div className="grid-item  text-end md:mr-12">
-                {user.isWhiteGloveService ? "true" : "false"}
-              </div>
-            </div>
+
+
             {/* The div for end */}
             <div className="grid grid-cols-2 py-5 px-3 shadow-full rounded-b-lg">
               {/* ... Other content */}

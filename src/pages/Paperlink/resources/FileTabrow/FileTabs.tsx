@@ -3,6 +3,7 @@ import folder from "../../../../assests/folder.png";
 import { Billing } from "../Billing";
 import axiosInstance from "../../../../utils/axiosInstance";
 import Loader from "../Loader";
+import { SubscriptionData } from "../Subscription";
 //Date conversion
 function convertDateTime(dateTimeString: string) {
   const originalDate = new Date(dateTimeString);
@@ -45,9 +46,12 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get<{ data: Billing[] }>("/billings")
+      .get<{ data: Billing[] }>(
+        `/billings?userId=${selectedUser.userId}&$sort[createdAt]=-1`
+      )
       .then((res) => {
-        setUsers(res.data.data);
+        const singleSubscription = [res.data.data[0]] as Billing[];
+        setUsers(singleSubscription);
         setLoading(false); // Set loading to false after the data has been fetched
         // console.log("Selectedusers :", selectedUser);
         // console.log(" userId :", users)
@@ -58,7 +62,9 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
       });
   }, []);
 
-  const filteredUsers = users.filter((user) => selectedUser.id === user.userId);
+  const filteredUsers = users.filter(
+    (user) => selectedUser.userId === user.userId
+  );
   // console.log("filtered: ",filteredUsers)
 
   return (

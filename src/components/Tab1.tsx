@@ -193,7 +193,10 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 
               <div className="flex gap-2  items-center">
                 <span onClick={() => toggleEditing()} className="mr-5 pt-2 ">
-                  <button type="button">
+                  <button //sheky sheky effect
+                    className={`mr-5 pt-2  ${!isEditing && "vibrate-button"} `}
+                    type="button"
+                  >
                     <EditIcon />
                   </button>
                 </span>

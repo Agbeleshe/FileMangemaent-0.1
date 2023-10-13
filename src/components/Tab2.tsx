@@ -60,7 +60,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
         `/subscriptions?userId=${selectedUser.id}&$sort[createdAt]=-1`
       )
       .then((res) => {
-        const singleSubscription = [res.data.data[0] ] as SubscriptionData[]
+        const singleSubscription = [res.data.data[0]] as SubscriptionData[];
         setUsers(singleSubscription);
         setLoading(false);
 

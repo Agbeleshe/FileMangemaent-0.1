@@ -182,6 +182,8 @@ const User = () => {
     setSelectedDate(true);
   };
 
+  console.log(error, "Error in the user");
+
   return (
     <div className="mb-20">
       {!tabs ? (
@@ -228,7 +230,7 @@ const User = () => {
               </div>
             ) : (
               <div className="hidden md:block">
-                {recordFound ? (
+                {recordFound && (
                   <table className="md:w-full md:table-hover md:user-table">
                     <thead>
                       <tr>
@@ -376,15 +378,14 @@ const User = () => {
                       ))}
                     </tbody>
                   </table>
-                ) : (
-                  <div>{error && <ErrorMessage message={error} />}</div>
                 )}
                 {/* the correct logic to show no users please make this a hook next time to avoid copy and paste */}
-                {users.length === 0 && (
+                {!error && users.length === 0 && (
                   <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
                     Search complete. No record found
                   </div>
                 )}
+                {error && <ErrorMessage message={error} />}
               </div>
             )}
 
@@ -396,7 +397,7 @@ const User = () => {
             ) : (
               // i also removed padding bottom from here
               <div className="md:hidden max-h-[400px] text-xs overflow-y-auto">
-                {recordFound ? (
+                {recordFound &&
                   currentPost.map((user: any) => (
                     <div
                       onClick={() => handleMobileUserClick(user.id)} // Handle user row click
@@ -434,16 +435,14 @@ const User = () => {
                         </span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div>{error && <ErrorMessage message={error} />}</div>
-                )}
+                  ))}
                 {/* if there are no search */}
                 {records && (
                   <div className="text-center py-4 w-full bg-green-300 text-sm text-green-700">
                     Search complete. No record found
                   </div>
                 )}
+                {error && <ErrorMessage message={error} />}
               </div>
             )}
           </div>

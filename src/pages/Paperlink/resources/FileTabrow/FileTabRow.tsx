@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Tabs from "./Tabs";
-import Tab1 from "./Tab1";
-import Tab2 from "./Tab2";
+import Tabs from "./FileTabs";
+import Tab1 from "./FileTab1";
+import Tab2 from "./FileTab2";
 
 interface FileTabRowProps {
   selectedUserId: number | null;

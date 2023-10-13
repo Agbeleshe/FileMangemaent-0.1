@@ -255,7 +255,7 @@ const Teams = () => {
                         {convertDateTime(user.createdAt)}
                       </div>
                     </td>
-                    <td className=" border-t py-4 text-left text-lightGray font-Poppins text-sm font-normal  px-2">
+                    <td className=" border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal  px-2">
                       <span className="status" style={makeStyle(user.status)}>
                         {user.status}
                       </span>

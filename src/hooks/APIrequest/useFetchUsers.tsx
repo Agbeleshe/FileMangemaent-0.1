@@ -22,7 +22,7 @@ const useFetchUsers = (
   const userUrl =
     BASE_URL +
       `/files?$sort[createdAt]=-1&filePrivacy=public&fileName[$like]=%${searchValue}%${datefilter}` ||
-    `/files?$sort[createdAt]=-1&filePrivacy=public&fileAction=${selectedFilter}&${datefilter}`;
+    `/files?$sort[createdAt]=-1&filePrivacy=public&fileAction=${selectedFilter}&${datefilter}`; 
   //{{base_url}}/files?$sort[createdAt]=-1&filePrivacy=public
   //&fileAction=confirm for the filter status
   //&fileName[$like]=%acc% to search for files

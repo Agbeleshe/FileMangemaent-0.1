@@ -214,6 +214,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             <span
               onClick={() => setIsEditing(!isEditing)}
               // remeber to remove justify-center flex w-full if you are adding profile pic
+              //sheky sheky effect 
               className={`mr-5 pt-2  ${!isEditing && "vibrate-button"} `}
             >
               <button type="button">

@@ -318,10 +318,10 @@ const Accounts = () => {
                         <th className="border-b  py-3 text-left font-medium text-darkGray text-sm">
                           Business Name
                         </th>
-                        <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
+                        <th className="p-2 relative justify-center  text-center font-bold text-darkGray text-sm flex items-center z-10">
                           <span className="flex justify-center items-center align-middle">
                             <div
-                              className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               onClick={toggleDropdown}
                             >
                               <p>Status</p>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../../utils/axiosInstance";
 import { SubscriptionData } from "../Subscription";
-import { BASE_URL } from "../../../../utils/axios-util";
+// import { BASE_URL } from "../../../../utils/axios-util";
 import Loader from "../Loader";
 
 interface Tab2Props {
@@ -16,7 +16,6 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
   const [fillablecount, setFillableCount] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [WhiteGloveService, setWhiteGloveService] = useState<number>(1);
-
 
   const incrementCount = () => {
     setCount(count + 1);
@@ -54,8 +53,6 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
     }
   };
 
-
-
   useEffect(() => {
     setLoading(true);
 
@@ -64,19 +61,24 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
         `/subscriptions?userId=${selectedUser.userId}&$sort[createdAt]=-1`
       )
       .then((res) => {
-        const singleSubscription = [res.data.data[0] ] as SubscriptionData[]
+        const singleSubscription = [res.data.data[0]] as SubscriptionData[];
         setUsers(singleSubscription);
         setLoading(false);
 
-        // console.log("Selectedusers :", selectedUser);
-        // console.log(" userId :", users)
+        // console.log("Selectedusers :", selectedUser.userId);
       })
       .catch((err) => {
         setLoading(false);
-        console.error("There was an error fetching data:", err);
+        console.error("Th+ere was an error fetching data:", err);
       });
   }, []);
-  const filteredUsers = users.filter((user) => selectedUser.userId === user.userId);
+  const filteredUsers = users.filter(
+    (user) => selectedUser.userId === user.userId
+  );
+
+  console.log('users', users)
+  console.log('selected user', selectedUser)
+ 
   //console.log("filtered: ",filteredUsers)
 
   return (
@@ -172,7 +174,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                     </div>
 
                     <button
-                      className="w-16  hover:bg-gray-100 hover:rounded-md z-10"
+                      className="w-16  hover:bg-gray-100 hover:rounded-md"
                       onClick={incrementCount}
                     >
                       +
@@ -187,9 +189,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
               <div className="grid border-b grid-cols-4 py-3 px-3">
                 {/* ... Other content */}
                 <div className="grid-item border-none">
-                  <h1 className="font-normal   md:font-semibold text-black text-sm flex">
-                    Paperlink Page
-                  </h1>
+                  <h1 className="font-semibold text-black">Paperlink Page</h1>
                 </div>
                 <div className="grid-item border-none text-center">
                   ${user.paperlink}.00
@@ -207,7 +207,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                     </div>
 
                     <button
-                      className="w-16  hover:bg-gray-100 hover:rounded-md z-10"
+                      className="w-16  hover:bg-gray-100 hover:rounded-md"
                       onClick={incrementPaperCount}
                     >
                       +
@@ -219,12 +219,12 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                 </div>
               </div>
               {/* Fourth div (1) */}
-              <div className="grid grid-cols-4 py-3 px-3 w-full">
+              <div className="grid grid-cols-4 py-3 px-3">
                 {/* ... Other content */}
                 <div className="grid-item border-none">
                   <h1 className="font-normal   md:font-semibold text-black text-sm flex">
                     Fillable PDF
-                    <span className="text-[9px] md:flex hidden text-[#707070] ml-2">
+                    <span className="text-[9px] text-[#707070] ml-2">
                       (One time charge)
                     </span>
                   </h1>
@@ -245,7 +245,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                     </div>
 
                     <button
-                      className="w-16  hover:bg-gray-100 hover:rounded-md z-10"
+                      className="w-16  hover:bg-gray-100 hover:rounded-md"
                       onClick={incrementFillableCount}
                     >
                       +
@@ -296,7 +296,6 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                   {WhiteGloveService * user.whiteGloveService}
                 </div>
               </div>
-
 
               {/* The div for end */}
               <div className="grid grid-cols-2 py-5 px-3 shadow-full rounded-b-lg">
