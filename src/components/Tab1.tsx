@@ -9,6 +9,7 @@ import EditIcon from "./svg-icons/EditIcon";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { TfiFaceSad } from "react-icons/tfi";
 import Loader from "../pages/Paperlink/resources/Loader";
+import Arrow from "./svg-icons/Arrow";
 
 interface Option {
   value: string;
@@ -170,22 +171,27 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                   Status:
                 </label>
                 {isEditing ? (
-                  <select
-                    id="select"
-                    name="select"
-                    value={selectedOption}
-                    onChange={handleSelectChange}
-                    className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
-                  >
-                    <option value={selectedUser.status || selectedUser.user}>
-                      {selectedUser.status}
-                    </option>
-                    {options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
+                  <div className="relative ">
+                    <select
+                      id="select"
+                      name="select"
+                      value={selectedOption}
+                      onChange={handleSelectChange}
+                      className="bg-[#EFEFEF] text-red-500 rounded-lg outline-none px-8 py-2 border-none focus:ring-0 w-full p-0 shadow-sm sm:text-sm appearance-none custom-select"
+                    >
+                      <option value={selectedUser.status || selectedUser.user}>
+                        {selectedUser.status}
                       </option>
-                    ))}
-                  </select>
+                      {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-black">
+                      <Arrow />
+                    </div>
+                  </div>
                 ) : (
                   <span>{selectedUser.status}</span>
                 )}

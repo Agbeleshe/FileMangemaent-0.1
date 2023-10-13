@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import folder from "../../../../assests/folder.png";
-
 import { Billing } from "../Billing";
 import axiosInstance from "../../../../utils/axiosInstance";
+import folder from "../../../../assests/folder.png";
 import Loader from "../Loader";
+
 //Date conversion
 function convertDateTime(dateTimeString: string) {
   const originalDate = new Date(dateTimeString);
@@ -46,12 +46,16 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get<{ data: Billing[] }>("/billings")
+      .get<{ data: Billing[] }>(
+        `/billings?userId=${selectedUser.id}&$sort[createdAt]=-1`
+      )
       .then((res) => {
-        setUsers(res.data.data);
+        const singleBilling = [res.data.data[0]] as Billing[];
+        setUsers(singleBilling);
+        // setUsers(res.data.data);
         setLoading(false); // Set loading to false after the data has been fetched
         // console.log("Selectedusers :", selectedUser);
-        console.log(" userId :", users)
+        // console.log(" userId :", users)
       })
       .catch((err) => {
         setLoading(false); // Also set loading to false in case of an error
@@ -77,7 +81,7 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
         <Loader />
       ) : (
         <div>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <div className="hover:bg-gray-100 flex" key={user.id}>
               <div className="border-gray-200 px-3 py-5 font-Poppin">
                 <div className="text-lightGray font-Poppins font-normal leading-normal text-sm ">
@@ -95,7 +99,7 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
       
             </div>
           ))}
-          {users.length < 1 && (
+          {filteredUsers.length < 1 && (
             <div className="flex justify-center mt-1 bg-slate-100 text-gray-400 w-full text-xs md:text-sm p-2 items-center align-middle h-full">
               Sorry, No Invoice available for this user!
             </div>

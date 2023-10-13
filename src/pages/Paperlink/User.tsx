@@ -16,6 +16,7 @@ import { Ledger } from "./resources/Ledger";
 
 import "./User.css";
 import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
+import { Console } from "console";
 
 const makeStyle = (status: string) => {
   if (status === "complete") {
@@ -100,6 +101,7 @@ const User = () => {
     const trimmedValue = value.trim();
     setSearchValue(trimmedValue);
     setFilterAll(true);
+    console.log(searchValue)
   };
 
   const handleStatusFilter = (e: any) => {
@@ -359,6 +361,7 @@ const User = () => {
                           <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
                             <a
                               href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
+                              target="_blank"
                             >
                               {user.fileName}
                             </a>

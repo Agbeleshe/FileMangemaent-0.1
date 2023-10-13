@@ -10,6 +10,7 @@ import EditIcon from "../../../../components/svg-icons/EditIcon";
 import { Ledger } from "../Ledger";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { TfiFaceSad } from "react-icons/tfi";
+import Arrow from "../../../../components/svg-icons/Arrow";
 
 interface Option {
   value: string;
@@ -152,22 +153,27 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               Action:
             </label>
             {isEditing ? (
-              <select
-                name="select"
-                value={selectedOption}
-                onChange={handleSelectChange}
-                className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
-              >
-                <option value={selectedUser.action}>
-                  {selectedUser.action}
-                </option>
-
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+              <div className="relative">
+                <select
+                  name="select"
+                  value={selectedOption}
+                  onChange={handleSelectChange}
+                  className="bg-[#EFEFEF] text-red-500 rounded-lg outline-none px-8 py-2 border-none focus:ring-0 w-full p-0 shadow-sm sm:text-sm appearance-none custom-select"
+                >
+                  <option value={selectedUser.action}>
+                    {selectedUser.action}
                   </option>
-                ))}
-              </select>
+
+                  {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-black">
+                  <Arrow />
+                </div>
+              </div>
             ) : (
               <span>{selectedUser.action}</span>
             )}

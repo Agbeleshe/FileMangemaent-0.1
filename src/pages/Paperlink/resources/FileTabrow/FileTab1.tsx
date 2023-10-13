@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-//import AcctIcon from "./svg-icons/AcctIcon";
 import AcctIcon from "../../../../components/svg-icons/AcctIcon";
 import zone from "../../../../assests/zone.png";
 import location from "../../../../assests/location.png";
 import "../../../../assests/styles/tab.css";
-
+import Arrow from "../../../../components/svg-icons/Arrow";
 import axios from "axios";
 import { BASE_URL } from "../../../../utils/axios-util";
 import EditIcon from "../../../../components/svg-icons/EditIcon";
@@ -189,22 +188,27 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </label>
 
             {isEditing ? (
-              <select
-                id="select"
-                name="select"
-                value={selectedOption}
-                onChange={handleSelectChange}
-                className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 py-2 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
-              >
-                <option value={selectedUser.fileAction}>
-                  {selectedUser.fileAction}
-                </option>
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+              <div className="relative">
+                <select
+                  id="select"
+                  name="select"
+                  value={selectedOption}
+                  onChange={handleSelectChange}
+                  className="bg-[#EFEFEF]  text-red-500 rounded-lg outline-none px-8 py-2 border-none focus:ring-0 w-full p-0 shadow-sm sm:text-sm appearance-none custom-select"
+                >
+                  <option className="" value={selectedUser.fileAction}>
+                    {selectedUser.fileAction}
                   </option>
-                ))}
-              </select>
+                  {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-black">
+                  <Arrow />
+                </div>
+              </div>
             ) : (
               <span>{selectedUser.fileAction}</span>
             )}
