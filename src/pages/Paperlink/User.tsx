@@ -362,6 +362,7 @@ const User = () => {
                             <a
                               href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
                               target="_blank"
+                              rel="noopener noreferrer"
                             >
                               {user.fileName}
                             </a>
