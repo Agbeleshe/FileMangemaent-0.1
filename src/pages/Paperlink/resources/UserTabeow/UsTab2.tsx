@@ -52,7 +52,12 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
         `/subscriptions?userId=${selectedUser.id}&$sort[createdAt]=-1`
       )
       .then((res) => {
-        setUsers(res.data.data);
+                const singleSubscription = [
+                  res.data.data[0],
+                ] as SubscriptionData[];
+                setUsers(singleSubscription);
+                setLoading(false);
+       // setUsers(res.data.data);
         setLoading(false);
 
         // console.log("Selectedusers :", selectedUser);
@@ -64,7 +69,11 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
       });
   }, []);
   const filteredUsers = users.filter((user) => selectedUser.id === user.userId);
-  //console.log("filtered: ",filteredUsers)
+// const filteredUsers = users.filter(
+ //   (user) => selectedUser?.id === user?.userId
+  //);
+console.log(selectedUser.id)
+  console.log("filtered: ",filteredUsers)
 
   return (
     <div className="text-xs md:text-sm  rounded-b-lg rounded-[19.097px] bg-white shadow-md">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Tabs from './RcvTab1'
+import Tabs from "./RcvTabs";
 import Tab1 from "./RcvTab1";
 import Tab2 from "./RcvTab2";
 

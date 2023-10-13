@@ -134,7 +134,7 @@ const File = () => {
     //    console.log(selectedDate);
     // }
   };
-//handling the date picker
+  //handling the date picker
   const getDateValuesFunc = (start: number, end: number) => {
     setTimeFilter([start, end]);
     start && end && handleCloseSelectedDate();
@@ -315,6 +315,7 @@ const File = () => {
                       <td className=" border-t py-4 text-left text-lightGray  hover:text-green-500 font-Poppins text-sm font-normal">
                         <a
                           href={`https://dev.paperlink.app/pdf/${user.paperLink}`}
+                          target="_blank"
                         >
                           {user.fileName}
                         </a>
