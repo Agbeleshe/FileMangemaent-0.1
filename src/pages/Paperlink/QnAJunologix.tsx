@@ -46,7 +46,6 @@ const QnAJunologix = () => {
 
     axiosInstance
       .get(`/categories?$sort[position]=1&for=junologix`)
-      //  {{base_url}}/categories?$sort[position]=1&for=paperlink
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));

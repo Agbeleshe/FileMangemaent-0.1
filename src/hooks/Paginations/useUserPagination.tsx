@@ -25,50 +25,46 @@ const useUserPagination = (
   // ? users
   // : users?.slice(firstPostIndex, lastPostIndex);
 
-  const filteredUsers =
-    isDatePicked && !filterAll
-      ? users?.slice(firstPostIndex, lastPostIndex)
-      : filterAll
-      ? users
-          ?.slice(firstPostIndex, lastPostIndex)
-          .filter(
-            (users: any) =>
-              users.user.firstName
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.user.email
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.file.paperLink
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.file.fileAction
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.file.paperLink
-                .toLowerCase()
-                .includes(searchValue.toLowerCase())
-          )
-      : users
-          ?.slice(firstPostIndex, lastPostIndex)
-          .filter(
-            (users: any) =>
-              users.user.firstName
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.user.email
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.file.paperLink
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.file.fileAction
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              users.file.paperLink
-                .toLowerCase()
-                .includes(searchValue.toLowerCase())
-          );
+ const filteredUsers =
+   isDatePicked && !filterAll
+     ? users
+         ?.slice(firstPostIndex, lastPostIndex)
+         .filter((user) => user && user.file && user.file.paperLink)
+     : filterAll
+     ? users?.slice(firstPostIndex, lastPostIndex).filter((user) => {
+         if (!user) return false;
+         if (!user.file) return false;
+         return (
+           user.user.firstName
+             .toLowerCase()
+             .includes(searchValue.toLowerCase()) ||
+           user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+           (user.file.paperLink &&
+             user.file.paperLink
+               .toLowerCase()
+               .includes(searchValue.toLowerCase())) ||
+           user.file.fileAction
+             .toLowerCase()
+             .includes(searchValue.toLowerCase())
+         );
+       })
+     : users?.slice(firstPostIndex, lastPostIndex).filter((user) => {
+         if (!user) return false;
+         if (!user.file) return false;
+         return (
+           user.user.firstName
+             .toLowerCase()
+             .includes(searchValue.toLowerCase()) ||
+           user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+           (user.file.paperLink &&
+             user.file.paperLink
+               .toLowerCase()
+               .includes(searchValue.toLowerCase())) ||
+           user.file.fileAction
+             .toLowerCase()
+             .includes(searchValue.toLowerCase())
+         );
+       });
 
   const currentPost = viewAll ? users : filteredUsers;
 
