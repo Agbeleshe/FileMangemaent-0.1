@@ -101,7 +101,7 @@ const User = () => {
     const trimmedValue = value.trim();
     setSearchValue(trimmedValue);
     setFilterAll(true);
-    console.log(searchValue)
+    console.log(searchValue);
   };
 
   const handleStatusFilter = (e: any) => {
@@ -118,13 +118,11 @@ const User = () => {
   function calculateTotalPages(users: Ledger[]) {
     let totalPages = 0;
     for (const user of users) {
-      if (user && user.file && user.file.pages !== null) {
-        totalPages += user.file.pages;
-      }
+      totalPages += user.file.pages;
     }
+
     return totalPages;
   }
-
   console.log(users);
 
   //because length start fron 0
@@ -361,25 +359,23 @@ const User = () => {
                             {user.user.email}
                           </td>
                           <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
-                            {user?.file && user?.file?.paperLink && (
-                              <a
-                                href={`https://dev.paperlink.app/pdf/${user?.file?.paperLink}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {user?.fileName}
-                              </a>
-                            )}
+                            <a
+                              href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {user.fileName}
+                            </a>
                           </td>
                           <td className="border-t py-4 p-2 text-center text-lightGray font-Poppins text-sm font-normal px-6">
-                            {user?.file?.pages}
+                            {user.file.pages}
                           </td>
                           <td className="border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal px-3">
                             <span
                               className="status"
-                              style={makeStyle(user?.file?.fileAction)}
+                              style={makeStyle(user.file.fileAction)}
                             >
-                              {user?.file?.fileAction}
+                              {user.file.fileAction}
                             </span>
                           </td>
                         </tr>
@@ -427,19 +423,19 @@ const User = () => {
                       )}
                       <div className="flex flex-col justify-start items-start align-middle flex-1">
                         <span className="text-black flex text-[12px]]">
-                          {user?.file?.paperLink}
+                          {user.file.paperLink}
                         </span>
                         <div className="text-black text-center flex text-[12px]">
-                          Pages: {user?.file?.pages}
+                          Pages: {user.file.pages}
                         </div>
                         <div className="text-black flex text-[12px]">
-                          User: {user?.user?.firstName}
+                          User: {user.user.firstName}
                         </div>
                         <span
                           className="text-black text-[12px] font-extrabold"
-                          style={makeStyle(user?.file?.fileAction)}
+                          style={makeStyle(user.file.fileAction)}
                         >
-                          {user?.file?.fileAction}
+                          {user.file.fileAction}
                         </span>
                       </div>
                     </div>

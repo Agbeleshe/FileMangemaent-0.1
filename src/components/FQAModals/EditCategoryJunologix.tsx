@@ -29,7 +29,7 @@ const EditCategoryJunologix: React.FC<EditCategoryJunologixProps> = ({
 
     if (categoryToEdit) {
       axiosInstance
-        .put(`/categories?/${categoryToEdit.id}`, {
+        .patch(`/categories/${categoryToEdit.id}`, {
           name: categoryName,
         })
         .then((response) => {

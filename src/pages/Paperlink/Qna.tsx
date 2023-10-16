@@ -258,7 +258,7 @@ const Qna = () => {
   // Function to update category data
   const updateCategories = () => {
     axiosInstance
-      .get("/categories")
+      .get("/categories?$sort[position]=1&for=paperlink")
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
@@ -271,7 +271,10 @@ const Qna = () => {
   // Function to handle FAQ updates for the question and answer
   const handleAddFAQ = async (faq: FAQ) => {
     try {
-      const response = await axiosInstance.post("/faq", faq);
+      const response = await axiosInstance.post(
+        "/faq?$sort[position]=1&for=paperlink",
+        faq
+      );
       setFAQs([...FAQs, response.data]);
       setModalTwo(false);
     } catch (error) {

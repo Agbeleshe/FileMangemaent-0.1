@@ -374,6 +374,8 @@ const File = () => {
                         <div className=" flex text-[12px] px-2  text-lightGray hover:text-green-500">
                           <a
                             href={`https://dev.paperlink.app/pdf/${user.paperLink}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
                             {user.file.fileName}
                           </a>

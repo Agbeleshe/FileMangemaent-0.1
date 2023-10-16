@@ -257,7 +257,7 @@ const QnAJunologix = () => {
   // Function to update category data
   const updateCategories = () => {
     axiosInstance
-      .get("/categories")
+      .get("/categories?$sort[position]=1&for=junologix")
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
@@ -270,7 +270,10 @@ const QnAJunologix = () => {
   // Function to handle FAQ updates for the question and answer
   const handleAddFAQ = async (faq: FAQ) => {
     try {
-      const response = await axiosInstance.post("/faq", faq);
+      const response = await axiosInstance.post(
+        "/faq?$sort[position]=1&for=junologix",
+        faq
+      );
       setFAQs([...FAQs, response.data]);
       setModalTwo(false);
     } catch (error) {
@@ -297,6 +300,7 @@ const QnAJunologix = () => {
       <div className="bg-secondaryColor flex justify-between h-[4.1875rem] rounded-t-lg px-4 py-2">
         <div className="border-b-0 text-black font-medium leading-normal text-2xl">
           QnA Junologix
+          
         </div>
 
         <div className="">

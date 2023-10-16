@@ -34,7 +34,7 @@ const Teams = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
   const [searchFilter, setSelectedFilter] = useState("");
-//  const [searchTerm, setSearchTerm] = useState("");
+ const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const { loading, users, error } = useTeamsApi(

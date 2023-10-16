@@ -182,7 +182,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           <div className="mt-4 flex gap-5 w-full md:w-auto  items-center mb-5 justify-center">
             <label
               htmlFor="select"
-              className="text-gray-700 font-Poppins text-20 font-normal flex"
+              className="text-gray-700 font-Poppins text-20 font-normal"
             >
               Action:
             </label>
@@ -218,7 +218,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             <span
               onClick={() => setIsEditing(!isEditing)}
               // remeber to remove justify-center flex w-full if you are adding profile pic
-              //sheky sheky effect 
+              //sheky sheky effect
               className={`mr-5 pt-2  ${!isEditing && "vibrate-button"} `}
             >
               <button type="button">

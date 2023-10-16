@@ -60,7 +60,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const { name, value, valueAsNumber } = event.target;
     setFormData({
       ...formData,
       [name]: value,
@@ -95,13 +95,13 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 
     axios
       .patch(UpdateAccountUrl, {
-        email: formData.email,
-        companyName: formData.companyName,
+        email:formData.email,
+        companyName:formData.companyName,
         firstName: formData.firstName,
-        phone: formData.phone,
-        status: selectedOption,
-        timezone: formData.timezone,
-        profilePicture: formData.profilePicture,
+        phone:formData.phone,
+        status:selectedOption,
+        timezone:formData.timezone,
+        profilePicture:formData.profilePicture,
       })
       .then((res) => {
         setSuccess(true);
