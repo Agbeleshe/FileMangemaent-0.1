@@ -13,10 +13,12 @@ const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
   //  `/users?$sort[createdAt]=-1&role=paid_user&companyName[$like]=%${searchValue}%`
   //  .get(`/teammembers?$sort[createdAt]=-1&${ searchValue.length > 0 ? `&status=${searchValue}` : "" }`;`)
 
+
+  console.log(selectedFilter,'kkkkkk')
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("token");
-   // console.log(token);
+    // console.log(token);
 
     // Set up Axios headers with the token
     axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -25,9 +27,7 @@ const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
     axiosInstance
       //  .get<{ data: UserData[] }>(teamsUserUrl)
       .get(
-        `/teammembers?$sort[createdAt]=-1${
-          searchValue.length > 0 ? `&status=${searchValue}` : ""
-        }`
+        `/teammembers?$or[0][companyName][$like]=${selectedFilter}%&$or[1][companyEmail][$like]=${selectedFilter}%&$or[2][teamMemberEmail][$like]=${selectedFilter}%`
       )
 
       .then((res) => {

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import useAccApi from "../APIrequest/useAccApi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import useTeamsApi from "../APIrequest/useTeamsApi";
+
 const useTeamsPagination = (
   initialPage = 1,
   searchValue: string,
