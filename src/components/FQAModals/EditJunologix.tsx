@@ -47,7 +47,7 @@ const EditJunologix: React.FC<EditJunologixProps> = ({
 
     if (junologixToEdit) {
       axiosInstance
-        .put(`/junologix-states/${junologixToEdit.id}`, {
+        .put(`/junologix-states?/${junologixToEdit.id}`, {
           abr: junoName,
           state: junoState,
           return: junoReturn,

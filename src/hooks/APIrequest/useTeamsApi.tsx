@@ -1,27 +1,37 @@
-import { useEffect, useState, useCallback } from "react";
-import { Infor } from "../../pages/Paperlink/resources/Infor";
-import { BASE_URL } from "../../utils/axios-util";
-import axios from "axios";
-
+import { useEffect, useState } from "react";
+import { UserData } from "../../pages/Paperlink/resources/TeamInfor";
+import axiosInstance from "../../utils/axiosInstance";
 const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
-  const [users, setUsers] = useState<Infor[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const paidUserUrl =
-    BASE_URL +
-    `/users?$sort[createdAt]=-1&role=paid_user${
-      searchValue.length > 0 ? `&status=${searchValue}` : ""
-    }`;
+  // const teamsUserUrl =
+  //  axiosInstance +
+  // `/teammembers?$sort[createdAt]=-1&${ searchValue.length > 0 ? `&status=${searchValue}` : "" }`;
   //`/users?$sort[createdAt]=-1&role=paid_user&email=${searchValue}`;
   //  `/users?$sort[createdAt]=-1&role=paid_user&companyName[$like]=%${searchValue}%`
+  //  .get(`/teammembers?$sort[createdAt]=-1&${ searchValue.length > 0 ? `&status=${searchValue}` : "" }`;`)
 
   useEffect(() => {
     setLoading(true);
-    axios
-      .get<{ data: Infor[] }>(paidUserUrl)
+    const token = localStorage.getItem("token");
+   // console.log(token);
+
+    // Set up Axios headers with the token
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    // Use your Axios instance to make authenticated requests
+    axiosInstance
+      //  .get<{ data: UserData[] }>(teamsUserUrl)
+      .get(
+        `/teammembers?$sort[createdAt]=-1${
+          searchValue.length > 0 ? `&status=${searchValue}` : ""
+        }`
+      )
+
       .then((res) => {
-        setUsers(res.data.data);
+        setUsers(res.data.data as UserData[]);
         setError(null);
       })
       .catch((err) => {
@@ -37,7 +47,7 @@ const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
     loading,
     users,
     error,
-    searchValue
+    searchValue,
     // selectedFilter,
   };
 };

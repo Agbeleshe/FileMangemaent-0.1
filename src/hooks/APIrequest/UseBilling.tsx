@@ -19,7 +19,7 @@ const useBilling = (
       ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
       : "";
 
-  const userUrl = BASE_URL + `/billings${datefilter}`;
+  const userUrl = BASE_URL + `/billings?${datefilter}`;
 
   useEffect(() => {
     setLoading(true);

@@ -27,7 +27,7 @@ const useLedger = (
       useEffect(() => {
         setLoading(true);
         const token = localStorage.getItem("token");
-        console.log(token);
+      //  console.log(token);
       
         // Set up Axios headers with the token
         axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;

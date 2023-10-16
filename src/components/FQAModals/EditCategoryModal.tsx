@@ -26,10 +26,10 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+//$sort[position]&for=paperlink
     if (categoryToEdit) {
       axiosInstance
-        .put(`/categories/${categoryToEdit.id}?$sort[position]=1&for=paperlink`, {
+        .put(`/categories/${categoryToEdit.id}`, {
           name: categoryName,
         })
         .then((response) => {

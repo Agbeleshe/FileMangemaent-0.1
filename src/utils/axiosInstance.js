@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
     config.headers.accessToken = token;
-    console.log("Token:", token); // Log the token only if it exists
+   // console.log("Token:", token); // Log the token only if it exists
   } else {
     redirect("/login"); // Redirect to the login page
   }

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import SearchGreen from "../../components/svg-icons/SearchGreen";
-import useInFor from "../../hooks/APIrequest/UseInFor";
-import { Infor } from "./resources/Infor";
 import { TfiClose } from "react-icons/tfi";
 import SearchBar from "./resources/SearchBar";
 import Loader from "./resources/Loader";
@@ -10,6 +8,7 @@ import convertDateTime from "./resources/DateConverter";
 import useTeamsPagination from "../../hooks/Paginations/useTeamsPaginations";
 import Arrow from "../../components/svg-icons/Arrow";
 import useTeamsApi from "../../hooks/APIrequest/useTeamsApi";
+import { UserData } from "./resources/TeamInfor";
 const makeStyle = (status: string) => {
   if (status === "New Trial") {
     return {
@@ -35,7 +34,7 @@ const Teams = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
   const [searchFilter, setSelectedFilter] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+//  const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const { loading, users, error } = useTeamsApi(
@@ -84,15 +83,15 @@ const Teams = () => {
   //     );
 
   // Page calculation
-  function calculateTotalPages(users: Infor[]) {
+  function calculateTotalPages(users: UserData[]) {
     let totalPages = 0;
     for (const user of users) {
-      totalPages += user.totalPages;
+      totalPages += user.user.totalPages;
     }
     return totalPages;
   }
 
-  const recordFound = currentPost.length > 0;
+  //const recordFound = currentPost.length > 0;
 
   const handleStatusFilter = (e: any) => {
     const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
@@ -241,11 +240,11 @@ const Teams = () => {
                     className=" border-gray-200 hover:bg-gray-100 pl-5"
                   >
                     <td className=" pl-5 border-t py-4 p-2 text-left font-Poppins text-lightGray">
-                      {user.email}
+                      {user.teamMemberEmail}
                     </td>
 
                     <td className=" border-t py-4 text-left text-lightGray font-Poppins text-sm font-normal">
-                      {user.email}
+                      {user.companyEmail}
                     </td>
                     <td className=" border-t py-4 px-4 text-left text-lightGray font-Poppins text-sm font-normal">
                       {user.companyName}
@@ -256,8 +255,8 @@ const Teams = () => {
                       </div>
                     </td>
                     <td className=" border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal  px-2">
-                      <span className="status" style={makeStyle(user.status)}>
-                        {user.status}
+                      <span className="status" style={makeStyle(user.user.status)}>
+                        {user.user.status}
                       </span>
                     </td>
                   </tr>
@@ -287,7 +286,7 @@ const Teams = () => {
                       className="text-black text-[12px] font-extrabold"
                       style={makeStyle(user.status)}
                     >
-                      {user.status}
+                      {user.user.status}
                     </span>
                     <span className="text-blue-800 underline text-[12px]">
                       {user.email}

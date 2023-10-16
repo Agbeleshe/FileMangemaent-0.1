@@ -18,7 +18,7 @@ const FirstModalJunologix: React.FC<FirstModalJunologixProps> = ({
   // Function to send a POST request to the API
   const sendData = async () => {
     try {
-      const response = await axiosInstance.post("/categories", {
+      const response = await axiosInstance.post("/categories?", {
         name,
         for: "junologix",
       });
