@@ -14,7 +14,7 @@ const SessionTimeout = ({ timeoutInMs }) => {
 
       const newTimer = setTimeout(() => {
         // Log the user out and redirect to the login page
-        navigate("/authentication");
+        navigate("/login");
       }, timeoutInMs);
 
       // Set the new timer in the state

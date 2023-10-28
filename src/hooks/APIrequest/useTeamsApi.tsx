@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserData } from "../../pages/Paperlink/resources/TeamInfor";
 import axiosInstance from "../../utils/axiosInstance";
-const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
+const useTeamsApi = (searchValue: string = "", selectedFilter: string = "") => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,8 +13,7 @@ const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
   //  `/users?$sort[createdAt]=-1&role=paid_user&companyName[$like]=%${searchValue}%`
   //  .get(`/teammembers?$sort[createdAt]=-1&${ searchValue.length > 0 ? `&status=${searchValue}` : "" }`;`)
 
-
-  console.log(selectedFilter,'kkkkkk')
+  console.log(searchValue);
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -27,7 +26,7 @@ const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
     axiosInstance
       //  .get<{ data: UserData[] }>(teamsUserUrl)
       .get(
-        `/teammembers?$or[0][companyName][$like]=${selectedFilter}%&$or[1][companyEmail][$like]=${selectedFilter}%&$or[2][teamMemberEmail][$like]=${selectedFilter}%`
+        `/teammembers?$or[0][companyName][$like]=${searchValue}%&$or[1][companyEmail][$like]=${searchValue}%&$or[2][teamMemberEmail][$like]=${searchValue}%&$or[3][status][$like]=${searchValue}%`
       )
 
       .then((res) => {
@@ -48,8 +47,10 @@ const useTeamsApi = (selectedFilter: string = "", searchValue: string = "") => {
     users,
     error,
     searchValue,
-    // selectedFilter.......,
+    // selectedFilter,
   };
 };
 
 export default useTeamsApi;
+
+//selectedFilter is useless now but can be usefull in the future just in case she saids she need two quary at once

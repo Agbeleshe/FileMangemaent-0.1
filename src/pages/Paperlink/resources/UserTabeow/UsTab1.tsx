@@ -150,7 +150,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               htmlFor="select"
               className="text-gray-700 font-Poppins text-20 font-normal"
             >
-              Action:
+              Status:
             </label>
             {isEditing ? (
               <div className="relative">

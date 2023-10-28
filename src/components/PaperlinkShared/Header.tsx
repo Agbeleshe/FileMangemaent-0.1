@@ -14,7 +14,7 @@ export default function Header() {
       localStorage.removeItem("token");
 
       //     // Redirect the user to the login page (or any other desired page)
-      window.location.href = "/authentication";
+      window.location.href = "/login";
     }
   };
 

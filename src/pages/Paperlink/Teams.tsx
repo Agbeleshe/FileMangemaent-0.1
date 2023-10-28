@@ -33,8 +33,8 @@ const Teams = () => {
   const [inputClick, setInputClick] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
-  const [searchFilter, setSelectedFilter] = useState("");
- const [searchTerm, setSearchTerm] = useState("");
+  const [searchFilter, setSearchFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const { loading, users, error } = useTeamsApi(
@@ -94,12 +94,12 @@ const Teams = () => {
   //const recordFound = currentPost.length > 0;
 
   const handleStatusFilter = (e: any) => {
-    const selectedValue = e.target.getAttribute("data-value"); // Get the data-value attribute
-    setSelectedFilter(selectedValue); // Update the selected filter state
-    console.log(selectedValue);
+    const filter = e.target.getAttribute("data-value"); // Get the data-value attribute
+    setSearchValue(filter); // Update the selected filter state
+    console.log(filter);
 
-    //to see evry data concerning that field you use filter all which will reomve pagination
-    setFilterAll(true);
+    // //to see evry data concerning that field you use filter all which will reomve pagination
+    // setFilterAll(true);
   };
 
   const toggleDropdown = () => {
@@ -255,7 +255,10 @@ const Teams = () => {
                       </div>
                     </td>
                     <td className=" border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal  px-2">
-                      <span className="status" style={makeStyle(user.user.status)}>
+                      <span
+                        className="status"
+                        style={makeStyle(user.user.status)}
+                      >
                         {user.user.status}
                       </span>
                     </td>

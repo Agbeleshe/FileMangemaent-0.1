@@ -14,7 +14,7 @@ return token ? (
 <Layout />
 ) : (
 // Keep the previous navigation stack
-<Navigate to="/authentication" state={{ from: location }} replace />
+<Navigate to="/login" state={{ from: location }} replace />
 );
 };
 

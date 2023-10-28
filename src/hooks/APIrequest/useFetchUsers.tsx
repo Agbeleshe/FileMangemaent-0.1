@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useCallback } from "react";
 import { UsersInfo } from "../../pages/Paperlink/resources/UsersInfo";
 import { BASE_URL } from "../../utils/axios-util";
@@ -12,7 +13,7 @@ const useFetchUsers = (
   const [users, setUsers] = useState<UsersInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDatePicked, setIsDatePicked] = useState<boolean | null >(null);
+  const [isDatePicked, setIsDatePicked] = useState<boolean | null>(null);
 
   const datefilter =
     startDate && endDate
@@ -21,11 +22,9 @@ const useFetchUsers = (
 
   const userUrl =
     BASE_URL +
-      `/files?$sort[createdAt]=-1&filePrivacy=public&fileName[$like]=%${searchValue}%${datefilter}` ||
-    `/files?$sort[createdAt]=-1&filePrivacy=public&fileAction=${selectedFilter}&${datefilter}`; 
-  //{{base_url}}/files?$sort[createdAt]=-1&filePrivacy=public
-  //&fileAction=confirm for the filter status
-  //&fileName[$like]=%acc% to search for files
+    `/files?$sort[createdAt]=-1&filePrivacy=public&fileName[$like]=%${searchValue}%${datefilter}` ||
+      `/files?$sort[createdAt]=-1&filePrivacy=public&fileAction=${selectedFilter}&${datefilter}`;
+   // `/files?$or[0][userId]=${selectedFilter}&$or[1][uploadedBy]=${searchValue}$or[2][user.email][$like]=${searchValue}%$or[3][fileName][$like]=${searchValue}%&${datefilter}`;
   useEffect(() => {
     setLoading(true);
     axios
@@ -42,6 +41,7 @@ const useFetchUsers = (
         setLoading(false);
       });
   }, [searchValue, selectedFilter, datefilter]);
+ // console.log(searchValue, "aaaakkkeeee");
 
   return {
     loading,
@@ -50,7 +50,7 @@ const useFetchUsers = (
     userUrl,
     searchValue,
     isDatePicked,
-    setIsDatePicked
+    setIsDatePicked,
   };
 };
 

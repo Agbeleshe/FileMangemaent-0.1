@@ -148,7 +148,7 @@ const JunologixReports = () => {
                 />
               </div>
 
-              <div className="w-[90%] mt-4 mx-auto">
+              {/* <div className="w-[90%] mt-4 mx-auto">
                 <label className="md:text-sm text-xs ">status</label>
                 <input
                   title="Please fill in your email address "
@@ -160,7 +160,7 @@ const JunologixReports = () => {
                     setFormData({ ...formData, status: e.target.value })
                   }
                 />
-              </div>
+              </div> */}
               <div className="w-full  my-4 flex justify-center items-center">
                 <button
                   type="submit"
@@ -189,7 +189,7 @@ const JunologixReports = () => {
                       return
                     </th>
                     <th className="border-b px-4 py-3 text-left font-medium text-darkGray text-sm">
-                      status
+                    action
                     </th>
                   </tr>
                 </thead>
@@ -206,9 +206,9 @@ const JunologixReports = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           {item.return}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        {/* <td className="px-6 py-4 whitespace-nowrap">
                           {item.status}
-                        </td>
+                        </td> */}
                         <div className="flex gap-2 m-2">
                           <span onClick={() => handleEditClick(index)}>
                             <EditIcon />
