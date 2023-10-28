@@ -34,13 +34,12 @@ const Teams = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [records, setRecords] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
- const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const { loading, users, error } = useTeamsApi(
     searchValue,
     searchFilter
-    // searchValue
   );
   const [filterAll, setFilterAll] = useState(false);
   const {
@@ -66,21 +65,7 @@ const Teams = () => {
     // setFilterAll(true);
   };
 
-  // const filteredUsers = filterAll
-  //   ? users.filter(
-  //       (user: any) =>
-  //         user.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
-  //     )
-  //   : currentPost.filter(
-  //       (user: any) =>
-  //         user.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
-  //     );
+
 
   // Page calculation
   function calculateTotalPages(users: UserData[]) {
@@ -116,7 +101,6 @@ const Teams = () => {
     }
   }, [currentPost, inputClick]);
 
-  //pagination Logic
   return (
     <div className="border-radius-[0.9375rem] bg-white mb-[150px] width-[65.75rem] h-auto  overflow-hidden font-Poppins rounded-t-lg">
       <div className="bg-secondaryColor flex justify-between height-[5.3125rem] px-4 py-2 rounded-t-lg">
@@ -255,7 +239,10 @@ const Teams = () => {
                       </div>
                     </td>
                     <td className=" border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal  px-2">
-                      <span className="status" style={makeStyle(user.user.status)}>
+                      <span
+                        className="status"
+                        style={makeStyle(user.user.status)}
+                      >
                         {user.user.status}
                       </span>
                     </td>
@@ -306,7 +293,7 @@ const Teams = () => {
       {error && (
         <ErrorMessage message="An error occurred while fetching data" />
       )}
-      {currentPost.length < 1 && (
+      {currentPost.length < 1 && inputClick && (
         <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
           Search complete. No record found
         </div>

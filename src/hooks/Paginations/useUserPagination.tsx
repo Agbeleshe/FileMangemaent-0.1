@@ -1,6 +1,5 @@
 import { useState } from "react";
-// import useInFor from "./UseInFor"; this is for diffrent tsx interface
-import useLedger from "../APIrequest/useLedger";
+//import useLedger from "../APIrequest/useLedger";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const useUserPagination = (
@@ -17,54 +16,47 @@ const useUserPagination = (
 
   const [viewAll, setViewAll] = useState(false);
 
-  // console.log(users, 'from the pagination')
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
 
-  //const currentPost = viewAll
-  // ? users
-  // : users?.slice(firstPostIndex, lastPostIndex);
+  //logic for filteration cut from legder under file
 
- const filteredUsers =
-   isDatePicked && !filterAll
-     ? users
-         ?.slice(firstPostIndex, lastPostIndex)
-         .filter((user) => user && user.file && user.file.paperLink)
-     : filterAll
-     ? users?.slice(firstPostIndex, lastPostIndex).filter((user) => {
-         if (!user) return false;
-         if (!user.file) return false;
-         return (
-           user.user.firstName
-             .toLowerCase()
-             .includes(searchValue.toLowerCase()) ||
-           user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-           (user.file.paperLink &&
-             user.file.paperLink
-               .toLowerCase()
-               .includes(searchValue.toLowerCase())) ||
-           user.file.fileAction
-             .toLowerCase()
-             .includes(searchValue.toLowerCase())
-         );
-       })
-     : users?.slice(firstPostIndex, lastPostIndex).filter((user) => {
-         if (!user) return false;
-         if (!user.file) return false;
-         return (
-           user.user.firstName
-             .toLowerCase()
-             .includes(searchValue.toLowerCase()) ||
-           user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-           (user.file.paperLink &&
-             user.file.paperLink
-               .toLowerCase()
-               .includes(searchValue.toLowerCase())) ||
-           user.file.fileAction
-             .toLowerCase()
-             .includes(searchValue.toLowerCase())
-         );
-       });
+  const filteredUsers =
+    isDatePicked && !filterAll
+      ? users?.slice(firstPostIndex, lastPostIndex)
+      : filterAll
+      ? users?.slice(firstPostIndex, lastPostIndex).filter(
+          (users: any) =>
+           users.user.firstName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            users.user.email
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            users.file.paperLink
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            users.file.fileAction
+              .toLowerCase()
+              //  .includes(searchValue.toLowerCase())
+              .includes(selectedFilter.toLowerCase())
+
+         
+        )
+      : users?.slice(firstPostIndex, lastPostIndex).filter(
+          (user: any) =>
+            user.user.firstName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.file.paperLink
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            user.file.fileAction
+              .toLowerCase()
+              //  .includes(searchValue.toLowerCase())
+              .includes(selectedFilter.toLowerCase())
+        );
 
   const currentPost = viewAll ? users : filteredUsers;
 

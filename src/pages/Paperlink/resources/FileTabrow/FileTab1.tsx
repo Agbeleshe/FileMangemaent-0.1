@@ -184,7 +184,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               htmlFor="select"
               className="text-gray-700 font-Poppins text-20 font-normal"
             >
-              Action:
+                Status:
             </label>
 
             {isEditing ? (
@@ -309,7 +309,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-4">
             <label htmlFor="contactNumber" className="block py-5 text-gray-700">
-              Last Name:
+              Contact Number:
             </label>
             <input
               type="text"

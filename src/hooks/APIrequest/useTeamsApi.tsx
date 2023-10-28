@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserData } from "../../pages/Paperlink/resources/TeamInfor";
 import axiosInstance from "../../utils/axiosInstance";
-const useTeamsApi = (searchValue: string = "", selectedFilter: string = "" ) => {
+const useTeamsApi = (searchValue: string = "", selectedFilter: string = "") => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,8 +13,7 @@ const useTeamsApi = (searchValue: string = "", selectedFilter: string = "" ) => 
   //  `/users?$sort[createdAt]=-1&role=paid_user&companyName[$like]=%${searchValue}%`
   //  .get(`/teammembers?$sort[createdAt]=-1&${ searchValue.length > 0 ? `&status=${searchValue}` : "" }`;`)
 
-
-  console.log(searchValue)
+  console.log(searchValue);
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -54,6 +53,4 @@ const useTeamsApi = (searchValue: string = "", selectedFilter: string = "" ) => 
 
 export default useTeamsApi;
 
-
-
-//selectedFilter is useless now but can be usefull in the future just in case she saids she need two quary at once 
+//selectedFilter is useless now but can be usefull in the future just in case she saids she need two quary at once

@@ -14,31 +14,14 @@ const useAccApi = (
   const [error, setError] = useState<string | null>(null);
   const [isDatePicked, setIsDatePicked] = useState<boolean | null>(null);
 
-const datefilter =
-  startDate && endDate
-    ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
-    : "";
+  const datefilter =
+    startDate && endDate
+      ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
+      : "";
 
-let queryParams = [];
-
-if (selectedFilter) {
-  queryParams.push(`status=${selectedFilter}`);
-}
-
-if (searchValue) {
-  queryParams.push(`companyName[$like]=%${searchValue}`);
-}
-
-// Combine the query parameters into a single string
-const queryString = queryParams.join("&");
-
-// Construct the complete URL
-const paidUserUrl = `${BASE_URL}/users?$sort[createdAt]=-1&role=paid_user${datefilter}${queryString}`;
-
-  // `/users?$sort[createdAt]=-1&role=paid_user&status=${selectedFilter}`;
-  //`/users?$sort[createdAt]=-1&role=paid_user&email=${searchValue}`;
-  //  `/users?$sort[createdAt]=-1&role=paid_user&companyName[$like]=%${searchValue}%`
-  // `/users?$sort[createdAt]=-1&role=paid_user&status=${selectedFilter}`;
+  const paidUserUrl =
+    BASE_URL +
+    `/users?$sort[createdAt]=-1&role=paid_user&$or[0][companyName][$like]=${selectedFilter}%&$or[1][email][$like]=${selectedFilter}%&$or[2][status][$like]=${searchValue}%${datefilter}`;
 
   useEffect(() => {
     setLoading(true);
@@ -59,6 +42,7 @@ const paidUserUrl = `${BASE_URL}/users?$sort[createdAt]=-1&role=paid_user${datef
 
   console.log(users);
   console.log(startDate, endDate);
+  console.log(selectedFilter, "heree");
   return {
     loading,
     users,

@@ -18,9 +18,8 @@ import AccountReceive from "../pages/Paperlink/AccountReceive";
 import File from "../pages/Paperlink/File";
 import Qna from "../pages/Paperlink/Qna";
 import PaperLink from "../pages/Paperlink/PaperLink";
-//import Login from "../components/Login/Login";
+import Login from "../components/Login/Login";
 //trying things out.
-import Authentication from "../components/Authentication";
 import PrivateRoutesLayout from "./PrivateRoutesLayout";
 import ForgotPassword from "../components/Login/ForgotPassword";
 import SessionTimeout from "../components/Login/SessionTimeout";
@@ -36,7 +35,7 @@ const MainRoutes = () => {
       <Router>
         {/**   <SessionTimeout timeoutInMs={12 * 60 * 60 * 1000} />*/}
         <Routes>
-          <Route path="/authentication" element={<Authentication />} />
+          <Route path="/Login" element={<Login />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
 
@@ -65,7 +64,7 @@ const MainRoutes = () => {
             <Route path="AccountRecieve" element={<AccountReceive />} />
             <Route path="Qna" element={<Qna />} />
             <Route path="QnAJunologix" element={<QnAJunologix />} />
-               <Route path="JunologixReports" element={<JunologixReports />} />
+            <Route path="JunologixReports" element={<JunologixReports />} />
 
             <Route path="paperLink" element={<PaperLink />} />
           </Route>
