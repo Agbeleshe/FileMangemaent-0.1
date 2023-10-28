@@ -309,7 +309,7 @@ const Teams = () => {
       {error && (
         <ErrorMessage message="An error occurred while fetching data" />
       )}
-      {currentPost.length < 1 && (
+      {currentPost.length < 1 && inputClick && (
         <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
           Search complete. No record found
         </div>
