@@ -18,81 +18,26 @@ const useAccountPagination = (
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
 
-  //logic for filteration cut from Accounts
-  // const filteredUsers =
-  //   isDatePicked && !filterAll
-  //     ? users?.slice(firstPostIndex, lastPostIndex)
-  //     : filterAll
-  //     ? users
-  //         ?.slice(firstPostIndex, lastPostIndex)
-  //         .filter(
-  //           (users: any) =>
-  //             users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //             users.companyName
-  //               .toLowerCase()
-  //               .includes(searchValue.toLowerCase()) ||
-  //             users.status.toLowerCase().includes(selectedFilter.toLowerCase())
-  //         )
-  //     : users
-  //         ?.slice(firstPostIndex, lastPostIndex)
-  //         .filter(
-  //           (users: any) =>
-  //             users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //             users.companyName
-  //               .toLowerCase()
-  //               .includes(searchValue.toLowerCase()) ||
-  //             users.status.toLowerCase().includes(selectedFilter.toLowerCase())
-  //         );
   const filteredUsers =
     isDatePicked && !filterAll
-      ? users
-          ?.slice(firstPostIndex, lastPostIndex)
-          .filter(
-            (user) =>
-              (user &&
-                (user.email || "")
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase())) ||
-              (user.companyName || "")
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              (user.status || "")
-                .toLowerCase()
-                .includes(selectedFilter.toLowerCase())
-          )
+      ? users?.slice(firstPostIndex, lastPostIndex)
       : filterAll
       ? users
           ?.slice(firstPostIndex, lastPostIndex)
           .filter(
-            (user) =>
-              (user &&
-                (user.email || "")
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase())) ||
-              (user.companyName || "")
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              (user.status || "")
-                .toLowerCase()
-                .includes(selectedFilter.toLowerCase())
+            (users:any) =>
+                users.email.toLowerCase() .includes(searchValue.toLowerCase()) ||
+              users.companyName .toLowerCase() .includes(searchValue.toLowerCase()) ||
+              users.status .toLowerCase().includes(selectedFilter.toLowerCase())
           )
-      : users
-          ?.slice(firstPostIndex, lastPostIndex)
-          .filter(
-            (user) =>
-              (user &&
-                (user.email || "")
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase())) ||
-              (user.companyName || "")
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()) ||
-              (user.status || "")
-                .toLowerCase()
-                .includes(selectedFilter.toLowerCase())
+      : users ?.slice(firstPostIndex, lastPostIndex) .filter(
+            (users:any) =>
+                users.email .includes(searchValue.toLowerCase()) ||
+              users.companyName  .toLowerCase() .includes(searchValue.toLowerCase()) ||
+          users.status.toLowerCase().includes(selectedFilter.toLowerCase())
+        
           );
 
-  //const currentPost = viewAll ? users : users.slice(firstPostIndex, lastPostIndex);
   const currentPost = viewAll ? users : filteredUsers;
 
   const totalPages = Math.ceil(users.length / postPerPage);

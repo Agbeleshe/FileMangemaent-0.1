@@ -25,9 +25,7 @@ const useTeamsPagination = (
           (users: any) =>
             users.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
             users.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-            users.companyName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) ||
+            users.companyName.toLowerCase() .includes(searchValue.toLowerCase()) ||
             users.status.toLowerCase().includes(searchValue.toLowerCase())
         )
     : users?.slice(firstPostIndex, lastPostIndex).filter(

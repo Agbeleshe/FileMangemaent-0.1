@@ -40,7 +40,6 @@ const Teams = () => {
   const { loading, users, error } = useTeamsApi(
     searchValue,
     searchFilter
-    // searchValue
   );
   const [filterAll, setFilterAll] = useState(false);
   const {
@@ -66,21 +65,7 @@ const Teams = () => {
     // setFilterAll(true);
   };
 
-  // const filteredUsers = filterAll
-  //   ? users.filter(
-  //       (user: any) =>
-  //         user.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
-  //     )
-  //   : currentPost.filter(
-  //       (user: any) =>
-  //         user.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
-  //     );
+
 
   // Page calculation
   function calculateTotalPages(users: UserData[]) {
@@ -116,7 +101,6 @@ const Teams = () => {
     }
   }, [currentPost, inputClick]);
 
-  //pagination Logic
   return (
     <div className="border-radius-[0.9375rem] bg-white mb-[150px] width-[65.75rem] h-auto  overflow-hidden font-Poppins rounded-t-lg">
       <div className="bg-secondaryColor flex justify-between height-[5.3125rem] px-4 py-2 rounded-t-lg">

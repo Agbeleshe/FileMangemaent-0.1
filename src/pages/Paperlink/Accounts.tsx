@@ -43,9 +43,16 @@ const Accounts = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(""); // Initialize with a default filter value
   const [filterAll, setFilterAll] = useState(false);
-  // const [searchTerms, setSearchTerms] = useState("");
   const [selectedDate, setSelectedDate] = useState(false);
   const [timeFilter, setTimeFilter] = useState<any>([null, null]);
+
+
+ const toggleDropdown = () => {
+   setIsOpen(!isOpen);
+   // setFilterAll(false);
+ };
+
+
 
   //fetching data
   const { loading, users, error, setIsDatePicked, isDatePicked } = useAccApi(
@@ -54,11 +61,6 @@ const Accounts = () => {
     timeFilter[0],
     timeFilter[1]
   );
-  // const { loading, users, error } = useInFor(
-  //   searchValue,
-  //   selectedFilter,
-  //   searchTerms
-  // );
 
   //paginated data
   const {
@@ -79,25 +81,17 @@ const Accounts = () => {
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
+  setFilterAll(!filterAll);
+
   };
   const handleInputClick = () => {
     setInputClick(!inputClick);
     setSearchValue("");
+     setFilterAll(false);
+     console.log(filterAll);
   };
 
-  // const filteredUsers = filterAll
-  //   ? users.filter(
-  //       (user: any) =>
-  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
-  //     )
-  //   : currentPost.filter(
-  //       (user: any) =>
-  //         user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.companyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //         user.status.toLowerCase().includes(searchValue.toLowerCase())
-  //     );
+ 
 
   const recordFound = currentPost.length > 0;
 
@@ -121,24 +115,16 @@ const Accounts = () => {
   //handle modal of the date close
   const handleCloseSelectedDate = () => {
     setSelectedDate(false);
-    console.log(selectedDate);
+   // console.log(selectedDate);
 
-    // //condition to close modal TEST COMMAND
-    // if (event.target === event.currentTarget) {
-    //    setSelectedDate(!selectedDate);
-    //    console.log(selectedDate);
-    // }
+  
   };
   // handling the date picker
   const getDateValuesFunc = (start: number, end: number) => {
     setTimeFilter([start, end]);
     start && end && handleCloseSelectedDate();
 
-    // emergency
-    // setTimeout(() => {
-    //   handleCloseSelectedDate();
-    // }, 1000);
-    // console.log(start, end);
+   
   };
 
   // Green plus sign modal
@@ -156,14 +142,10 @@ const Accounts = () => {
     console.log(selectedValue);
 
     //to see evry data concerning that field you use filter all which will reomve pagination
-    setFilterAll(true);
+   setFilterAll(true);
   };
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-    setFilterAll(false);
-  };
-
+ 
   return (
     <div className=" mb-[150px] border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-t-lg">
       {tabs ? (
