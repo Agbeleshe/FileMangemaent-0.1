@@ -19,7 +19,10 @@ const useBilling = (
       ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
       : "";
 
-  const userUrl = BASE_URL + `/billings?${datefilter}`;
+  const userUrl =
+    searchValue
+      ? `${BASE_URL}/billings?$or[0][userId]=${searchValue}$or[1][user.companyName][$like]=${searchValue}$or[2][user.email][$like]=${searchValue}`
+      : `${BASE_URL}/billings?${datefilter}`;
 
   useEffect(() => {
     setLoading(true);
@@ -44,7 +47,7 @@ const useBilling = (
     error,
     searchValue,
     isDatePicked,
-    setIsDatePicked
+    setIsDatePicked,
   };
 };
 

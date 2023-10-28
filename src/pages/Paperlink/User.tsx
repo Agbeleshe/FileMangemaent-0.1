@@ -12,6 +12,10 @@ import convertDateTime from "./resources/DateConverter";
 import Arrow from "../../components/svg-icons/Arrow";
 import UserTabrow from "../Paperlink/resources/UserTabeow/UserTabrow";
 
+//redux
+import { useSelector } from "react-redux";
+import { selectActiveTabLabel } from "../../store/tab-slice";
+
 import { Ledger } from "./resources/Ledger";
 
 import "./User.css";
@@ -43,6 +47,8 @@ const makeStyle = (status: string) => {
 };
 
 const User = () => {
+  const activeTab = useSelector(selectActiveTabLabel);
+
   const [inputClick, setInputClick] = useState(false);
   const [filterAll, setFilterAll] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -188,8 +194,9 @@ const User = () => {
 
   return (
     <div className="mb-20">
-      {!tabs ? (
-        <div className=" md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-t-lg">
+      {!tabs  ? (
+        <div>
+          {activeTab === 'Paperlink' ? <div className=" md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-t-lg">
           <div className="bg-secondaryColor flex justify-between md:h-[4.1875rem] rounded-t-lg px-4 py-2">
             <div className="border-b-0 text-lightGray font-medium leading-normal text-lg md:text-2xl">
               User Log
@@ -454,6 +461,7 @@ const User = () => {
           <div className="w-full bg-slate-100 flex justify-center">
             {prevButton} {paginationButtons} {viewAllButton} {nextButton}
           </div>
+        </div> : <div>No Records Found!!</div> }
         </div>
       ) : (
         <div>

@@ -47,7 +47,7 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
     setLoading(true);
     axiosInstance
       .get<{ data: Billing[] }>(
-        `/billings?userId=${selectedUser.id}&$sort[createdAt]=-1`
+        `/billings?userId=${selectedUser.userId}&$sort[createdAt]=-1`
       )
       .then((res) => {
         const singleBilling = [res.data.data[0]] as Billing[];
@@ -63,7 +63,7 @@ const Tabs: React.FC<TabsProps> = ({ selectedUser }) => {
       });
   }, []);
 
-  const filteredUsers = users.filter((user) => selectedUser.id === user.userId);
+  const filteredUsers = users.filter((user) => selectedUser.userId === user.userId);
   // console.log("filtered: ",filteredUsers)
 
   return (

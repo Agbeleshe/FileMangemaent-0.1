@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux"; // Import useSelector to access Redux store
+import { useSelector,  useDispatch } from "react-redux"; // Import useSelector to access Redux store
 import { RootState } from "../../store"; // Replace with the correct path to your root reducer
 import "./Header.css";
-//import { useNavigate, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
+import { selectActiveTabLabel } from "../../store/tab-slice"; // Replace with the correct path
+
 
 export default function Header() {
   const [toggle, setToggle] = useState(false);
@@ -21,12 +22,14 @@ export default function Header() {
   // Use useSelector to get the user's email from the Redux store
   const userEmail = useSelector((state: RootState) => state.auth.userEmail); // Assuming your Redux slice is named 'auth'
   //console.log(userEmail)
+  const activeTab = useSelector(selectActiveTabLabel);
+
   return (
     <div className="hidden md:inline  md:w-73rem md:h-6.625rem md:flex-shrink-0 md:bg-[#FBFAFF] md:shadow-md">
       <div className="bg-headerbg shadow-md h-16 px-4 flex items-center border-b border-gray-200 justify-between font-Poppins">
         <div className="relative">
           <h2 className="text-text-blk font-poppins font-medium text-2xl ml-5">
-            Paperlink
+           {activeTab}
           </h2>
         </div>
         <div className="flex items-center gap-3 mr-4 animate-giggle-on-load">
