@@ -20,14 +20,16 @@ const useUserPagination = (
   const firstPostIndex = lastPostIndex - postPerPage;
 
   //logic for filteration cut from legder under file
-
+  console.log(searchValue, "for it");
+  console.log(selectedFilter, "for the 2");
+  console.log(users, "for users:");
   const filteredUsers =
     isDatePicked && !filterAll
       ? users?.slice(firstPostIndex, lastPostIndex)
       : filterAll
       ? users?.slice(firstPostIndex, lastPostIndex).filter(
           (users: any) =>
-           users.user.firstName
+            users.user.firstName
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
             users.user.email
@@ -38,10 +40,8 @@ const useUserPagination = (
               .includes(searchValue.toLowerCase()) ||
             users.file.fileAction
               .toLowerCase()
-              //  .includes(searchValue.toLowerCase())
-              .includes(selectedFilter.toLowerCase())
-
-         
+               .includes(searchValue.toLowerCase())
+              //.includes(selectedFilter.toLowerCase())
         )
       : users?.slice(firstPostIndex, lastPostIndex).filter(
           (user: any) =>
@@ -54,8 +54,8 @@ const useUserPagination = (
               .includes(searchValue.toLowerCase()) ||
             user.file.fileAction
               .toLowerCase()
-              //  .includes(searchValue.toLowerCase())
-              .includes(selectedFilter.toLowerCase())
+                .includes(searchValue.toLowerCase())
+             // .includes(selectedFilter.toLowerCase())
         );
 
   const currentPost = viewAll ? users : filteredUsers;
@@ -65,7 +65,7 @@ const useUserPagination = (
   const setPage = (page: number) => {
     setCurrentPage(page);
   };
-
+  console.log(currentPage, "the page");
   const prevButton = (
     <button
       title="Previous Page"

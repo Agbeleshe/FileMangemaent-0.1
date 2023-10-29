@@ -127,7 +127,7 @@ const User = () => {
 
   //because length start fron 0
   const recordFound = currentPost.length > -1;
-
+console.log(currentPost,"currentPost")
   // display of no records
   useEffect(() => {
     if (currentPost.length > -1 && inputClick) {
