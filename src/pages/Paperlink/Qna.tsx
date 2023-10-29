@@ -49,13 +49,27 @@ const Qna = () => {
   const [draggedFAQ, setDraggedFAQ] = useState<FAQ | null>(null);
   const [draggedFAQIndex, setDraggedFAQIndex] = useState<number | null>(null);
 
+  //yeah you can start touching
+  let endpoint = "paperlink";
+
+  // Check your circumstances and modify the endpoint accordingly
+  if (activeTab === "Signinlink") {
+    endpoint = "signinlink";
+  } else if (activeTab === "Timelink") {
+    endpoint = "timelink";
+  } else if (activeTab === "RXlink") {
+    endpoint = "rxlink";
+  } else if (activeTab === "Hostlink") {
+    endpoint = "hostlink";
+  }
+
   // Calling APIs
   useEffect(() => {
     // Fetch Junologix  FAQs
     setLoading(true);
 
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=paperlink`)
+      .get(`/categories?$sort[position]=1&for=` + endpoint)
       //  {{base_url}}/categories?$sort[position]=1&for=paperlink
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
@@ -69,7 +83,7 @@ const Qna = () => {
 
     // Fetch FAQs
     axiosInstance
-      .get(`/faq?$sort[position]=1&for=paperlink`)
+      .get(`/faq?$sort[position]=1&for=` + endpoint)
       .then((response) => {
         setFAQs(response.data as FAQ[]);
         setLoading(false);
@@ -78,7 +92,7 @@ const Qna = () => {
         console.error("Error fetching FAQs:", error);
         setLoading(false);
       });
-  }, []);
+  }, [activeTab]);
 
   // Modal functions
 
@@ -194,10 +208,13 @@ const Qna = () => {
 
     // Send a POST request to update the server with the new category order
     try {
-      await axiosInstance.post(`/categories?$sort[position]=1&for=paperlink`, {
-        action: "orderCategories",
-        order: extractedreorderCategory,
-      });
+      await axiosInstance.post(
+        `/categories?$sort[position]=1&for=` + endpoint,
+        {
+          action: "orderCategories",
+          order: extractedreorderCategory,
+        }
+      );
     } catch (error) {
       console.error("Error updating categories:", error);
     }
@@ -238,7 +255,7 @@ const Qna = () => {
 
     // Send a POST request to update the server with the new FAQ order
     try {
-      await axiosInstance.post(`/faq?$sort[position]=1&for=paperlink`, {
+      await axiosInstance.post(`/faq?$sort[position]=1&for=` + endpoint, {
         action: "orderFAQ",
 
         order: reorderedFAQs.map((faq, index) => ({
@@ -264,7 +281,7 @@ const Qna = () => {
   // Function to update category data
   const updateCategories = () => {
     axiosInstance
-      .get("/categories?$sort[position]=1&for=paperlink")
+      .get(`/categories?$sort[position]=1&for=` + endpoint)
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
@@ -278,7 +295,7 @@ const Qna = () => {
   const handleAddFAQ = async (faq: FAQ) => {
     try {
       const response = await axiosInstance.post(
-        "/faq?$sort[position]=1&for=paperlink",
+        `/faq?$sort[position]=1&for=` + endpoint,
         faq
       );
       setFAQs([...FAQs, response.data]);
@@ -318,13 +335,12 @@ const Qna = () => {
         </div>
       </div>
 
-      {activeTab === "Paperlink" ? (
-        <>
           {modalOne ? (
             <FirstModal
               setModalOne={setModalOne}
               handleModalClose={handleModalClose}
               updateCategories={updateCategories}
+              endpoint={endpoint}
             />
           ) : (
             ""
@@ -438,6 +454,7 @@ const Qna = () => {
                     handleModalClose={handleModalClose}
                     setFAQs={setFAQs}
                     FAQs={FAQs}
+                    endpoint={endpoint}
                   />
                 ) : (
                   ""
@@ -524,15 +541,8 @@ const Qna = () => {
               )}
             </div>
           )}
-        </>
-      ) : (
-        <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
-          <h2>Sorry, No Records Found in {activeTab}</h2>
-          <div className="h-[100%] w-full flex justify-center ">
-            <Lottie loop={false} animationData={noRecords} />
-          </div>
-        </div>
-      )}
+      
+  
     </div>
   );
 };
