@@ -297,7 +297,6 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                 </div>
               </div>
 
-
               {/* The div for end */}
               <div className="grid grid-cols-2 py-5 px-3 shadow-full rounded-b-lg">
                 {/* ... Other content */}
@@ -312,6 +311,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                     {papercount * user.paperlink +
                       fillablecount * user.fillablePdf +
                       count * user.teamMembers +
+                      WhiteGloveService * user.whiteGloveService +
                       10}
                     .00
                   </span>

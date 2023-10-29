@@ -308,6 +308,7 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
                     {papercount * user.paperlink +
                       fillablecount * user.fillablePdf +
                       count * user.teamMembers +
+                      WhiteGloveService * user.whiteGloveService +
                       10}
                     .00
                   </span>
