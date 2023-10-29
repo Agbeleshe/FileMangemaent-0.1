@@ -10,6 +10,8 @@ interface SecondModalJunologixProps {
   handleModalClose: () => void;
   setFAQs: React.Dispatch<React.SetStateAction<FAQ[]>>;
   FAQs: FAQ[];
+  endpoint: string
+
 }
 
 interface Category {
@@ -22,6 +24,7 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
   handleModalClose,
   setFAQs,
   FAQs,
+  endpoint,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<number | string>("");
   const [question, setQuestion] = useState("");
@@ -34,7 +37,7 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
     setisLoading(true);
 
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=junologix`)
+      .get(`/categories?$sort[position]=1&for=`+ endpoint)
       .then((res) => {
         setCategories(res.data);
         setSelectedCategory("");
@@ -54,12 +57,15 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
       try {
         // Make API call to add new FAQ
         const response = await axiosInstance.post(
-          `/faq?$sort[position]=1&for=junologix`,
+          `/faq?$sort[position]=1&for=`+ endpoint,
           {
             categoryId: selectedCategory,
             question,
             answer,
-            for: "junologix",
+          //  for: "junologix",
+          for: endpoint,
+
+
           }
         );
 

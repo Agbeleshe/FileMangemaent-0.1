@@ -23,6 +23,7 @@ const TABS: Tab[] = [
   { label: "Hostlink", path: "/HostLayout", id: 5 },
 ];
 
+
 const QnAJunologix: Tab[] = [
   { label: "Junologix", path: "/Junologix", id: 1 },
   { label: "TaxIO", path: "/TaxIO", id: 2 },

@@ -6,21 +6,25 @@ interface FirstModalJunologixProps {
   setModalOne: (value: boolean) => void;
   handleModalClose: () => void;
   updateCategories: () => void;
+  endpoint: string
 }
 
 const FirstModalJunologix: React.FC<FirstModalJunologixProps> = ({
   setModalOne,
   handleModalClose,
   updateCategories,
+  endpoint
 }) => {
   const [name, setName] = useState("");
+
+  
 
   // Function to send a POST request to the API
   const sendData = async () => {
     try {
       const response = await axiosInstance.post("/categories?", {
         name,
-        for: "junologix",
+        for: endpoint,
       });
       console.log("API response:", response.data);
       console.log("Category created:", response.data);

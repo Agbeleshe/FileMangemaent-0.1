@@ -20,6 +20,14 @@ import {
 //import { constants } from "http2";
 import Loader from "./resources/Loader";
 
+//no record icon
+import noRecords from "../../assests/noRecords.json";
+import Lottie from "lottie-react";
+
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
 const QnAJunologix = () => {
   const [modalOne, setModalOne] = useState(false);
   const [modalTwo, setModalTwo] = useState(false);
@@ -30,6 +38,11 @@ const QnAJunologix = () => {
   const [editFAQ, setEditFAQ] = useState<FAQ | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editCategory, setEditCategory] = useState<PaperLinkFAQ | null>(null);
+
+  const activeTab = useSelector(selectActiveTabLabel);
+
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false); // Set it to true initially or use an appropriate initial value
 
   // State for dragged item for category
@@ -39,39 +52,64 @@ const QnAJunologix = () => {
   const [draggedFAQ, setDraggedFAQ] = useState<FAQ | null>(null);
   const [draggedFAQIndex, setDraggedFAQIndex] = useState<number | null>(null);
 
-  // Calling APIs
-  useEffect(() => {
-    // Fetch PaperLink FAQs
-        setLoading(true);
+  //DO NOT TOUCH
+  let customActiveTab = "Junologix";
+  if (activeTab === "TaxIO") {
+    customActiveTab = "TaxIO";
+  } else if (activeTab === "DataIO") {
+    customActiveTab = "DataIO";
+  } else if (activeTab === "ScheduleIO") {
+    customActiveTab = "ScheduleIO";
+  }
+  dispatch(setActiveTabLabel(customActiveTab));
 
+  //yeah you can start touching
+  let endpoint = "junologix";
+
+  // Check your circumstances and modify the endpoint accordingly
+  if (activeTab === "TaxIO") {
+    endpoint = "taxio";
+  } else if (activeTab === "DataIO") {
+    endpoint = "dataio";
+  } else if (activeTab === "ScheduleIO") {
+    endpoint = "scheduleio";
+  }
+
+  console.log("activeTab changed:", activeTab);
+
+  const fetchData = () => {
+    setLoading(true);
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=junologix`)
+      .get(`/categories?$sort[position]=1&for=` + endpoint)
       .then((response) => {
+        console.log(endpoint, "......outside the axios call ");
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
-                setLoading(false);
-
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching PaperLink FAQs:", error);
-                setLoading(false);
-
+        setLoading(false);
       });
+  };
+
+  // Calling APIs
+  useEffect(() => {
+    // Fetch PaperLink FAQs
+    fetchData();
 
     // Fetch FAQs
     axiosInstance
-      .get(`/faq?$sort[position]=1&for=junologix`)
+      .get(`/faq?$sort[position]=1&for=` + endpoint)
       .then((response) => {
         setFAQs(response.data as FAQ[]);
-                setLoading(false);
-
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching FAQs:", error);
-                setLoading(false);
-
+        setLoading(false);
       });
-  }, []);
+  }, [activeTab]);
 
   // Modal functions
 
@@ -187,7 +225,7 @@ const QnAJunologix = () => {
 
     // Send a POST request to update the server with the new category order
     try {
-      await axiosInstance.post(`/categories?$sort[position]=1&for=junologix`, {
+      await axiosInstance.post(`/categories?$sort[position]=1&for=`+ endpoint, {
         action: "orderCategories",
         order: extractedreorderCategory,
       });
@@ -231,7 +269,7 @@ const QnAJunologix = () => {
 
     // Send a POST request to update the server with the new FAQ order
     try {
-      await axiosInstance.post(`/faq?$sort[position]=1&for=junologix`, {
+      await axiosInstance.post(`/faq?$sort[position]=1&for=`+ endpoint, {
         action: "orderFAQ",
 
         order: reorderedFAQs.map((faq, index) => ({
@@ -257,7 +295,7 @@ const QnAJunologix = () => {
   // Function to update category data
   const updateCategories = () => {
     axiosInstance
-      .get("/categories?$sort[position]=1&for=junologix")
+      .get("/categories?$sort[position]=1&for="+ endpoint)
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
@@ -271,7 +309,7 @@ const QnAJunologix = () => {
   const handleAddFAQ = async (faq: FAQ) => {
     try {
       const response = await axiosInstance.post(
-        "/faq?$sort[position]=1&for=junologix",
+        "/faq?$sort[position]=1&for="+ endpoint,
         faq
       );
       setFAQs([...FAQs, response.data]);
@@ -299,8 +337,7 @@ const QnAJunologix = () => {
     <div className="mb-32 md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-lg">
       <div className="bg-secondaryColor flex justify-between h-[4.1875rem] rounded-t-lg px-4 py-2">
         <div className="border-b-0 text-black font-medium leading-normal text-2xl">
-          QnA Junologix
-          
+          QnA {activeTab}
         </div>
 
         <div className="">
@@ -312,6 +349,7 @@ const QnAJunologix = () => {
           </span>
         </div>
       </div>
+
       {/**HERE THE MAIN */}
       {loading ? (
         <Loader />
@@ -322,6 +360,8 @@ const QnAJunologix = () => {
               setModalOne={setModalOne}
               handleModalClose={handleModalClose}
               updateCategories={updateCategories}
+              endpoint={endpoint}
+              
             />
           ) : (
             ""
@@ -381,6 +421,7 @@ const QnAJunologix = () => {
                                   </div>
                                   {editCategory && (
                                     <EditCategoryJunologix
+                                      
                                       categoryToEdit={editCategory}
                                       onClose={() => setEditCategory(null)}
                                       onCategoryUpdated={(updatedCategory) => {
@@ -422,6 +463,7 @@ const QnAJunologix = () => {
                 handleModalClose={handleModalClose}
                 setFAQs={setFAQs}
                 FAQs={FAQs}
+                endpoint={endpoint}
               />
             ) : (
               ""
