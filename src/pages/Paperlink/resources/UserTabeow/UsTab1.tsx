@@ -95,8 +95,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         firstName: formData.firstName,
         guestName: formData.guestName,
         status: selectedOption,
-        // timezone: formData.timezone,
-        // profilePicture: formData.profilePicture,
+        //timezone: formData.timezone,
+        profile_picture: formData.profile_picture,
       })
       .then((res) => {
         setSuccess(true);
@@ -257,7 +257,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-2">
             <label htmlFor="companyName" className="block py-5 text-gray-700">
-              Last Name:
+              Business Name: {/**not available for now so I am using lastname */}
             </label>
             <input
               type="text"
@@ -271,7 +271,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-4">
             <label htmlFor="contactName" className="block py-5 text-gray-700">
-              First Name:
+              Contact Name:
             </label>
             <input
               type="text"
@@ -285,7 +285,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           </div>
           <div className="md:w-1/2 px-4 mb-4">
             <label htmlFor="contactNumber" className="block py-5 text-gray-700">
-              Guest Name:
+              Contact Number: {/**not available for now so I will change it to number  */}
             </label>
             <input
               type="text"
@@ -297,18 +297,17 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               disabled={!isEditing}
             />
           </div>
-          {/* <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
+          <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
             <img src={location} alt="google map location" className="mr-2" />
             <span>Google maps location</span>
-          </div> */}
-          {/* <div
+          </div>
+          <div
             className="md:w-1/2 px-4 mb-6 flex items-center space-x-2"
-            onClick={() => setShowTimeZoneTooltip(!showTimeZoneTooltip)}
           >
             <img src={zone} alt="zone-location" className="mr-2" />
             <span>Time Zone Database</span>
           </div>
-          {showTimeZoneTooltip && (
+          {/*   {showTimeZoneTooltip && (
             <div className="fixed inset-0 flex items-center justify-center z-50">
               <div className="bg-white p-6 w-96 rounded-lg text-center shadow-lg">
                 <p className="text-gray-700 text-lg font-semibold mb-4">
