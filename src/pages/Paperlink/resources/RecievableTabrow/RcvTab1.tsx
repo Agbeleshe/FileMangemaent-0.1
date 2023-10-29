@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import AcctIcon from "../../../../components/svg-icons/AcctIcon";
-import zone from "../assests/zone.png";
-import location from "../assests/location.png";
-// import "../assests/styles/tab.css";
+import location from "../../../../assests/location.png";
+import zone from "../../../../assests/zone.png"
 import axios from "axios";
+import EditIcon from "../../../../components/svg-icons/EditIcon";
+import Loader from "../Loader";
+import Arrow from "../../../../components/svg-icons/Arrow";
 import { BASE_URL } from "../../../../utils/axios-util";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { TfiFaceSad } from "react-icons/tfi";
@@ -28,21 +30,24 @@ interface Tab1Props {
 }
 
 const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [formData, setFormData] = useState({
     email: selectedUser.email || selectedUser.user.email,
-    businessName: selectedUser.businessPage || selectedUser.user.businessPage,
+    businessName: selectedUser.companyName || selectedUser.user.companyName,
     contactName: selectedUser.firstName || selectedUser.user.firstName,
     contactNumber: selectedUser.phone,
     timezone: selectedUser.timezone,
-    profilePicture: selectedUser.profilePicture,
+    profilePicture: selectedUser.user.profile_picture,
   });
   console.log(selectedUser);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false); // New state variable for the tooltip
+  const [initialFormData, setInitialFormData] = useState({ ...formData });
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
@@ -55,10 +60,24 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
       [name]: value,
     });
   };
+  const toggleEditing = () => {
+    if (!isEditing) {
+      setFormData({ ...initialFormData }); // Reset formData to initial values
+    }
+    setIsEditing(!isEditing);
+  };
 
   const handleClear = () => {
     setErrorMsg(false);
     setSuccess(false);
+  };
+
+  const handleViewProfilePicture = () => {
+    setShowProfilePictureModal(true);
+  };
+
+  const handleCloseProfilePictureModal = () => {
+    setShowProfilePictureModal(false);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -69,14 +88,16 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     const UpdateAccountUrl =
       BASE_URL + `/users/${selectedUser.id}?sort[createdAt]=-1&role=paid_user`;
 
-      //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
+    //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
     // Send the PUT request to update the user's data
     console.log(selectedUser.id);
 
     axios
-      .put(UpdateAccountUrl, {
+      .patch(UpdateAccountUrl, {
         email: formData.email,
         businessName: formData.businessName,
+        // companyName: formData.companyName,
+
         contactName: formData.contactName,
         contactNumber: formData.contactNumber,
         status: selectedOption,
@@ -87,6 +108,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         setSuccess(true);
         setErrorMsg(false);
         console.log("PATCH request successful", res.data);
+        setInitialFormData({ ...formData }); // Reset initialFormData to saved data
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error updating data: ", err);
@@ -101,21 +124,31 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
       });
   };
 
-  const handleCancel = () => {
-    setShowCancelModal(true);
-  };
+  // const handleCancel = () => {
+  //    setShowCancelModal(true);
+  //  };
 
+  const handleCancel = () => {
+    //console.log("handleCancel called");
+    setFormData({ ...initialFormData }); // Reset formData to initial values
+    //setSelectedOption("");
+    setIsEditing(false);
+    setShowCancelModal(true); // Close the cancel modal
+  };
   const handleConfirmCancel = () => {
     // Reset all input fields to empty values
-    setFormData({
-      email: "",
-      businessName: "",
-      contactName: "",
-      contactNumber: "",
-      timezone: "",
-      profilePicture: "",
-    });
+    setFormData({ ...initialFormData }); // Reset formData to initial values
+
+    // setFormData({
+    //   email: "",
+    //   businessName: "",
+    //   contactName: "",
+    //   contactNumber: "",
+    //   timezone: "",
+    //   profilePicture: "",
+    // });
     setSelectedOption(""); // Reset the select input
+    setIsEditing(false);
     setShowCancelModal(false);
   };
 
@@ -139,38 +172,77 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             >
               Status:
             </label>
-            <select
-              id="select"
-              name="select"
-              value={selectedOption}
-              onChange={handleSelectChange}
-              className="bg-gray-300 text-red-500 rounded-lg outline-none px-5 border-none focus:ring-0 md:w-full p-0 shadow-sm sm:text-sm"
-            >
-              <option value={selectedUser.status || selectedUser.user}>
-                {selectedUser.status}
-              </option>
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            {isEditing ? (
+              <div className="relative">
+                <select
+                  id="select"
+                  name="select"
+                  value={selectedOption}
+                  onChange={handleSelectChange}
+                  className="bg-[#EFEFEF] text-red-500 rounded-lg outline-none px-8 py-2 border-none focus:ring-0 w-full p-0 shadow-sm sm:text-sm appearance-none custom-select"
+                >
+                  <option value={selectedUser.status || selectedUser.user}>
+                    {selectedUser.status}
+                  </option>
+                  {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-black">
+                  <Arrow />
+                </div>
+              </div>
+            ) : (
+              <span>{selectedUser.status}</span>
+            )}
           </div>
 
           {/* image placeHolder */}
-          <div className="">
-            <span >
+          <div className="flex gap-2  items-center">
+            <span onClick={() => toggleEditing()} className="mr-5 pt-2 ">
+              <button //sheky sheky effect
+                className={`mr-5 pt-2  ${!isEditing && "vibrate-button"} `}
+                type="button"
+              >
+                <EditIcon />
+              </button>
+            </span>
+            <span>
               {formData.profilePicture ? (
                 <img
+                  onClick={handleViewProfilePicture}
                   src={formData.profilePicture}
                   alt="profile side"
-                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 "
+                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
                 />
               ) : (
-              <span className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-6 ">
+                <span
+                  onClick={handleViewProfilePicture}
+                  className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
+                >
+                  <AcctIcon />
+                </span>
+              )}
+              {showProfilePictureModal && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                  <div className="fixed inset-0 bg-black opacity-40"></div>
 
-                    <AcctIcon />
-                    </span>
+                  <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg relative z-10">
+                    <img
+                      src={formData.profilePicture}
+                      alt="profile side"
+                      className="mx-auto h-48 w-48 rounded-full bg-slate-100"
+                    />
+                    <button
+                      onClick={handleCloseProfilePictureModal}
+                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 mt-4"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               )}
             </span>
           </div>
@@ -189,6 +261,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-2">
@@ -203,6 +276,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-4">
@@ -217,6 +291,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
           <div className="md:w-1/2 px-4 mb-4">
@@ -231,9 +306,10 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
+              disabled={!isEditing}
             />
           </div>
-          {/* <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
+          <div className="md:w-1/2 px-4 mb-6 flex items-center space-x-2">
             <img src={location} alt="google map location" className="mr-2" />
             <span>Google maps location</span>
           </div>
@@ -270,37 +346,39 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                 </div>
               </div>
             </div>
-          )} 
+          )}
           {/**end of it */}
         </div>
-         {/* copy and paste to remainig div */}
-         {success && (
-         <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
-         <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
+        {/* copy and paste to remainig div */}
+        {success && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+            <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
 
-         <div className="bg-white p-8 rounded-lg text-center shadow-lg relative z-10">
-           <div className="w-full flex justify-center items-center mb-2">
-           <BsCheckCircleFill color="green" size={50}/>
-           </div>
-           <p className="text-green">SUCCESSFULLY UPDATED!</p>
-           <button
-             onClick={handleClear}
-             className="bg-green-300 text-white px-4 py-2 rounded-md hover:bg-green-500 mt-4"
-           >
-             clear
-           </button>
-         </div>
-       </div>
+            <div className="bg-white p-8 rounded-lg text-center shadow-lg relative z-10">
+              <div className="w-full flex justify-center items-center mb-2">
+                <BsCheckCircleFill color="green" size={50} />
+              </div>
+              <p className="text-green">SUCCESSFULLY UPDATED!</p>
+              <button
+                onClick={handleClear}
+                className="bg-green-300 text-white px-4 py-2 rounded-md hover:bg-green-500 mt-4"
+              >
+                clear
+              </button>
+            </div>
+          </div>
         )}
         {errorMsg && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
+          <div className="fixed inset-0 flex items-center justify-center z-50 animate-fade-in ">
             <div className="bg-black opacity-70 inset-0 absolute h-[110vh] -top-5" />
-   
+
             <div className="bg-white p-5 rounded-lg text-center shadow-lg relative z-10">
               <div className="w-[50%] mx-auto flex justify-center items-center mb-2">
-              <TfiFaceSad color="red" size={50}/>
+                <TfiFaceSad color="red" size={50} />
               </div>
-              <p className="text-red-500 flex w-[70%] mx-auto items-center justify-center">Ops something went wrong, check your inputs and try again!</p>
+              <p className="text-red-500 flex w-[70%] mx-auto items-center justify-center">
+                Ops something went wrong, check your inputs and try again!
+              </p>
               <button
                 onClick={handleClear}
                 className="bg-red-300 text-white px-4 py-2 rounded-md hover:bg-red-500 mt-4"
@@ -312,21 +390,26 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         )}
         {/* Buttons */}
         <div className="flex md:gap-10 gap-5 md:px-7  md:pb-5 flex-col md:flex-row items-center md:items-start ">
-          <button
-            typeof="submit"
-            className={`Tab outline-none active:bg-green-500 ${
-              loading && "bg-slate-500"
-            } `}
-          >
-            {loading ? "loading..." : "save"}
-          </button>
-
-          <button
-            onClick={handleCancel}
-            className="btnT outline-none hover:bg-red-500 hover:text-white"
-          >
-            Cancel
-          </button>
+          {isEditing ? (
+            <>
+              <button
+                typeof="submit"
+                className={`Tab outline-none active:bg-green-500 ${
+                  loading && "bg-slate-500"
+                } `}
+              >
+                {loading ? "loading..." : "save"}
+              </button>
+              <button
+                onClick={handleCancel}
+                className="btnT outline-none hover:bg-red-500 hover:text-white"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </form>
 
@@ -339,7 +422,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </p>
             <div>
               <p>
-                <em>This will clear all input in the field.</em>
+                <em>This will clear all what you editted.</em>
               </p>
             </div>
             <div className="mt-6">

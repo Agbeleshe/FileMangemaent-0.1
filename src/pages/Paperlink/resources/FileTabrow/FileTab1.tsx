@@ -45,7 +45,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     firstName: selectedUser.user.firstName || null,
     lastName: selectedUser.user.lastName || null,
     timezone: selectedUser.timezone || null,
-    profilePicture: selectedUser.profilePicture || null,
+    profile_picture: selectedUser.user.profile_picture,
   });
   console.log(selectedUser);
 
@@ -120,7 +120,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
           lastName: formData.lastName,
           fileAction: selectedOption,
           timezone: formData.timezone,
-          profilePicture: formData.profilePicture,
+          profile_picture: formData.profile_picture,
         },
         {
           headers: headers, // Include the headers in the request
@@ -157,9 +157,6 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     setShowCancelModal(true); // Close the cancel modal
   };
   const handleConfirmCancel = () => {
-    //  console.log("handleConfirmCancel called");
-    // Perform the cancellation action here
-    // For example, reset the form fields or close the modal
     setFormData({ ...initialFormData }); // Reset formData to initial values
     setSelectedOption("");
     setIsEditing(false);
@@ -184,7 +181,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               htmlFor="select"
               className="text-gray-700 font-Poppins text-20 font-normal"
             >
-                Status:
+              Status:
             </label>
 
             {isEditing ? (
@@ -226,10 +223,10 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
               </button>
             </span>
             <span>
-              {formData.profilePicture ? (
+              {formData.profile_picture ? (
                 <img
                   onClick={handleViewProfilePicture}
-                  src={formData.profilePicture}
+                  src={formData.profile_picture}
                   alt="profile side"
                   className="inline-flex items-center justify-center md:items-left h-20 w-20 md:w-12 md:h-12 flex-shrink-0 fill-current bg-grayG rounded-full shadow-drop mr-20 "
                 />
@@ -247,7 +244,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 
                   <div className="bg-white p-8 w-96 rounded-lg text-center shadow-lg relative z-10">
                     <img
-                      src={formData.profilePicture}
+                      src={formData.profile_picture}
                       alt="profile side"
                       className="mx-auto h-48 w-48 rounded-full bg-slate-100"
                     />
@@ -347,6 +344,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                     </p>
                   )}
                 </p>
+                {formData.profile_picture}
+
                 <div className="mt-6">
                   <button
                     onClick={() => setShowTimeZoneTooltip(false)}

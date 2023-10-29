@@ -136,9 +136,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     setShowCancelModal(true); // Close the cancel modal
   };
   const handleConfirmCancel = () => {
-    //  console.log("handleConfirmCancel called");
-    // Perform the cancellation action here
-    // For example, reset the form fields or close the modal
+   
     setFormData({ ...initialFormData }); // Reset formData to initial values
     setSelectedOption("");
     setIsEditing(false);
