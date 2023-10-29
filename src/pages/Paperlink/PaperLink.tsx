@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./PaperLink.css";
 import img from "../../assests/coomingSoon.gif";
+import coomingSoon from "../../assests/3Sn6i2PqMv.json";
 import { useSelector } from "react-redux";
+
+import Lottie from "lottie-react";
 
 import { selectActiveTabLabel } from "../../store/tab-slice";
 
@@ -53,10 +56,10 @@ const PaperLink = () => {
             </div>
           </div>
         ) : (
-          <div className="flex font-extralight justify-center w-full mx-auto flex-col text-center align-middle h-full ">
-            <h2>{activeTab} will be Coming Soon...</h2>
+          <div className=" text flex  justify-center w-full mx-auto flex-col text-center align-middle h-full ">
+            <h2 className="bg-green-200 font-extrabold text-green-500 py-5">{activeTab} will be Coming Soon...</h2>
             <div className=" w-full flex items-center mx-auto justify-center mt-5 h-[50vh]">
-              <img src={img} alt="" height={200} width={200} />
+             <div className="w-[100%] h-[100%] flex justify-center"> <Lottie animationData={coomingSoon}/></div>
             </div>
           </div>
         )}

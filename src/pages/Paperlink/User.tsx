@@ -12,6 +12,10 @@ import convertDateTime from "./resources/DateConverter";
 import Arrow from "../../components/svg-icons/Arrow";
 import UserTabrow from "../Paperlink/resources/UserTabeow/UserTabrow";
 
+//no record icon
+import noRecords from "../../assests/noRecords.json";
+import Lottie from "lottie-react";
+
 //redux
 import { useSelector } from "react-redux";
 import { selectActiveTabLabel } from "../../store/tab-slice";
@@ -171,274 +175,290 @@ const User = () => {
 
   return (
     <div className="mb-20">
-      {!tabs  ? (
+      {!tabs ? (
         <div>
-          {activeTab === 'Paperlink' ? <div className=" md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-t-lg">
-          <div className="bg-secondaryColor flex justify-between md:h-[4.1875rem] rounded-t-lg px-4 py-2">
-            <div className="border-b-0 text-lightGray font-medium leading-normal text-lg md:text-2xl">
-              User Log
-            </div>
-            <div className="border-b-0 flex gap-3 items-center">
-              {!inputClick ? (
-                ""
-              ) : (
-                <div className="relative md:bottom-0 md:border-1 border-green-300 ">
-                  <SearchBar
-                    onSearch={(value) => handleSearch(value)} // Pass a callback to handle search value changes
-                    inputClick={inputClick}
-                    placeholder="Search users..." // Customize the placeholder if needed
-                    buttonText="Search" // Customize the button text if needed
-                  />
-                </div>
-              )}
-              {!inputClick ? (
-                <button
-                  onClick={handleInputClick}
-                  className="inline-flex items-center justify-center h-7 w-7 md:w-12 md:h-12 flex-shrink-0 fill-current bg-white rounded-full shadow-drop outline-none"
-                >
-                  <SearchGreen />
-                </button>
-              ) : (
-                <button
-                  onClick={handleInputClick}
-                  className="inline-flex items-center justify-center h-7 w-7 md:w-12 md:h-12 flex-shrink-0 fill-current bg-slate-700 transition-all ease-in-out duration-700 hover:bg-red-500 rounded-full shadow-drop outline-none"
-                >
-                  <TfiClose color="white" />
-                </button>
-              )}
-            </div>
-          </div>
-          <div className="md:overflow-x-auto">
-            {/* Table for wide screens */}
-            {loading ? (
-              <div className="hidden md:inline">
-                <Loader />
+          <div className=" md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-t-lg">
+            <div className="bg-secondaryColor flex justify-between md:h-[4.1875rem] rounded-t-lg px-4 py-2">
+              <div className="border-b-0 text-lightGray font-medium leading-normal text-lg md:text-2xl">
+                User Log
               </div>
-            ) : (
-              <div className="hidden md:block">
-                {recordFound && (
-                  <table className="md:w-full md:table-hover md:user-table">
-                    <thead>
-                      <tr>
-                        <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
-                          <span
-                            className="flex   gap-2  w-full h-full "
-                            onClick={handleSelectedDate}
-                          >
-                            Date/Time
-                            <img src={Calender} alt="" />
-                          </span>
-
-                          {/* date modal */}
-                          {selectedDate && (
-                            <div className="">
-                              <div
-                                onClick={handleCloseSelectedDate}
-                                className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
-                              ></div>
-
-                              <div
-                                onClick={handleCloseSelectedDate}
-                                className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
-                              ></div>
-                              <DateRangePickerCalendarExample
-                                getDateValue={getDateValuesFunc}
-                                setIsDatePicked={setIsDatePicked}
-                                selectedDate={selectedDate}
-                              />
-                            </div>
-                          )}
-                        </th>
-                        <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
-                          User
-                        </th>
-                        <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
-                          Account Email
-                        </th>
-                        <th className="border-b p-2 text-left font-meduim text-darkGray font-normal text-sm">
-                          Paperlink
-                        </th>
-                        <th className="border-b px-4 py-3 text-center font-medium text-darkGray text-sm">
-                          Pages
-                          <span className="px-2 p-1 justify-center gap-5 rounded-full bg-blue text-white text-xs ml-2">
-                            {totalPages}
-                          </span>
-                        </th>
-
-                        <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
-                          <span className="flex justify-center items-center align-middle">
-                            <div
-                              className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                              onClick={toggleDropdown}
-                            >
-                              <p>Action</p>
-                              <Arrow />
-                            </div>
-                          </span>
-                          {isOpen && (
-                            <div className="absolute top-[65px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
-                              <div
-                                onClick={handleStatusFilter}
-                                data-value="complete" // Assign a data attribute to store the value
-                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                              >
-                                complete
-                              </div>
-                              <div
-                                onClick={handleStatusFilter}
-                                data-value="sign" // Assign a data attribute to store the value
-                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                              >
-                                sign
-                              </div>
-                              <div
-                                onClick={handleStatusFilter}
-                                data-value="confirm" // Assign a data attribute to store the value
-                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                              >
-                                confirm
-                              </div>
-                              <div
-                                onClick={handleStatusFilter}
-                                data-value="" // Assign a data attribute to store the value
-                                className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                              >
-                                All
-                              </div>
-                              <div
-                                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                onClick={toggleDropdown}
-                              >
-                                <TfiClose />
-                              </div>
-                            </div>
-                          )}
-                        </th>
-                      </tr>
-                    </thead>
-                    {/* i removed 200px pb from bellow */}
-                    <tbody className="cursor-pointer  ">
-                      {currentPost.map((user: any) => (
-                        <tr
-                          key={user.id}
-                          className="border-gray-200 hover:bg-gray-100"
-                        >
-                          <td className="border-t py-4 p-1 text-left font-Poppins text-lightGray">
-                            {convertDateTime(user.updatedAt)}
-                          </td>
-                          <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
-                            {user.guestName ? (
-                              user.guestName
-                            ) : (
-                              <p className="text-gray-300 cursor-not-allowed">
-                                No Guest Name
-                              </p>
-                            )}
-                          </td>
-
-                          <td
-                            onClick={() => handleTabs(user.id)}
-                            className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
-                          >
-                            {user.user.email}
-                          </td>
-                          <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
-                            <a
-                              href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {user.fileName}
-                            </a>
-                          </td>
-                          <td className="border-t py-4 p-2 text-center text-lightGray font-Poppins text-sm font-normal px-6">
-                            {user.file.pages}
-                          </td>
-                          <td className="border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal px-3">
-                            <span
-                              className="status"
-                              style={makeStyle(user.file.fileAction)}
-                            >
-                              {user.file.fileAction}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-                {/* the correct logic to show no users please make this a hook next time to avoid copy and paste */}
-                {!error && users.length === 0 && (
-                  <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
-                    Search complete. No record found
+              <div className="border-b-0 flex gap-3 items-center">
+                {!inputClick ? (
+                  ""
+                ) : (
+                  <div className="relative md:bottom-0 md:border-1 border-green-300 ">
+                    <SearchBar
+                      onSearch={(value) => handleSearch(value)} // Pass a callback to handle search value changes
+                      inputClick={inputClick}
+                      placeholder="Search users..." // Customize the placeholder if needed
+                      buttonText="Search" // Customize the button text if needed
+                    />
                   </div>
                 )}
-                {error && <ErrorMessage message={error} />}
+                {!inputClick ? (
+                  <button
+                    onClick={handleInputClick}
+                    className="inline-flex items-center justify-center h-7 w-7 md:w-12 md:h-12 flex-shrink-0 fill-current bg-white rounded-full shadow-drop outline-none"
+                  >
+                    <SearchGreen />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleInputClick}
+                    className="inline-flex items-center justify-center h-7 w-7 md:w-12 md:h-12 flex-shrink-0 fill-current bg-slate-700 transition-all ease-in-out duration-700 hover:bg-red-500 rounded-full shadow-drop outline-none"
+                  >
+                    <TfiClose color="white" />
+                  </button>
+                )}
               </div>
-            )}
+            </div>
+            {/* Sourrounding every body (both mobile and desktop) */}
+            {activeTab === "Paperlink" ? (
+              <>
+                <div className="md:overflow-x-auto">
+                  {/* Table for wide screens */}
+                  {loading ? (
+                    <div className="hidden md:inline">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <div className="hidden md:block">
+                      {recordFound && (
+                        <table className="md:w-full md:table-hover md:user-table">
+                          <thead>
+                            <tr>
+                              <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
+                                <span
+                                  className="flex   gap-2  w-full h-full "
+                                  onClick={handleSelectedDate}
+                                >
+                                  Date/Time
+                                  <img src={Calender} alt="" />
+                                </span>
 
-            {/* Mobile view Display mb-[200px] */}
-            {loading ? (
-              <div className="md:hidden">
-                <Loader />
-              </div>
-            ) : (
-              // i also removed padding bottom from here
-              <div className="md:hidden max-h-[400px] text-xs overflow-y-auto">
-                {recordFound &&
-                  currentPost.map((user: any) => (
-                    <div
-                      onClick={() => handleMobileUserClick(user.id)} // Handle user row click
-                      key={user.id}
-                      className="flex gap-2 justify-between p-3 shadow-lg hover:shadow-2xl hover:bg-gray-200 rounded-md my-2"
-                    >
-                      {selectedUserId === user.id && (
-                        <div className="flex flex-col justify-start items-start align-middle flex-1">
-                          <span className="text-black flex text-[12px]">
-                            {convertDateTime(user.updatedAt)}
-                          </span>
+                                {/* date modal */}
+                                {selectedDate && (
+                                  <div className="">
+                                    <div
+                                      onClick={handleCloseSelectedDate}
+                                      className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
+                                    ></div>
+
+                                    <div
+                                      onClick={handleCloseSelectedDate}
+                                      className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
+                                    ></div>
+                                    <DateRangePickerCalendarExample
+                                      getDateValue={getDateValuesFunc}
+                                      setIsDatePicked={setIsDatePicked}
+                                      selectedDate={selectedDate}
+                                    />
+                                  </div>
+                                )}
+                              </th>
+                              <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
+                                User
+                              </th>
+                              <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
+                                Account Email
+                              </th>
+                              <th className="border-b p-2 text-left font-meduim text-darkGray font-normal text-sm">
+                                Paperlink
+                              </th>
+                              <th className="border-b px-4 py-3 text-center font-medium text-darkGray text-sm">
+                                Pages
+                                <span className="px-2 p-1 justify-center gap-5 rounded-full bg-blue text-white text-xs ml-2">
+                                  {totalPages}
+                                </span>
+                              </th>
+
+                              <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
+                                <span className="flex justify-center items-center align-middle">
+                                  <div
+                                    className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    onClick={toggleDropdown}
+                                  >
+                                    <p>Action</p>
+                                    <Arrow />
+                                  </div>
+                                </span>
+                                {isOpen && (
+                                  <div className="absolute top-[65px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
+                                    <div
+                                      onClick={handleStatusFilter}
+                                      data-value="complete" // Assign a data attribute to store the value
+                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                    >
+                                      complete
+                                    </div>
+                                    <div
+                                      onClick={handleStatusFilter}
+                                      data-value="sign" // Assign a data attribute to store the value
+                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                    >
+                                      sign
+                                    </div>
+                                    <div
+                                      onClick={handleStatusFilter}
+                                      data-value="confirm" // Assign a data attribute to store the value
+                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                    >
+                                      confirm
+                                    </div>
+                                    <div
+                                      onClick={handleStatusFilter}
+                                      data-value="" // Assign a data attribute to store the value
+                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                    >
+                                      All
+                                    </div>
+                                    <div
+                                      className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                      onClick={toggleDropdown}
+                                    >
+                                      <TfiClose />
+                                    </div>
+                                  </div>
+                                )}
+                              </th>
+                            </tr>
+                          </thead>
+                          {/* i removed 200px pb from bellow */}
+                          <tbody className="cursor-pointer  ">
+                            {currentPost.map((user: any) => (
+                              <tr
+                                key={user.id}
+                                className="border-gray-200 hover:bg-gray-100"
+                              >
+                                <td className="border-t py-4 p-1 text-left font-Poppins text-lightGray">
+                                  {convertDateTime(user.updatedAt)}
+                                </td>
+                                <td className="border-t py-4 p-2 text-left text-lightGray font-Poppins text-sm font-normal">
+                                  {user.guestName ? (
+                                    user.guestName
+                                  ) : (
+                                    <p className="text-gray-300 cursor-not-allowed">
+                                      No Guest Name
+                                    </p>
+                                  )}
+                                </td>
+
+                                <td
+                                  onClick={() => handleTabs(user.id)}
+                                  className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
+                                >
+                                  {user.user.email}
+                                </td>
+                                <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
+                                  <a
+                                    href={`https://dev.paperlink.app/pdf/${user.file.paperLink}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {user.fileName}
+                                  </a>
+                                </td>
+                                <td className="border-t py-4 p-2 text-center text-lightGray font-Poppins text-sm font-normal px-6">
+                                  {user.file.pages}
+                                </td>
+                                <td className="border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal px-3">
+                                  <span
+                                    className="status"
+                                    style={makeStyle(user.file.fileAction)}
+                                  >
+                                    {user.file.fileAction}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                      {/* the correct logic to show no users please make this a hook next time to avoid copy and paste */}
+                      {!error && users.length === 0 && (
+                        <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
+                          Search complete. No record found
+                        </div>
+                      )}
+                      {error && <ErrorMessage message={error} />}
+                    </div>
+                  )}
+
+                  {/* Mobile view Display mb-[200px] */}
+
+                  {loading ? (
+                    <div className="md:hidden">
+                      <Loader />
+                    </div>
+                  ) : (
+                    // i also removed padding bottom from here
+                    <div className="md:hidden max-h-[400px] text-xs overflow-y-auto">
+                      {recordFound &&
+                        currentPost.map((user: any) => (
                           <div
-                            // onClick={() => handleTabs(user.id)}
-                            className="text-blue-800 underline flex text-[12px] p-2 "
+                            onClick={() => handleMobileUserClick(user.id)} // Handle user row click
+                            key={user.id}
+                            className="flex gap-2 justify-between p-3 shadow-lg hover:shadow-2xl hover:bg-gray-200 rounded-md my-2"
                           >
-                            {user.user.email}
+                            {selectedUserId === user.id && (
+                              <div className="flex flex-col justify-start items-start align-middle flex-1">
+                                <span className="text-black flex text-[12px]">
+                                  {convertDateTime(user.updatedAt)}
+                                </span>
+                                <div
+                                  // onClick={() => handleTabs(user.id)}
+                                  className="text-blue-800 underline flex text-[12px] p-2 "
+                                >
+                                  {user.user.email}
+                                </div>
+                              </div>
+                            )}
+                            <div className="flex flex-col justify-start items-start align-middle flex-1">
+                              <span className="text-black flex text-[12px]]">
+                                {user.file.paperLink}
+                              </span>
+                              <div className="text-black text-center flex text-[12px]">
+                                Pages: {user.file.pages}
+                              </div>
+                              <div className="text-black flex text-[12px]">
+                                User: {user.user.firstName}
+                              </div>
+                              <span
+                                className="text-black text-[12px] font-extrabold"
+                                style={makeStyle(user.file.fileAction)}
+                              >
+                                {user.file.fileAction}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      {/* if there are no search */}
+                      {records && (
+                         <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
+                         <h2>Search complete! Sorry, No Records Found for "{searchValue}"</h2>
+                          <div className="h-[100%] w-full flex justify-center " >
+                            <Lottie animationData={noRecords} />
                           </div>
                         </div>
                       )}
-                      <div className="flex flex-col justify-start items-start align-middle flex-1">
-                        <span className="text-black flex text-[12px]]">
-                          {user.file.paperLink}
-                        </span>
-                        <div className="text-black text-center flex text-[12px]">
-                          Pages: {user.file.pages}
-                        </div>
-                        <div className="text-black flex text-[12px]">
-                          User: {user.user.firstName}
-                        </div>
-                        <span
-                          className="text-black text-[12px] font-extrabold"
-                          style={makeStyle(user.file.fileAction)}
-                        >
-                          {user.file.fileAction}
-                        </span>
-                      </div>
+                      {error && <ErrorMessage message={error} />}
                     </div>
-                  ))}
-                {/* if there are no search */}
-                {records && (
-                  <div className="text-center py-4 w-full bg-green-300 text-sm text-green-700">
-                    Search complete. No record found
-                  </div>
-                )}
-                {error && <ErrorMessage message={error} />}
+                  )}
+                </div>
+                {/* Pagination for all view */}
+                <div className="w-full bg-slate-100 flex justify-center">
+                  {prevButton} {paginationButtons} {viewAllButton} {nextButton}
+                </div>
+              </>
+            ) : (
+              <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
+               <h2>Sorry, No Records Found in {activeTab}</h2>
+                <div className="h-[100%] w-full flex justify-center " >
+                  <Lottie loop={false} animationData={noRecords} />
+                </div>
               </div>
             )}
           </div>
-
-          <div className="w-full bg-slate-100 flex justify-center">
-            {prevButton} {paginationButtons} {viewAllButton} {nextButton}
-          </div>
-        </div> : <div>No Records Found!!</div> }
         </div>
       ) : (
         <div>
