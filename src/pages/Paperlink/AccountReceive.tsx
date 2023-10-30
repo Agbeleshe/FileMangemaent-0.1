@@ -20,8 +20,11 @@ import noRecords from "../../assests/noRecords.json";
 import Lottie from "lottie-react";
 
 //redux
-import { useSelector } from "react-redux";
-import { selectActiveTabLabel } from "../../store/tab-slice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
+//hook for seting tabs to default paperLink
+import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
 
 //year and month for the user.reciept
 function extractYearAndMonth(dateTimeString: string) {
@@ -42,7 +45,11 @@ const AccountReceive = () => {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [tabs, setTabs] = useState(true);
 
+  //To set default on paperlink and also to set the active tob for the switch to define endponit
+  const { customActiveTab } = useCustomActiveTabs();
   const activeTab = useSelector(selectActiveTabLabel);
+  const dispatch = useDispatch();
+  dispatch(setActiveTabLabel(customActiveTab));
 
   //Date State
   const [selectedDate, setSelectedDate] = useState(false);

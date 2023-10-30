@@ -6,6 +6,13 @@ import EditIcon from "../../components/svg-icons/EditIcon";
 import EditJunologix from "../../components/FQAModals/EditJunologix";
 import Loader from "./resources/Loader";
 
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
+//hook for seting tabs to default paperLink
+import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
+
 const JunologixReports = () => {
   const [formData, setFormData] = useState({
     abr: "",
@@ -19,6 +26,12 @@ const JunologixReports = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<JunologixData | null>(null);
   const [editedItemIndex, setEditedItemIndex] = useState<number | null>(null); // Add this line
+
+  //To set default on paperlink and also to set the active tob for the switch to define endponit
+  const { customActiveTab } = useCustomActiveTabs();
+  const activeTab = useSelector(selectActiveTabLabel); //nite active tabs doest do anything her i just put just incase you need to switch endpoint based on tab
+  const dispatch = useDispatch();
+  dispatch(setActiveTabLabel(customActiveTab));
 
   useEffect(() => {
     // Fetch initial Junologix data when the component mounts
@@ -189,7 +202,7 @@ const JunologixReports = () => {
                       return
                     </th>
                     <th className="border-b px-4 py-3 text-left font-medium text-darkGray text-sm">
-                    action
+                      action
                     </th>
                   </tr>
                 </thead>

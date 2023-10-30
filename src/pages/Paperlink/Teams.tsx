@@ -15,8 +15,11 @@ import noRecords from "../../assests/noRecords.json";
 import Lottie from "lottie-react";
 
 //redux
-import { useSelector } from "react-redux";
-import { selectActiveTabLabel } from "../../store/tab-slice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
+//hook for seting tabs to default paperLink
+import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
 
 const makeStyle = (status: string) => {
   if (status === "New Trial") {
@@ -46,7 +49,13 @@ const Teams = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const activeTab = useSelector(selectActiveTabLabel);
+   //To set default on paperlink and also to set the active tob for the switch to define endponit
+   const {customActiveTab} = useCustomActiveTabs()
+   const activeTab = useSelector(selectActiveTabLabel);
+   const dispatch = useDispatch();
+   
+   dispatch(setActiveTabLabel(customActiveTab));
+ 
 
   const { loading, users, error } = useTeamsApi(searchValue, searchFilter);
   const [filterAll, setFilterAll] = useState(false);

@@ -2,18 +2,28 @@ import React, { useState, useEffect } from "react";
 import "./PaperLink.css";
 import img from "../../assests/admin.json";
 import coomingSoon from "../../assests/contruction.json";
-import { useSelector } from "react-redux";
 
 import Lottie from "lottie-react";
 
-import { selectActiveTabLabel } from "../../store/tab-slice";
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
+//hook for seting tabs to default paperLink
+import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
 
 const PaperLink = () => {
   const [showDiv, setShowDiv] = useState(true);
   const [positionX, setPositionX] = useState(0);
   const [positionY, setPositionY] = useState(0);
 
-  const activeTab = useSelector(selectActiveTabLabel);
+    //To set default on paperlink and also to set the active tob for the switch to define endponit
+    const {customActiveTab} = useCustomActiveTabs()
+    const activeTab = useSelector(selectActiveTabLabel);
+    const dispatch = useDispatch();
+    
+    dispatch(setActiveTabLabel(customActiveTab));
+
 
   useEffect(() => {
     // Function to generate random values for X and Y positions
@@ -94,7 +104,7 @@ const PaperLink = () => {
           </div>
         ) : (
           <div className=" text flex  justify-center w-full mx-auto flex-col text-center align-middle h-full ">
-            <h2 className="bg-green-50 font-extrabold text-green-400 py-2  ">
+            <h2 className="bg-green-50 font-extrabold border-y-4 border-green-300 text-green-300 py-2  ">
               {activeTab} will be Coming Soon...
             </h2>
             <div className=" w-full flex items-center mx-auto justify-center mt-5 h-[50vh]">

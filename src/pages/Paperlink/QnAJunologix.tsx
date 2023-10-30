@@ -225,10 +225,13 @@ const QnAJunologix = () => {
 
     // Send a POST request to update the server with the new category order
     try {
-      await axiosInstance.post(`/categories?$sort[position]=1&for=`+ endpoint, {
-        action: "orderCategories",
-        order: extractedreorderCategory,
-      });
+      await axiosInstance.post(
+        `/categories?$sort[position]=1&for=` + endpoint,
+        {
+          action: "orderCategories",
+          order: extractedreorderCategory,
+        }
+      );
     } catch (error) {
       console.error("Error updating categories:", error);
     }
@@ -269,7 +272,7 @@ const QnAJunologix = () => {
 
     // Send a POST request to update the server with the new FAQ order
     try {
-      await axiosInstance.post(`/faq?$sort[position]=1&for=`+ endpoint, {
+      await axiosInstance.post(`/faq?$sort[position]=1&for=` + endpoint, {
         action: "orderFAQ",
 
         order: reorderedFAQs.map((faq, index) => ({
@@ -295,7 +298,7 @@ const QnAJunologix = () => {
   // Function to update category data
   const updateCategories = () => {
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=`+ endpoint)
+      .get(`/categories?$sort[position]=1&for=` + endpoint)
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
@@ -309,7 +312,7 @@ const QnAJunologix = () => {
   const handleAddFAQ = async (faq: FAQ) => {
     try {
       const response = await axiosInstance.post(
-        `/faq?$sort[position]=1&for=`+ endpoint,
+        `/faq?$sort[position]=1&for=` + endpoint,
         faq
       );
       setFAQs([...FAQs, response.data]);
@@ -361,7 +364,6 @@ const QnAJunologix = () => {
               handleModalClose={handleModalClose}
               updateCategories={updateCategories}
               endpoint={endpoint}
-              
             />
           ) : (
             ""
@@ -399,6 +401,7 @@ const QnAJunologix = () => {
                                       <span className="ml-2">
                                         <Dots />
                                       </span>
+
                                       {faq.name}
                                     </p>
                                     <p className="flex gap-5 px-2 z-10">
@@ -421,7 +424,6 @@ const QnAJunologix = () => {
                                   </div>
                                   {editCategory && (
                                     <EditCategoryJunologix
-                                      
                                       categoryToEdit={editCategory}
                                       onClose={() => setEditCategory(null)}
                                       onCategoryUpdated={(updatedCategory) => {
@@ -452,7 +454,7 @@ const QnAJunologix = () => {
 
               <span
                 onClick={handleModalTwo}
-                className="inline-flex items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
+                className="inline-flex px-5 bg-black items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
               >
                 <PlusGreen />
               </span>
@@ -465,69 +467,94 @@ const QnAJunologix = () => {
                 FAQs={FAQs}
                 endpoint={endpoint}
               />
+            
             ) : (
               ""
             )}
             <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm mb-5">
+              {/*  */}
+
               {/* Mapped arrays */}
               <DragDropContext onDragEnd={handleFAQDragEnd}>
                 <Droppable droppableId="faq-list">
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
                       <div className="shadow-full w-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm ">
-                        {FAQs.map((qna, index) => (
-                          <Draggable
-                            key={qna.id}
-                            draggableId={qna.id.toString()}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="flex w-full justify-between border border-gray-50"
-                              >
-                                <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
-                                  <div
-                                    className="w-full"
-                                    onClick={() => toggleFQA(index)}
-                                  >
-                                    <p className="flex gap-3">
-                                      <span className="ml-2">
-                                        <Dots />
-                                      </span>
-                                      {qna.question}
-                                    </p>
-                                    {showFQA[index] && (
-                                      <div className="py-5">
-                                        <div className="px-5">
-                                          <p className="text-gray-700">
-                                            Answers: {qna.answer}
+                        <div>
+                          {paperLinkFAQs.map((faq) => (
+                            <div key={faq.id}>
+
+                              {/* Category name */}
+                              <div className="w-full p-2">
+                                <p className="flex gap-3 font-extrabold">
+                                  <span className="ml-2 ">
+                                    <Dots />
+                                  </span>
+
+                                  {faq.name}
+                                </p>
+                              </div>
+                              {FAQs.map((qna, index) => (
+                                <Draggable
+                                  key={qna.id}
+                                  draggableId={qna.id.toString()}
+                                  index={index}
+                                >
+                                  {(provided) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className="flex w-full justify-between border border-gray-50"
+                                    >
+                                      {qna.categoryId === faq.id && (
+                                        <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
+                                          <div
+                                            className="w-full"
+                                            onClick={() => toggleFQA(index)}
+                                          >
+                                            <p className="flex gap-3">
+                                              <span className="ml-2">
+                                                <Dots />
+                                              </span>
+
+                                              {qna.question}
+                                            </p>
+                                            {showFQA[index] && (
+                                              <div className="py-5">
+                                                <div className="px-5">
+                                                  <p className="text-gray-700">
+                                                    Answers: {qna.answer}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <p className="flex gap-5 px-2">
+                                            <span
+                                              onClick={() => openEditModal(qna)}
+                                              className="cursor-pointer"
+                                            >
+                                              <EditIcon />
+                                            </span>
+                                            <span
+                                              onClick={() =>
+                                                handleDeleteFAQ(qna.id)
+                                              }
+                                              className="cursor-pointer"
+                                            >
+                                              <DeleteIcon />
+                                            </span>
                                           </p>
                                         </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <p className="flex gap-5 px-2">
-                                    <span
-                                      onClick={() => openEditModal(qna)}
-                                      className="cursor-pointer"
-                                    >
-                                      <EditIcon />
-                                    </span>
-                                    <span
-                                      onClick={() => handleDeleteFAQ(qna.id)}
-                                      className="cursor-pointer"
-                                    >
-                                      <DeleteIcon />
-                                    </span>
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
+                                      )}
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                       {provided.placeholder}
                     </div>

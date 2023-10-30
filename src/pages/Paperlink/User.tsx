@@ -16,8 +16,11 @@ import noRecords from "../../assests/noRecords.json";
 import Lottie from "lottie-react";
 
 //redux
-import { useSelector } from "react-redux";
-import { selectActiveTabLabel } from "../../store/tab-slice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
+//hook for seting tabs to default paperLink
+import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
 
 import { Ledger } from "./resources/Ledger";
 import "./User.css";
@@ -59,7 +62,11 @@ const User = () => {
   const [selectedDate, setSelectedDate] = useState(false);
   const [timeFilter, setTimeFilter] = useState<any>([null, null]);
 
+  //To set default on paperlink and also to set the active tob for the switch to define endponit
+  const { customActiveTab } = useCustomActiveTabs();
   const activeTab = useSelector(selectActiveTabLabel);
+  const dispatch = useDispatch();
+  dispatch(setActiveTabLabel(customActiveTab));
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -127,7 +134,7 @@ const User = () => {
 
   //because length start fron 0
   const recordFound = currentPost.length > -1;
-console.log(currentPost,"currentPost")
+  console.log(currentPost, "currentPost");
   // display of no records
   useEffect(() => {
     if (currentPost.length > -1 && inputClick) {
@@ -433,9 +440,12 @@ console.log(currentPost,"currentPost")
                         ))}
                       {/* if there are no search */}
                       {records && (
-                         <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
-                         <h2>Search complete! Sorry, No Records Found for "{searchValue}"</h2>
-                          <div className="h-[100%] w-full flex justify-center " >
+                        <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
+                          <h2>
+                            Search complete! Sorry, No Records Found for "
+                            {searchValue}"
+                          </h2>
+                          <div className="h-[100%] w-full flex justify-center ">
                             <Lottie animationData={noRecords} />
                           </div>
                         </div>
@@ -451,8 +461,8 @@ console.log(currentPost,"currentPost")
               </>
             ) : (
               <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
-               <h2>Sorry, No Records Found in {activeTab}</h2>
-                <div className="h-[100%] w-full flex justify-center " >
+                <h2>Sorry, No Records Found in {activeTab}</h2>
+                <div className="h-[100%] w-full flex justify-center ">
                   <Lottie loop={false} animationData={noRecords} />
                 </div>
               </div>

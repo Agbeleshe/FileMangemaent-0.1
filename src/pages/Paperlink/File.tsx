@@ -18,8 +18,12 @@ import noRecords from "../../assests/noRecords.json";
 import Lottie from "lottie-react";
 
 //redux
-import { useSelector } from "react-redux";
-import { selectActiveTabLabel } from "../../store/tab-slice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+
+//hook for seting tabs to default paperLink
+import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
+
 
 const makeStyle = (status: string) => {
   if (status === "Active") {
@@ -53,8 +57,14 @@ const File = () => {
   const [selectedDate, setSelectedDate] = useState(false);
   const [timeFilter, setTimeFilter] = useState<any>([null, null]);
 
+  //To set default on paperlink and also to set the active tob for the switch to define endponit
+  const {customActiveTab} = useCustomActiveTabs()
   const activeTab = useSelector(selectActiveTabLabel);
+  const dispatch = useDispatch();
+  
+  dispatch(setActiveTabLabel(customActiveTab));
 
+  
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
