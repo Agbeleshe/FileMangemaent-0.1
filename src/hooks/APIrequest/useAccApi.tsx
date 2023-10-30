@@ -21,7 +21,7 @@ const useAccApi = (
 
   const paidUserUrl =
     BASE_URL +
-    `/users?$sort[createdAt]=-1&role=paid_user&$or[0][companyName][$like]=${selectedFilter}%&$or[1][email][$like]=${selectedFilter}%&$or[2][status][$like]=${searchValue}%${datefilter}`;
+    `/users?$sort[createdAt]=-1&role=paid_user&$or[0][companyName][$like]=${selectedFilter}%&$or[1][email][$like]=${selectedFilter}%&$or[2][status][$like]=${selectedFilter}%${datefilter}`;
 
   useEffect(() => {
     setLoading(true);

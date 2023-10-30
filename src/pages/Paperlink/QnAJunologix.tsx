@@ -51,6 +51,12 @@ const QnAJunologix = () => {
   //for the dragged item for faq
   const [draggedFAQ, setDraggedFAQ] = useState<FAQ | null>(null);
   const [draggedFAQIndex, setDraggedFAQIndex] = useState<number | null>(null);
+const [newFAQ, setNewFAQ] = useState<FAQ | null>(null); // Added state to hold the new FAQ
+
+const addFAQ = (faq: FAQ) => {
+  setFAQs([...FAQs, faq]);
+};
+
 
   //DO NOT TOUCH
   let customActiveTab = "Junologix";

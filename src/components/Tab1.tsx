@@ -39,9 +39,10 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
 
+  console.log('selected user',selectedUser)
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [formData, setFormData] = useState({
-    email: selectedUser.email || null,
+    email: selectedUser.email || selectedUser.user.email || null,
     companyName: selectedUser.companyName || null,
     firstName: selectedUser.firstName || null,
     phone: selectedUser.phone || null,

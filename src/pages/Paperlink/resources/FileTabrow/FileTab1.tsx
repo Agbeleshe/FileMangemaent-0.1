@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AcctIcon from "../../../../components/svg-icons/AcctIcon";
 import zone from "../../../../assests/zone.png";
 import location from "../../../../assests/location.png";
 import "../../../../assests/styles/tab.css";
 import Arrow from "../../../../components/svg-icons/Arrow";
 import axios from "axios";
-import { BASE_URL } from "../../../../utils/axios-util";
 import EditIcon from "../../../../components/svg-icons/EditIcon";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { TfiFaceSad } from "react-icons/tfi";
+import { BASE_URL } from "../../../../utils/axios-util";
 
 interface Option {
   value: string;
@@ -37,6 +37,33 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
+  const [tabUser, setTabUser] = useState("");
+
+  console.log("yooooo", selectedUser);
+
+  //Axsios call fro api
+
+  const paidUserUrl = BASE_URL + `/users?$sort[createdAt]=-1&role=paid_user`
+  useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(paidUserUrl);
+        setTabUser(response.data.data);
+        console.log('FETCHED USR',setTabUser)
+      
+      } catch (err) {
+        console.error("there was an issue: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+
+  
+  //
 
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [formData, setFormData] = useState({

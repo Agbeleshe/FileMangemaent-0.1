@@ -22,9 +22,11 @@ const useFetchUsers = (
 
   const userUrl =
     BASE_URL +
-    `/files?$sort[createdAt]=-1&filePrivacy=public&fileName[$like]=%${searchValue}%${datefilter}` ||
-      `/files?$sort[createdAt]=-1&filePrivacy=public&fileAction=${selectedFilter}&${datefilter}`;
-   // `/files?$or[0][userId]=${selectedFilter}&$or[1][uploadedBy]=${searchValue}$or[2][user.email][$like]=${searchValue}%$or[3][fileName][$like]=${searchValue}%&${datefilter}`;
+      `/files?$sort[createdAt]=-1&filePrivacy=public&fileName[$like]=%${searchValue}% ${datefilter}` ||
+    `/files?$sort[createdAt]=-1&filePrivacy=public&fileAction=${selectedFilter}&${datefilter}`;
+  // `/files?$or[0][userId]=${selectedFilter}&$or[1][uploadedBy]=${searchValue}$or[2][user.email][$like]=${searchValue}%$or[3][fileName][$like]=${searchValue}%&${datefilter}`;
+  //      &userEmail[$like]=%${searchValue}% this is for the new email own its not working because no information it yet
+
   useEffect(() => {
     setLoading(true);
     axios
@@ -41,7 +43,7 @@ const useFetchUsers = (
         setLoading(false);
       });
   }, [searchValue, selectedFilter, datefilter]);
- // console.log(searchValue, "aaaakkkeeee");
+  // console.log(searchValue, "aaaakkkeeee");
 
   return {
     loading,

@@ -72,6 +72,8 @@ const Tab2: React.FC<Tab2Props> = ({ selectedUser }) => {
         console.error("Th+ere was an error fetching data:", err);
       });
   }, []);
+
+  
   const filteredUsers = users.filter(
     (user) => selectedUser.userId === user.userId
   );
