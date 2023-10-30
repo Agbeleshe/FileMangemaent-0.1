@@ -38,10 +38,11 @@ const useUserPagination = (
             users.file.paperLink
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
+           // users.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
             users.file.fileAction
               .toLowerCase()
-               .includes(searchValue.toLowerCase())
-              //.includes(selectedFilter.toLowerCase())
+              .includes(searchValue.toLowerCase())
+          //.includes(selectedFilter.toLowerCase())
         )
       : users?.slice(firstPostIndex, lastPostIndex).filter(
           (user: any) =>
@@ -52,10 +53,11 @@ const useUserPagination = (
             user.file.paperLink
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
+            //user.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
             user.file.fileAction
               .toLowerCase()
-                .includes(searchValue.toLowerCase())
-             // .includes(selectedFilter.toLowerCase())
+              .includes(searchValue.toLowerCase())
+          // .includes(selectedFilter.toLowerCase())
         );
 
   const currentPost = viewAll ? users : filteredUsers;

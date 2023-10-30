@@ -44,7 +44,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     timezone: selectedUser.timezone,
     profilePicture: selectedUser.user.profile_picture,
   });
-  console.log(selectedUser);
+ // console.log(selectedUser);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false); // New state variable for the tooltip
   const [initialFormData, setInitialFormData] = useState({ ...formData });
@@ -91,7 +91,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     //BASE_URL + /users?$sort[createdAt]=-1&role=paid_user/${selectedUser.id};
     // Send the PUT request to update the user's data
     console.log(selectedUser.id);
-
+console.log (users , "here is users")
     axios
       .patch(UpdateAccountUrl, {
         email: formData.email,

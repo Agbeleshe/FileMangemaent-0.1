@@ -135,6 +135,7 @@ const File = () => {
   //tabs redirect
   const handleTabs = (userId: any) => {
     setSelectedUserId(userId);
+    console.log(userId)
     setTabs(false);
   };
 
@@ -347,7 +348,7 @@ const File = () => {
                             </a>
                           </td>
                           <td
-                            onClick={() => handleTabs(user.id)}
+                            onClick={() => handleTabs(user.userId)}
                             className=" border-t py-4 text-cente px-2 hover:text-red-500 underline  text-blue-500 font-Poppins text-sm font-normal"
                           >
                             {user.user.email}

@@ -51,6 +51,12 @@ const QnAJunologix = () => {
   //for the dragged item for faq
   const [draggedFAQ, setDraggedFAQ] = useState<FAQ | null>(null);
   const [draggedFAQIndex, setDraggedFAQIndex] = useState<number | null>(null);
+const [newFAQ, setNewFAQ] = useState<FAQ | null>(null); // Added state to hold the new FAQ
+
+const addFAQ = (faq: FAQ) => {
+  setFAQs([...FAQs, faq]);
+};
+
 
   //DO NOT TOUCH
   let customActiveTab = "Junologix";
@@ -315,7 +321,11 @@ const QnAJunologix = () => {
         `/faq?$sort[position]=1&for=` + endpoint,
         faq
       );
-      setFAQs([...FAQs, response.data]);
+            console.log("API Response here to :", response.data); // Log the API response
+
+       setFAQs([...FAQs, response.data]);
+
+      
       setModalTwo(false);
     } catch (error) {
       console.error("Error adding FAQ:", error);
