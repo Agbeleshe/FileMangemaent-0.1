@@ -413,7 +413,7 @@ const QnAJunologix = () => {
                                       </span>
 
                                       <span
-                                        className="cursor:pointer z-20"
+                                        className="cursor-pointer z-20"
                                         onClick={() =>
                                           handleDeleteCategory(faq.id)
                                         }
@@ -446,7 +446,7 @@ const QnAJunologix = () => {
           </div>
 
           {/* Send side */}
-          <div className="shadow-full">
+          <div className="shadow-full mx-3">
             <div className="flex justify-between mb-1">
               <h1 className="font-semibold px-5 text-black">
                 Questions & Answers
@@ -454,7 +454,7 @@ const QnAJunologix = () => {
 
               <span
                 onClick={handleModalTwo}
-                className="inline-flex px-5 bg-black items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
+                className="inline-flex items-center mr-3 justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
               >
                 <PlusGreen />
               </span>
@@ -485,8 +485,8 @@ const QnAJunologix = () => {
                             <div key={faq.id}>
 
                               {/* Category name */}
-                              <div className="w-full p-2">
-                                <p className="flex gap-3 font-extrabold">
+                              <div className="w-full p-2" title={`${faq.name} category`}>
+                                <p className="flex gap-3 hover:font-extrabold">
                                   <span className="ml-2 ">
                                     <Dots />
                                   </span>

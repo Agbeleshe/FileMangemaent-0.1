@@ -64,7 +64,6 @@ const Qna = () => {
   }
   dispatch(setActiveTabLabel(customActiveTab));
 
-
   //yeah you can start touching
   let endpoint = "paperlink";
 
@@ -409,7 +408,7 @@ const Qna = () => {
                                       </span>
 
                                       <span
-                                        className="cursor:pointer z-20"
+                                        className="cursor-pointer z-20"
                                         onClick={() =>
                                           handleDeleteCategory(faq.id)
                                         }
@@ -450,7 +449,7 @@ const Qna = () => {
 
               <span
                 onClick={handleModalTwo}
-                className="inline-flex items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
+                className="inline-flex mr-5 items-center justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
               >
                 <PlusGreen />
               </span>
@@ -473,59 +472,83 @@ const Qna = () => {
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps}>
                       <div className="shadow-full w-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm ">
-                        {FAQs.map((qna, index) => (
-                          <Draggable
-                            key={qna.id}
-                            draggableId={qna.id.toString()}
-                            index={index}
-                          >
-                            {(provided) => (
+                        <div>
+                          {paperLinkFAQs.map((faq) => (
+                            <div key={faq.id}>
+                              {/* Category name */}
                               <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="flex w-full justify-between border border-gray-50"
+                                className="w-full p-2"
+                                title={`${faq.name} category`}
                               >
-                                <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
-                                  <div
-                                    className="w-full"
-                                    onClick={() => toggleFQA(index)}
-                                  >
-                                    <p className="flex gap-3">
-                                      <span className="ml-2">
-                                        <Dots />
-                                      </span>
-                                      {qna.question}
-                                    </p>
-                                    {showFQA[index] && (
-                                      <div className="py-5">
-                                        <div className="px-5">
-                                          <p className="text-gray-700">
-                                            Answers: {qna.answer}
+                                <p className="flex gap-3 hover:font-extrabold">
+                                  <span className="ml-2 ">
+                                    <Dots />
+                                  </span>
+
+                                  {faq.name}
+                                </p>
+                              </div>
+                              {FAQs.map((qna, index) => (
+                                <Draggable
+                                  key={qna.id}
+                                  draggableId={qna.id.toString()}
+                                  index={index}
+                                >
+                                  {(provided) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className="flex w-full justify-between border border-gray-50"
+                                    >
+                                      {qna.categoryId === faq.id && (
+                                        <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
+                                          <div
+                                            className="w-full"
+                                            onClick={() => toggleFQA(index)}
+                                          >
+                                            <p className="flex gap-3">
+                                              <span className="ml-2">
+                                                <Dots />
+                                              </span>
+
+                                              {qna.question}
+                                            </p>
+                                            {showFQA[index] && (
+                                              <div className="py-5">
+                                                <div className="px-5">
+                                                  <p className="text-gray-700">
+                                                    Answers: {qna.answer}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <p className="flex gap-5 px-2">
+                                            <span
+                                              onClick={() => openEditModal(qna)}
+                                              className="cursor-pointer"
+                                            >
+                                              <EditIcon />
+                                            </span>
+                                            <span
+                                              onClick={() =>
+                                                handleDeleteFAQ(qna.id)
+                                              }
+                                              className="cursor-pointer"
+                                            >
+                                              <DeleteIcon />
+                                            </span>
                                           </p>
                                         </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <p className="flex gap-5 px-2">
-                                    <span
-                                      onClick={() => openEditModal(qna)}
-                                      className="cursor-pointer"
-                                    >
-                                      <EditIcon />
-                                    </span>
-                                    <span
-                                      onClick={() => handleDeleteFAQ(qna.id)}
-                                      className="cursor-pointer"
-                                    >
-                                      <DeleteIcon />
-                                    </span>
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
+                                      )}
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                       {provided.placeholder}
                     </div>
