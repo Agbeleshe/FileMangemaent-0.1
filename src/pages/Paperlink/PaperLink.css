@@ -37,6 +37,42 @@
   animation: bounce 4s infinite linear;
 }
 
+.my-component {
+  display: none;
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+
+.my-component.show {
+  display: block;
+  opacity: 1;
+}
+
+.my-component.hide {
+  display: block;
+  opacity: 0;
+}
+
+.hidden-text {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease;
+}
+
+.typing-animation {
+  opacity: 1;
+  visibility: visible;
+  animation: typing 2s steps(40, end);
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
 @keyframes bounce {
   0% {
     transform: translateX(0);

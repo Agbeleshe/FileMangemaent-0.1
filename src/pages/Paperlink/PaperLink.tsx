@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./PaperLink.css";
-import img from "../../assests/coomingSoon.gif";
-import coomingSoon from "../../assests/3Sn6i2PqMv.json";
+import img from "../../assests/admin.json";
+import coomingSoon from "../../assests/contruction.json";
 import { useSelector } from "react-redux";
 
 import Lottie from "lottie-react";
@@ -9,6 +9,7 @@ import Lottie from "lottie-react";
 import { selectActiveTabLabel } from "../../store/tab-slice";
 
 const PaperLink = () => {
+  const [showDiv, setShowDiv] = useState(true);
   const [positionX, setPositionX] = useState(0);
   const [positionY, setPositionY] = useState(0);
 
@@ -39,27 +40,68 @@ const PaperLink = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowDiv(false);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <div className="emoji-container h-full w-full">
       <div>
         {activeTab === "Paperlink" ? (
           <div>
-            <h1 className="font-extralight w-[100%] text-center mx-auto ">
+            <div>
+              <div></div>
+              {/* Your content goes here */}
+              <div className="relative z-10 bg-green-200 w-[40%] p-5 text-green-600 flex justify-center text-center border-r-green-500 border-r-8 ">
+                <span
+                  className={` absolute my-component top-2 ${
+                    showDiv ? "show" : "hide"
+                  }`}
+                >
+                  Welcome to Paperdaz Admin
+                </span>
+                <span
+                  className={`absolute my-component  top-2 ${
+                    showDiv ? "hide" : "show"
+                  }`}
+                >
+                  Empty Dashboard...
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col w-full justify-center items-center text-center h-[40vh]">
+              <div className="h-fit">
+                <div className="h-[100%] w-full mt-2">
+                  <Lottie animationData={img} />
+                </div>
+              </div>
+            </div>
+
+            {/* <h1 className="font-extralight w-[100%] text-center mx-auto ">
               Beware Of The Ghost That Haunts The Empty Dashboard!!
             </h1>
             <div
-              title="wwwhooooaaaooo...!!!!"
               className="emoji cursor-not-allowed"
               style={{ left: `${positionX}px`, top: `${positionY}px` }}
             >
               👻
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className=" text flex  justify-center w-full mx-auto flex-col text-center align-middle h-full ">
-            <h2 className="bg-green-200 font-extrabold text-green-500 py-5">{activeTab} will be Coming Soon...</h2>
+            <h2 className="bg-green-50 font-extrabold text-green-400 py-2  ">
+              {activeTab} will be Coming Soon...
+            </h2>
             <div className=" w-full flex items-center mx-auto justify-center mt-5 h-[50vh]">
-             <div className="w-[100%] h-[100%] flex justify-center"> <Lottie animationData={coomingSoon}/></div>
+              <div className="w-[100%] h-[100%] flex justify-center">
+             
+                <Lottie animationData={coomingSoon} />
+              </div>
             </div>
           </div>
         )}
