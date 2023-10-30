@@ -6,12 +6,14 @@ interface FirstModalProps {
   setModalOne: (value: boolean) => void;
   handleModalClose: () => void;
   updateCategories: () => void;
+  endpoint: string;
 }
 
 const FirstModal: React.FC<FirstModalProps> = ({
   setModalOne,
   handleModalClose,
   updateCategories,
+  endpoint,
 }) => {
   const [name, setName] = useState("");
 
@@ -20,7 +22,7 @@ const FirstModal: React.FC<FirstModalProps> = ({
     try {
       const response = await axiosInstance.post("/categories?", {
         name,
-        for: "paperlink",
+        for: endpoint,
       });
       console.log("API response:", response.data);
       console.log("Category created:", response.data);

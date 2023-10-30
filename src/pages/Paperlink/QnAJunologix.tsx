@@ -295,7 +295,7 @@ const QnAJunologix = () => {
   // Function to update category data
   const updateCategories = () => {
     axiosInstance
-      .get("/categories?$sort[position]=1&for="+ endpoint)
+      .get(`/categories?$sort[position]=1&for=`+ endpoint)
       .then((response) => {
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
@@ -309,7 +309,7 @@ const QnAJunologix = () => {
   const handleAddFAQ = async (faq: FAQ) => {
     try {
       const response = await axiosInstance.post(
-        "/faq?$sort[position]=1&for="+ endpoint,
+        `/faq?$sort[position]=1&for=`+ endpoint,
         faq
       );
       setFAQs([...FAQs, response.data]);

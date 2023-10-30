@@ -10,6 +10,7 @@ interface SecondModalProps {
   handleModalClose: () => void;
   setFAQs: React.Dispatch<React.SetStateAction<FAQ[]>>;
   FAQs: FAQ[];
+  endpoint: string;
 }
 
 interface Category {
@@ -22,6 +23,7 @@ const SecondModal: React.FC<SecondModalProps> = ({
   handleModalClose,
   setFAQs,
   FAQs,
+  endpoint,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<number | string>("");
   const [question, setQuestion] = useState("");
@@ -34,7 +36,7 @@ const SecondModal: React.FC<SecondModalProps> = ({
     setisLoading(true);
 
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=paperlink`)
+      .get(`/categories?$sort[position]=1&for=` + endpoint)
       .then((res) => {
         setCategories(res.data);
         setSelectedCategory("");
@@ -54,12 +56,13 @@ const SecondModal: React.FC<SecondModalProps> = ({
       try {
         // Make API call to add new FAQ
         const response = await axiosInstance.post(
-          `/faq?$sort[position]=1&for=paperlink`,
+          `/faq?$sort[position]=1&for=` + endpoint,
+
           {
             categoryId: selectedCategory,
             question,
             answer,
-            for: "paperlink",
+            for: endpoint,
           }
         );
 
