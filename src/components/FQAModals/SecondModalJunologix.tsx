@@ -10,8 +10,9 @@ interface SecondModalJunologixProps {
   handleModalClose: () => void;
   setFAQs: React.Dispatch<React.SetStateAction<FAQ[]>>;
   FAQs: FAQ[];
-  endpoint: string
-
+  endpoint: string;
+  onAddFAQ: (faq: FAQ) => void;
+  onSubmitSuccess: () => void;
 }
 
 interface Category {
@@ -25,6 +26,8 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
   setFAQs,
   FAQs,
   endpoint,
+  onAddFAQ,
+  onSubmitSuccess,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<number | string>("");
   const [question, setQuestion] = useState("");
@@ -37,7 +40,7 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
     setisLoading(true);
 
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=`+ endpoint)
+      .get(`/categories?$sort[position]=1&for=` + endpoint)
       .then((res) => {
         setCategories(res.data);
         setSelectedCategory("");
@@ -55,22 +58,18 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
       setIsSubmitting(true);
 
       try {
-        // Make API call to add new FAQ
         const response = await axiosInstance.post(
-          `/faq?$sort[position]=1&for=`+ endpoint,
+          `/faq?$sort[position]=1&for=` + endpoint,
           {
             categoryId: selectedCategory,
             question,
             answer,
-          //  for: "junologix",
-          for: endpoint,
-
-
+            for: endpoint, // Make sure this is set correctly
           }
         );
 
-        // Update FAQs state with new item
-        setFAQs([...FAQs, response.data]);
+        // Call the callback function to update the FAQ state
+        onAddFAQ(response.data);
 
         // Reset form fields
         setSelectedCategory("");
@@ -83,6 +82,7 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
         console.error("Error while saving data:", error);
       } finally {
         setIsSubmitting(false);
+       
       }
     }
   };

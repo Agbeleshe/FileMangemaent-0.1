@@ -315,12 +315,17 @@ const QnAJunologix = () => {
         `/faq?$sort[position]=1&for=` + endpoint,
         faq
       );
+
+      // Update the FAQs state immediately after adding a new FAQ
       setFAQs([...FAQs, response.data]);
+
+      // Close the modal
       setModalTwo(false);
     } catch (error) {
       console.error("Error adding FAQ:", error);
     }
   };
+
   //  console.log("FAQs:", FAQs);
   // Handle category update
   const handleCategoryUpdated = (updatedCategory: PaperLinkFAQ) => {
@@ -335,6 +340,12 @@ const QnAJunologix = () => {
       setPaperLinkFAQs(updatedCategories);
     }
   };
+
+  const refreshData = () => {
+    // Fetch your updated data, e.g., by calling fetchData()
+    fetchData();
+  };
+
 
   return (
     <div className="mb-32 md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-lg">
@@ -463,14 +474,16 @@ const QnAJunologix = () => {
               <SecondModalJunologix
                 setModalTwo={setModalTwo}
                 handleModalClose={handleModalClose}
-                setFAQs={setFAQs}
+                setFAQs={setFAQs} // Pass the setFAQs function
                 FAQs={FAQs}
                 endpoint={endpoint}
+                onAddFAQ={handleAddFAQ} // Pass the callback function
+                onSubmitSuccess={refreshData}
               />
-            
             ) : (
               ""
             )}
+
             <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm mb-5">
               {/*  */}
 
@@ -483,9 +496,11 @@ const QnAJunologix = () => {
                         <div>
                           {paperLinkFAQs.map((faq) => (
                             <div key={faq.id}>
-
                               {/* Category name */}
-                              <div className="w-full p-2" title={`${faq.name} category`}>
+                              <div
+                                className="w-full p-2"
+                                title={`${faq.name} category`}
+                              >
                                 <p className="flex gap-3 hover:font-extrabold">
                                   <span className="ml-2 ">
                                     <Dots />
