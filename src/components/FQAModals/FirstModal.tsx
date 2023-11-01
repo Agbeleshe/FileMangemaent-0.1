@@ -7,6 +7,7 @@ interface FirstModalProps {
   handleModalClose: () => void;
   updateCategories: () => void;
   endpoint: string;
+  
 }
 
 const FirstModal: React.FC<FirstModalProps> = ({

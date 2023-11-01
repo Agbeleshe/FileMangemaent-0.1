@@ -25,6 +25,7 @@ import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
 
 //hook for seting tabs to default paperLink
 import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
+import Empty from "./resources/Empty";
 
 //year and month for the user.reciept
 function extractYearAndMonth(dateTimeString: string) {
@@ -196,51 +197,53 @@ const AccountReceive = () => {
                   {/* Desktop view */}
                   <div className="hidden md:flex">
                     <table className="w-full table-hover user-table ">
-                      <thead>
-                        <tr className="">
-                          <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
-                            <span
-                              className="flex   gap-2  w-full h-full "
-                              onClick={handleSelectedDate}
-                            >
-                              Date/Time
-                              <img src={Calender} alt="" />
-                            </span>
+                      {!error && (
+                        <thead>
+                          <tr className="">
+                            <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
+                              <span
+                                className="flex   gap-2  w-full h-full "
+                                onClick={handleSelectedDate}
+                              >
+                                Date/Time
+                                <img src={Calender} alt="" />
+                              </span>
 
-                            {/* date modal */}
-                            {selectedDate && (
-                              <div className="">
-                                <div
-                                  onClick={handleCloseSelectedDate}
-                                  className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
-                                ></div>
+                              {/* date modal */}
+                              {selectedDate && (
+                                <div className="">
+                                  <div
+                                    onClick={handleCloseSelectedDate}
+                                    className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
+                                  ></div>
 
-                                <div
-                                  onClick={handleCloseSelectedDate}
-                                  className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
-                                ></div>
-                                <DateRangePickerCalendarExample
-                                  getDateValue={getDateValuesFunc}
-                                  setIsDatePicked={setIsDatePicked}
-                                  selectedDate={selectedDate}
-                                />
-                              </div>
-                            )}
-                          </th>
-                          <th className=" border-gray-100 p-2 text-left font-medium text-darkGray text-sm">
-                            Account Email
-                          </th>
-                          <th className="border-b p-2  border-gray-100  text-left font-medium text-darkGray text-sm">
-                            Business Name
-                          </th>
-                          <th className="border-b border-gray-100 px-4 py-3 text-left font-medium text-darkGray text-sm">
-                            #invoice
-                          </th>
-                          <th className="border-b border-gray-100 p-2 text-left font-medium text-darkGray text-sm">
-                            Total
-                          </th>
-                        </tr>
-                      </thead>
+                                  <div
+                                    onClick={handleCloseSelectedDate}
+                                    className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
+                                  ></div>
+                                  <DateRangePickerCalendarExample
+                                    getDateValue={getDateValuesFunc}
+                                    setIsDatePicked={setIsDatePicked}
+                                    selectedDate={selectedDate}
+                                  />
+                                </div>
+                              )}
+                            </th>
+                            <th className=" border-gray-100 p-2 text-left font-medium text-darkGray text-sm">
+                              Account Email
+                            </th>
+                            <th className="border-b p-2  border-gray-100  text-left font-medium text-darkGray text-sm">
+                              Business Name
+                            </th>
+                            <th className="border-b border-gray-100 px-4 py-3 text-left font-medium text-darkGray text-sm">
+                              #invoice
+                            </th>
+                            <th className="border-b border-gray-100 p-2 text-left font-medium text-darkGray text-sm">
+                              Total
+                            </th>
+                          </tr>
+                        </thead>
+                      )}
                       {results ? (
                         <tbody className="cursor-pointer">
                           {currentPost.map((user) => (
@@ -316,11 +319,12 @@ const AccountReceive = () => {
                       </div>
                     </div>
                   )}
-                  {!currentPost && error && <ErrorMessage message={error} />}
-                  {!currentPost && inputClick === true && (
-                    <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
-                      Search complete. No record found
-                    </div>
+                  {currentPost.length < 1 && error && (
+                    <ErrorMessage message={error} />
+                  )}
+                  {!error && users.length === 0 && !loading && (
+                    // when there are no records
+                    <Empty activeTab={activeTab} searchValue={searchValue} />
                   )}
                   <div className="w-full bg-slate-100 flex justify-center ">
                     {prevButton} {paginationButtons} {viewAllButton}{" "}

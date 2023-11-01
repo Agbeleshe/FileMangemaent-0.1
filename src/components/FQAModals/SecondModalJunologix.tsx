@@ -37,6 +37,10 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
   const [isLoading, setisLoading] = useState(false);
 
   useEffect(() => {
+    fetchCategories();
+  }, [endpoint]); // Include 'endpoint' as a dependency
+
+  const fetchCategories = () => {
     setisLoading(true);
 
     axiosInstance
@@ -51,22 +55,28 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
       .finally(() => {
         setisLoading(false);
       });
-  }, []);
+  };
 
   const handleAdd = async () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
 
       try {
+        const requestPayload = {
+          categoryId: selectedCategory,
+          question,
+          answer,
+          for: endpoint, // Make sure this is set correctly
+        };
+
+        console.log("Request Payload:", requestPayload);
+
         const response = await axiosInstance.post(
           `/faq?$sort[position]=1&for=` + endpoint,
-          {
-            categoryId: selectedCategory,
-            question,
-            answer,
-            for: endpoint, // Make sure this is set correctly
-          }
+          requestPayload
         );
+
+        console.log("Response:", response);
 
         // Call the callback function to update the FAQ state
         onAddFAQ(response.data);
@@ -78,11 +88,14 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
 
         // Close modal
         setModalTwo(false);
+
+        // Reload categories
+        fetchCategories();
+        onSubmitSuccess();
       } catch (error) {
         console.error("Error while saving data:", error);
       } finally {
         setIsSubmitting(false);
-       
       }
     }
   };
@@ -92,7 +105,7 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
       <div className="absolute inset-0 backdrop-blur-sm"></div>
       <div className="absolute inset-0 bg-black opacity-5"></div>
       <div className="z-10 relative bg-white py-5 rounded-xl shadow-xl w-auto md:min-w-[800px]">
-        <div className="flex justify-between px-5 mb-3 w-full border-b-2 pb-2">
+        <div className="flex justify between px-5 mb-3 w-full border-b-2 pb-2">
           <div className="text-black font-semibold">
             Add New Question & Answers
           </div>
@@ -170,7 +183,7 @@ const SecondModalJunologix: React.FC<SecondModalJunologixProps> = ({
                   className={`${
                     isSubmitting
                       ? "bg-gray-400"
-                      : "bg-green-500 hover:bg-green-600"
+                      : "bg-green-500 hover-bg-green-600"
                   } text-white font-bold py-2 px-4 rounded`}
                   onClick={handleAdd}
                   disabled={isSubmitting}

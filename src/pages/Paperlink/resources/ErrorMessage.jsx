@@ -1,4 +1,6 @@
 import React from "react";
+import Lottie from "lottie-react";
+import error from '../../../assests/error (1).json'
 
 //an array of funny reasons
 const funnyReasons = [
@@ -37,7 +39,7 @@ const ErrorMessage = ({ message }) => {
 
   return (
     <div className="text-yellow-700 font-bold bg-yellow-100 flex justify-center text-center gap-5 py-4 px-2 items-center">
-      Sorry! {funnyReason}. Just kidding, {message}.
+      Sorry! {funnyReason}. Just kidding, {message}. <div><Lottie animationData={error} /></div>
     </div>
   );
 };

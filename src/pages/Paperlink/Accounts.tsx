@@ -25,6 +25,7 @@ import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
 
 //hook for seting tabs to default paperLink
 import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
+import Empty from "./resources/Empty";
 
 const makeStyle = (status: string) => {
   let color = "";
@@ -116,6 +117,7 @@ const Accounts = () => {
   //tabs redirect
   const handleTabs = (userId: number) => {
     setSelectedUserId(userId);
+    console.log('selected id :',selectedUserId)
     setTabs(false);
   };
   //handle modal of the date open
@@ -408,10 +410,9 @@ const Accounts = () => {
                         {error && <ErrorMessage message={error} />}
                       </div>
                     )}
-                    {!currentPost.length && (
-                      <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
-                        Search complete. No record found
-                      </div>
+                    {!error && users.length === 0 && !loading && (
+                      // when there are no records
+                      <Empty activeTab={activeTab} searchValue={searchValue} />
                     )}
                   </div>
                 </>

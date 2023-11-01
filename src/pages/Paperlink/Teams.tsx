@@ -20,6 +20,7 @@ import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
 
 //hook for seting tabs to default paperLink
 import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
+import Empty from "./resources/Empty";
 
 const makeStyle = (status: string) => {
   if (status === "New Trial") {
@@ -49,13 +50,12 @@ const Teams = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-   //To set default on paperlink and also to set the active tob for the switch to define endponit
-   const {customActiveTab} = useCustomActiveTabs()
-   const activeTab = useSelector(selectActiveTabLabel);
-   const dispatch = useDispatch();
-   
-   dispatch(setActiveTabLabel(customActiveTab));
- 
+  //To set default on paperlink and also to set the active tob for the switch to define endponit
+  const { customActiveTab } = useCustomActiveTabs();
+  const activeTab = useSelector(selectActiveTabLabel);
+  const dispatch = useDispatch();
+
+  dispatch(setActiveTabLabel(customActiveTab));
 
   const { loading, users, error } = useTeamsApi(searchValue, searchFilter);
   const [filterAll, setFilterAll] = useState(false);
@@ -302,19 +302,15 @@ const Teams = () => {
                   ))}
                 </div>
               </div>
-              <div className="w-full bg-slate-100 flex justify-center ">
-                {prevButton} {paginationButtons} {viewAllButton} {nextButton}
-              </div>
             </>
           )}
           {/* other errors */}
           {error && (
             <ErrorMessage message="An error occurred while fetching data" />
           )}
-          {currentPost.length < 1 && inputClick && (
-            <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
-              Search complete. No record found
-            </div>
+          {!error && users.length === 0 && !loading && (
+            // when there are no records
+            <Empty activeTab={activeTab} searchValue={searchValue} />
           )}
         </>
       ) : (
@@ -325,6 +321,9 @@ const Teams = () => {
           </div>
         </div>
       )}
+      <div className="w-full bg-slate-100 flex justify-center ">
+        {prevButton} {paginationButtons} {viewAllButton} {nextButton}
+      </div>
     </div>
   );
 };

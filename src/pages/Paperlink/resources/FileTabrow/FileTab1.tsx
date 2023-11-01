@@ -9,10 +9,16 @@ import EditIcon from "../../../../components/svg-icons/EditIcon";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { TfiFaceSad } from "react-icons/tfi";
 import { BASE_URL } from "../../../../utils/axios-util";
-
+import axiosInstance from "../../../../utils/axiosInstance";
+import { Infor } from "../Infor";
 interface Option {
   value: string;
   label: string;
+}
+
+interface User {
+  userId: number;
+  // Other user properties
 }
 
 const options: Option[] = [
@@ -28,7 +34,7 @@ options.sort((a, b) => a.label.localeCompare(b.label));
 
 interface Tab1Props {
   selectedUser: any | undefined;
-  users: any[];
+  users: User[];
 }
 
 const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
@@ -37,32 +43,31 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
-  const [tabUser, setTabUser] = useState("");
-
-  console.log("yooooo", selectedUser);
+  const [tabUser, setTabUser] = useState<Infor[]>([]);
 
   //Axsios call fro api
+  const Api = BASE_URL + `/users?$sort[createdAt]=-1&role=paid_user`;
 
-  const paidUserUrl = BASE_URL + `/users?$sort[createdAt]=-1&role=paid_user`
   useEffect(() => {
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(paidUserUrl);
-        setTabUser(response.data.data);
-        console.log('FETCHED USR',setTabUser)
-      
-      } catch (err) {
-        console.error("there was an issue: ", err);
-      } finally {
+    axios
+      .get<{ data: Infor[] }>(Api)
+      .then((res) => {
+        setTabUser(res.data.data);
+        console.log("res", res.data.data);
+      })
+      .catch((err) => {
+        console.log("there was an issue: ", err);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-    fetchData();
+      });
   }, []);
 
+  console.log("tabUser", tabUser);
+  console.log("selectedUser", selectedUser);
+  console.log("users: ", users);
 
-  
   //
 
   const [selectedOption, setSelectedOption] = useState<string>("");
@@ -74,7 +79,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
     timezone: selectedUser.timezone || null,
     profile_picture: selectedUser.user.profile_picture,
   });
-  console.log(selectedUser);
+  // console.log('selected user id: ',selectedUser);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);

@@ -104,7 +104,7 @@ const PaperLink = () => {
           </div>
         ) : (
           <div className=" text flex  justify-center w-full mx-auto flex-col text-center align-middle h-full ">
-            <h2 className="bg-green-50 font-extrabold border-y-4 border-green-300 text-green-300 py-2  ">
+            <h2 className="bg-green-50 font-extrabold border-y-4 border-green-500 text-green-500 py-2  ">
               {activeTab} will be Coming Soon...
             </h2>
             <div className=" w-full flex items-center mx-auto justify-center mt-5 h-[50vh]">

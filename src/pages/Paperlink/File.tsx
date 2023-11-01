@@ -23,7 +23,7 @@ import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
 
 //hook for seting tabs to default paperLink
 import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
-
+import Empty from "./resources/Empty";
 
 const makeStyle = (status: string) => {
   if (status === "Active") {
@@ -58,13 +58,12 @@ const File = () => {
   const [timeFilter, setTimeFilter] = useState<any>([null, null]);
 
   //To set default on paperlink and also to set the active tob for the switch to define endponit
-  const {customActiveTab} = useCustomActiveTabs()
+  const { customActiveTab } = useCustomActiveTabs();
   const activeTab = useSelector(selectActiveTabLabel);
   const dispatch = useDispatch();
-  
+
   dispatch(setActiveTabLabel(customActiveTab));
 
-  
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -128,16 +127,22 @@ const File = () => {
   }, [currentPost, inputClick]);
 
   // Function to handle clicking on a user row and display additional information
-  const handleMobileUserClick = (userId: number) => {
-    setSelectedUserId(selectedUserId === userId ? null : userId); // Toggle selected user
-  };
+  // const handleMobileUserClick = (userId: number) => {
+  //   setSelectedUserId(selectedUserId === userId ? null : userId); // Toggle selected user
+  // };
+
+  useEffect(() => {
+    console.log(selectedUserId);
+  }, [selectedUserId]);
 
   //tabs redirect
-  const handleTabs = (userId: any) => {
+  const handleTabs = (userId: number) => {
+    console.log("handleTabs called with userId:", userId);
     setSelectedUserId(userId);
-    console.log(userId)
+    console.log("selectedUserId after update:", selectedUserId);
     setTabs(false);
   };
+  
 
   //handle modal of the date open
   const handleSelectedDate = () => {
@@ -370,12 +375,9 @@ const File = () => {
                     </tbody>
                   </table>
                 )}
-                {!records ? (
-                  ""
-                ) : (
-                  <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
-                    Search complete. No record found
-                  </div>
+                {!error && users.length === 0 && !loading && (
+                  // when there are no records
+                  <Empty activeTab={activeTab} searchValue={searchValue} />
                 )}
               </div>
               {/* Mobile view */}
@@ -388,11 +390,11 @@ const File = () => {
                   <div className="md:hidden max-h-[400px] p-3 text-xs">
                     {currentPost.map((user: any) => (
                       <div
-                        onClick={() => handleMobileUserClick(user.id)} // Handle user row click
+                        // onClick={() => handleMobileUserClick(user.id)} // Handle user row click
                         key={user.id}
                         className="flex gap-2 justify-between p-3 shadow-lg hover:shadow-2xl hover:bg-gray-200 rounded-md my-2 "
                       >
-                        {selectedUserId === user.id && (
+                        {selectedUserId == user.id && (
                           <div className="flex flex-col justify-start items-start align-middle flex-1 ">
                             <span className="text-black flex text-[12px]">
                               {convertDateTime(user.createdAt)}

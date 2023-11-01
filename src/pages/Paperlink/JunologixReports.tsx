@@ -12,6 +12,7 @@ import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
 
 //hook for seting tabs to default paperLink
 import useCustomActiveTabs from "../../hooks/Others/useCustomActiveTabs";
+import NoFile from "./resources/NoFile";
 
 const JunologixReports = () => {
   const [formData, setFormData] = useState({
@@ -207,61 +208,58 @@ const JunologixReports = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 text-xs">
-                  {Array.isArray(junologiXData) && junologiXData.length > 0 ? (
-                    junologiXData.map((item, index) => (
-                      <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.abr}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.state}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {item.return}
-                        </td>
-                        {/* <td className="px-6 py-4 whitespace-nowrap">
+                  {Array.isArray(junologiXData) && junologiXData.length > 0
+                    ? junologiXData.map((item, index) => (
+                        <tr key={index}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.abr}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.state}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.return}
+                          </td>
+                          {/* <td className="px-6 py-4 whitespace-nowrap">
                           {item.status}
                         </td> */}
-                        <div className="flex gap-2 m-2">
-                          <span onClick={() => handleEditClick(index)}>
-                            <EditIcon />
-                          </span>
-                          <span onClick={() => handleDelete(index)}>
-                            <DeleteIcon />
-                          </span>
-                        </div>
-                        {isEditModalOpen && (
-                          <EditJunologix
-                            junologixToEdit={editItem}
-                            onClose={() => {
-                              setIsEditModalOpen(false);
-                              setEditItem(null);
-                              setEditedItemIndex(null); // Reset the edited item index
-                            }}
-                            onJunologixUpdated={(updatedJunologix) => {
-                              // Find the index of the edited item in the data array
-                              const index = editedItemIndex;
+                          <div className="flex gap-2 m-2">
+                            <span onClick={() => handleEditClick(index)}>
+                              <EditIcon />
+                            </span>
+                            <span onClick={() => handleDelete(index)}>
+                              <DeleteIcon />
+                            </span>
+                          </div>
+                          {isEditModalOpen && (
+                            <EditJunologix
+                              junologixToEdit={editItem}
+                              onClose={() => {
+                                setIsEditModalOpen(false);
+                                setEditItem(null);
+                                setEditedItemIndex(null); // Reset the edited item index
+                              }}
+                              onJunologixUpdated={(updatedJunologix) => {
+                                // Find the index of the edited item in the data array
+                                const index = editedItemIndex;
 
-                              if (index !== null) {
-                                // Update the junologiXData state with the edited data
-                                const updatedData = [...junologiXData];
-                                updatedData[index] = updatedJunologix;
-                                setJunologixData(updatedData);
-                              }
+                                if (index !== null) {
+                                  // Update the junologiXData state with the edited data
+                                  const updatedData = [...junologiXData];
+                                  updatedData[index] = updatedJunologix;
+                                  setJunologixData(updatedData);
+                                }
 
-                              setIsEditModalOpen(false);
-                            }}
-                          />
-                        )}
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={4}>No data available</td>
-                    </tr>
-                  )}
+                                setIsEditModalOpen(false);
+                              }}
+                            />
+                          )}
+                        </tr>
+                      ))
+                    : ""}
                 </tbody>
               </table>
+              {junologiXData.length < 1 && <NoFile />}
             </div>
           </div>
         </div>

@@ -4,12 +4,13 @@ import Tab1 from "./FileTab1";
 import Tab2 from "./FileTab2";
 
 interface FileTabRowProps {
-  selectedUserId: number | null;
+  selectedUserId: any;
   users: any[]; // Replace 'YourUserType' with the actual type of your users
 }
 
 const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
-  const selectedUser = selectedUserId;
+  const selectedUser = users.find((user) => user.userId === selectedUserId);
+  
   const [activeTab, setActiveTab] = useState("tab1");
 
   const handleTabClick = (tab: string) => {
@@ -67,7 +68,7 @@ const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
       {activeTab === "tab1" && (
         <div>
           {/* Content for Tab 1 */}
-          <Tab1 selectedUser={selectedUser} users={users} />
+          <Tab1 selectedUser={selectedUser}  users={users} />
         </div>
       )}
       {activeTab === "tab2" && (

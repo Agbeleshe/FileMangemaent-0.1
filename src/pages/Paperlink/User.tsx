@@ -26,6 +26,7 @@ import { Ledger } from "./resources/Ledger";
 import "./User.css";
 import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
 import { Console } from "console";
+import Empty from "./resources/Empty";
 
 const makeStyle = (status: string) => {
   if (status === "complete") {
@@ -231,104 +232,106 @@ const User = () => {
                     <div className="hidden md:block">
                       {recordFound && (
                         <table className="md:w-full md:table-hover md:user-table">
-                          <thead>
-                            <tr>
-                              <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
-                                <span
-                                  className="flex   gap-2  w-full h-full "
-                                  onClick={handleSelectedDate}
-                                >
-                                  Date/Time
-                                  <img src={Calender} alt="" />
-                                </span>
-
-                                {/* date modal */}
-                                {selectedDate && (
-                                  <div className="">
-                                    <div
-                                      onClick={handleCloseSelectedDate}
-                                      className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
-                                    ></div>
-
-                                    <div
-                                      onClick={handleCloseSelectedDate}
-                                      className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
-                                    ></div>
-                                    <DateRangePickerCalendarExample
-                                      getDateValue={getDateValuesFunc}
-                                      setIsDatePicked={setIsDatePicked}
-                                      selectedDate={selectedDate}
-                                    />
-                                  </div>
-                                )}
-                              </th>
-                              <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
-                                User
-                              </th>
-                              <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
-                                Account Email
-                              </th>
-                              <th className="border-b p-2 text-left font-meduim text-darkGray font-normal text-sm">
-                                Paperlink
-                              </th>
-                              <th className="border-b px-4 py-3 text-center font-medium text-darkGray text-sm">
-                                Pages
-                                <span className="px-2 p-1 justify-center gap-5 rounded-full bg-blue text-white text-xs ml-2">
-                                  {totalPages}
-                                </span>
-                              </th>
-
-                              <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
-                                <span className="flex justify-center items-center align-middle">
-                                  <div
-                                    className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    onClick={toggleDropdown}
+                          {!error && (
+                            <thead>
+                              <tr>
+                                <th className=" p-5 px-8 text-left font-bold text-darkGray text-sm flex items-center">
+                                  <span
+                                    className="flex   gap-2  w-full h-full "
+                                    onClick={handleSelectedDate}
                                   >
-                                    <p>Action</p>
-                                    <Arrow />
-                                  </div>
-                                </span>
-                                {isOpen && (
-                                  <div className="absolute top-[65px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
-                                    <div
-                                      onClick={handleStatusFilter}
-                                      data-value="complete" // Assign a data attribute to store the value
-                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                                    >
-                                      complete
+                                    Date/Time
+                                    <img src={Calender} alt="" />
+                                  </span>
+
+                                  {/* date modal */}
+                                  {selectedDate && (
+                                    <div className="">
+                                      <div
+                                        onClick={handleCloseSelectedDate}
+                                        className="absolute bg-black opacity-25 inset-0 h-[130vh] z-20"
+                                      ></div>
+
+                                      <div
+                                        onClick={handleCloseSelectedDate}
+                                        className="absolute inset-0 backdrop-blur-sm h-[130vh] z-30"
+                                      ></div>
+                                      <DateRangePickerCalendarExample
+                                        getDateValue={getDateValuesFunc}
+                                        setIsDatePicked={setIsDatePicked}
+                                        selectedDate={selectedDate}
+                                      />
                                     </div>
+                                  )}
+                                </th>
+                                <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
+                                  User
+                                </th>
+                                <th className="border-b p-2 text-left font-medium text-darkGray text-sm">
+                                  Account Email
+                                </th>
+                                <th className="border-b p-2 text-left font-meduim text-darkGray font-normal text-sm">
+                                  Paperlink
+                                </th>
+                                <th className="border-b px-4 py-3 text-center font-medium text-darkGray text-sm">
+                                  Pages
+                                  <span className="px-2 p-1 justify-center gap-5 rounded-full bg-blue text-white text-xs ml-2">
+                                    {totalPages}
+                                  </span>
+                                </th>
+
+                                <th className="p-2 relative  text-center font-bold text-darkGray text-sm flex items-center z-10">
+                                  <span className="flex justify-center items-center align-middle">
                                     <div
-                                      onClick={handleStatusFilter}
-                                      data-value="sign" // Assign a data attribute to store the value
-                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                                    >
-                                      sign
-                                    </div>
-                                    <div
-                                      onClick={handleStatusFilter}
-                                      data-value="confirm" // Assign a data attribute to store the value
-                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                                    >
-                                      confirm
-                                    </div>
-                                    <div
-                                      onClick={handleStatusFilter}
-                                      data-value="" // Assign a data attribute to store the value
-                                      className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
-                                    >
-                                      All
-                                    </div>
-                                    <div
-                                      className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                      className="flex gap-2 font-extrabold items-center cursor-pointer justify-center w-full px-4 pt-5 text-sm  text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                       onClick={toggleDropdown}
                                     >
-                                      <TfiClose />
+                                      <p>Action</p>
+                                      <Arrow />
                                     </div>
-                                  </div>
-                                )}
-                              </th>
-                            </tr>
-                          </thead>
+                                  </span>
+                                  {isOpen && (
+                                    <div className="absolute top-[65px] inline-block outline-none m-auto ease-in-out duration-1000 h-auto z-10 w-full left-0 cursor-pointer bg-gray-200 shadow-lg">
+                                      <div
+                                        onClick={handleStatusFilter}
+                                        data-value="complete" // Assign a data attribute to store the value
+                                        className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                      >
+                                        complete
+                                      </div>
+                                      <div
+                                        onClick={handleStatusFilter}
+                                        data-value="sign" // Assign a data attribute to store the value
+                                        className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                      >
+                                        sign
+                                      </div>
+                                      <div
+                                        onClick={handleStatusFilter}
+                                        data-value="confirm" // Assign a data attribute to store the value
+                                        className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                      >
+                                        confirm
+                                      </div>
+                                      <div
+                                        onClick={handleStatusFilter}
+                                        data-value="" // Assign a data attribute to store the value
+                                        className="p-4 hover:bg-slate-600 ease-in-out duration-300 hover:text-white"
+                                      >
+                                        All
+                                      </div>
+                                      <div
+                                        className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        onClick={toggleDropdown}
+                                      >
+                                        <TfiClose />
+                                      </div>
+                                    </div>
+                                  )}
+                                </th>
+                              </tr>
+                            </thead>
+                          )}
                           {/* i removed 200px pb from bellow */}
                           <tbody className="cursor-pointer  ">
                             {currentPost.map((user: any) => (
@@ -381,10 +384,9 @@ const User = () => {
                         </table>
                       )}
                       {/* the correct logic to show no users please make this a hook next time to avoid copy and paste */}
-                      {!error && users.length === 0 && (
-                        <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
-                          Search complete. No record found
-                        </div>
+                      {!error && users.length === 0 && !loading && (
+                        // when there are no records
+                         <Empty activeTab={activeTab} searchValue={searchValue}/>
                       )}
                       {error && <ErrorMessage message={error} />}
                     </div>
@@ -460,12 +462,7 @@ const User = () => {
                 </div>
               </>
             ) : (
-              <div className="h-[50vh] w-full mx-auto flex text-center font-extralight mt-3 flex-col">
-                <h2>Sorry, No Records Found in {activeTab}</h2>
-                <div className="h-[100%] w-full flex justify-center ">
-                  <Lottie loop={false} animationData={noRecords} />
-                </div>
-              </div>
+             <Empty activeTab={activeTab} searchValue={undefined}/>
             )}
           </div>
         </div>

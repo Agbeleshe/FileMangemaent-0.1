@@ -9,7 +9,7 @@ interface FileTabRowProps {
 }
 
 const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
-  const selectedUser = users.find((user) => user.id === selectedUserId);
+  const selectedUser = users.find((user) => user.userId === selectedUserId);
   const [activeTab, setActiveTab] = useState("tab1");
 
   const handleTabClick = (tab: string) => {

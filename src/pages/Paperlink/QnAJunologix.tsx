@@ -27,6 +27,7 @@ import Lottie from "lottie-react";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { selectActiveTabLabel, setActiveTabLabel } from "../../store/tab-slice";
+import Add from "./resources/Add";
 
 const QnAJunologix = () => {
   const [modalOne, setModalOne] = useState(false);
@@ -51,12 +52,11 @@ const QnAJunologix = () => {
   //for the dragged item for faq
   const [draggedFAQ, setDraggedFAQ] = useState<FAQ | null>(null);
   const [draggedFAQIndex, setDraggedFAQIndex] = useState<number | null>(null);
-const [newFAQ, setNewFAQ] = useState<FAQ | null>(null); // Added state to hold the new FAQ
+  const [newFAQ, setNewFAQ] = useState<FAQ | null>(null); // Added state to hold the new FAQ
 
-const addFAQ = (faq: FAQ) => {
-  setFAQs([...FAQs, faq]);
-};
-
+  const addFAQ = (faq: FAQ) => {
+    setFAQs([...FAQs, faq]);
+  };
 
   //DO NOT TOUCH
   let customActiveTab = "Junologix";
@@ -81,14 +81,30 @@ const addFAQ = (faq: FAQ) => {
     endpoint = "scheduleio";
   }
 
-  console.log("activeTab changed:", activeTab);
+  // console.log("activeTab changed:", activeTab);
 
   const fetchData = () => {
     setLoading(true);
     axiosInstance
       .get(`/categories?$sort[position]=1&for=` + endpoint)
       .then((response) => {
-        console.log(endpoint, "......outside the axios call ");
+        // console.log(endpoint, "......outside the axios call ");
+        setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
+        setShowPaperLinks(new Array(response.data.length).fill(false));
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching PaperLink FAQs:", error);
+        setLoading(false);
+      });
+  };
+
+  const resetData = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`/categories?$sort[position]=1&for=`)
+      .then((response) => {
+        // console.log(endpoint, "......outside the axios call ");
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
         setShowPaperLinks(new Array(response.data.length).fill(false));
         setLoading(false);
@@ -348,10 +364,8 @@ const addFAQ = (faq: FAQ) => {
   };
 
   const refreshData = () => {
-    // Fetch your updated data, e.g., by calling fetchData()
     fetchData();
   };
-
 
   return (
     <div className="mb-32 md:mb-0 border-radius-[0.9375rem] bg-white width-[65.75rem] h-auto overflow-hidden font-Poppins rounded-lg">
@@ -374,224 +388,243 @@ const addFAQ = (faq: FAQ) => {
       {loading ? (
         <Loader />
       ) : (
-        <div>
-          {modalOne ? (
+        <>
+          {modalOne && (
             <FirstModalJunologix
               setModalOne={setModalOne}
               handleModalClose={handleModalClose}
               updateCategories={updateCategories}
               endpoint={endpoint}
             />
-          ) : (
-            ""
           )}
-
-          <div className="p-3">
-            <div className="shadow-full mb-4 ">
-              <h1 className="font-semibold py-3  px-4  text-black">Category</h1>
-              <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm">
-                <DragDropContext onDragEnd={handleDragEnd}>
-                  <Droppable droppableId="categories" direction="vertical">
-                    {(provided: DroppableProvided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        {/* Ensure that the placeholder is rendered within the Droppable */}
-                        {provided.placeholder}
-                        {paperLinkFAQs.map((faq, index) => (
-                          <Draggable
-                            key={faq.id}
-                            draggableId={faq.id.toString()}
-                            index={index}
+          {paperLinkFAQs.length > 0 && (
+            <div>
+              <div className="p-3">
+                <div className="shadow-full mb-4 ">
+                  <h1 className="font-semibold py-3  px-4  text-black">
+                    Category
+                  </h1>
+                  <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm">
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                      <Droppable droppableId="categories" direction="vertical">
+                        {(provided: DroppableProvided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
                           >
-                            {(provided: any) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                onClick={() => togglePaperLink(index)}
-                                onDragOver={(e) => handleDragOver(e, index)}
-                                onDrop={() => handleDrop(index)}
-                                className="bg-white rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center"
+                            {/* Ensure that the placeholder is rendered within the Droppable */}
+                            {provided.placeholder}
+                            {paperLinkFAQs.map((faq, index) => (
+                              <Draggable
+                                key={faq.id}
+                                draggableId={faq.id.toString()}
+                                index={index}
                               >
-                                <div className="w-full">
-                                  <div className="'w-full p-2 flex justify-between ">
-                                    <p className="flex gap-3">
-                                      <span className="ml-2">
+                                {(provided: any) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    onClick={() => togglePaperLink(index)}
+                                    onDragOver={(e) => handleDragOver(e, index)}
+                                    onDrop={() => handleDrop(index)}
+                                    className="bg-white rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center"
+                                  >
+                                    <div className="w-full">
+                                      <div className="'w-full p-2 flex justify-between ">
+                                        <p className="flex gap-3">
+                                          <span className="ml-2">
+                                            <Dots />
+                                          </span>
+
+                                          {faq.name}
+                                        </p>
+                                        <p className="flex gap-5 px-2 z-10">
+                                          <span
+                                            className="cursor-pointer"
+                                            onClick={() => setEditCategory(faq)}
+                                          >
+                                            <EditIcon />
+                                          </span>
+
+                                          <span
+                                            className="cursor-pointer z-20"
+                                            onClick={() =>
+                                              handleDeleteCategory(faq.id)
+                                            }
+                                          >
+                                            <DeleteIcon />
+                                          </span>
+                                        </p>
+                                      </div>
+                                      {editCategory && (
+                                        <EditCategoryJunologix
+                                          categoryToEdit={editCategory}
+                                          onClose={() => setEditCategory(null)}
+                                          onCategoryUpdated={(
+                                            updatedCategory
+                                          ) => {
+                                            handleCategoryUpdated(
+                                              updatedCategory
+                                            );
+                                            setEditCategory(null);
+                                          }}
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                  </div>
+                </div>
+              </div>
+
+              {/* Send side */}
+              <div className="shadow-full mx-3">
+                <div className="flex justify-between mb-1">
+                  <h1 className="font-semibold px-5 text-black">
+                    Questions & Answers
+                  </h1>
+
+                  <span
+                    onClick={handleModalTwo}
+                    className="inline-flex items-center mr-3 justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
+                  >
+                    <PlusGreen />
+                  </span>
+                </div>
+                {modalTwo ? (
+                  <SecondModalJunologix
+                    setModalTwo={setModalTwo}
+                    handleModalClose={handleModalClose}
+                    setFAQs={setFAQs} // Pass the setFAQs function
+                    FAQs={FAQs}
+                    endpoint={endpoint}
+                    onAddFAQ={handleAddFAQ} // Pass the callback function
+                    onSubmitSuccess={refreshData}
+                  />
+                ) : (
+                  ""
+                )}
+
+                <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm mb-5">
+                  {/*  */}
+
+                  {/* Mapped arrays */}
+                  <DragDropContext onDragEnd={handleFAQDragEnd}>
+                    <Droppable droppableId="faq-list">
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          <div className="shadow-full w-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm ">
+                            <div>
+                              {paperLinkFAQs.map((faq) => (
+                                <div key={faq.id}>
+                                  {/* Category name */}
+                                  <div
+                                    className="w-full p-2"
+                                    title={`${faq.name} category`}
+                                  >
+                                    <p className="flex gap-3 hover:font-extrabold">
+                                      <span className="ml-2 ">
                                         <Dots />
                                       </span>
 
                                       {faq.name}
                                     </p>
-                                    <p className="flex gap-5 px-2 z-10">
-                                      <span
-                                        className="cursor-pointer"
-                                        onClick={() => setEditCategory(faq)}
-                                      >
-                                        <EditIcon />
-                                      </span>
-
-                                      <span
-                                        className="cursor-pointer z-20"
-                                        onClick={() =>
-                                          handleDeleteCategory(faq.id)
-                                        }
-                                      >
-                                        <DeleteIcon />
-                                      </span>
-                                    </p>
                                   </div>
-                                  {editCategory && (
-                                    <EditCategoryJunologix
-                                      categoryToEdit={editCategory}
-                                      onClose={() => setEditCategory(null)}
-                                      onCategoryUpdated={(updatedCategory) => {
-                                        handleCategoryUpdated(updatedCategory);
-                                        setEditCategory(null);
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                      </div>
-                    )}
-                  </Droppable>
-                </DragDropContext>
-              </div>
-            </div>
-          </div>
-
-          {/* Send side */}
-          <div className="shadow-full mx-3">
-            <div className="flex justify-between mb-1">
-              <h1 className="font-semibold px-5 text-black">
-                Questions & Answers
-              </h1>
-
-              <span
-                onClick={handleModalTwo}
-                className="inline-flex items-center mr-3 justify-center w-12 h-12 flex-shrink-0 fill-current active:bg-slate-300 bg-white rounded-full shadow-full drop-shadow-lg"
-              >
-                <PlusGreen />
-              </span>
-            </div>
-            {modalTwo ? (
-              <SecondModalJunologix
-                setModalTwo={setModalTwo}
-                handleModalClose={handleModalClose}
-                setFAQs={setFAQs} // Pass the setFAQs function
-                FAQs={FAQs}
-                endpoint={endpoint}
-                onAddFAQ={handleAddFAQ} // Pass the callback function
-                onSubmitSuccess={refreshData}
-              />
-            ) : (
-              ""
-            )}
-
-            <div className="shadow-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm mb-5">
-              {/*  */}
-
-              {/* Mapped arrays */}
-              <DragDropContext onDragEnd={handleFAQDragEnd}>
-                <Droppable droppableId="faq-list">
-                  {(provided) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
-                      <div className="shadow-full w-full shadow-sm shadow-gray-200 border border-gray-100 rounded-lg text-sm ">
-                        <div>
-                          {paperLinkFAQs.map((faq) => (
-                            <div key={faq.id}>
-                              {/* Category name */}
-                              <div
-                                className="w-full p-2"
-                                title={`${faq.name} category`}
-                              >
-                                <p className="flex gap-3 hover:font-extrabold">
-                                  <span className="ml-2 ">
-                                    <Dots />
-                                  </span>
-
-                                  {faq.name}
-                                </p>
-                              </div>
-                              {FAQs.map((qna, index) => (
-                                <Draggable
-                                  key={qna.id}
-                                  draggableId={qna.id.toString()}
-                                  index={index}
-                                >
-                                  {(provided) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className="flex w-full justify-between border border-gray-50"
+                                  {FAQs.map((qna, index) => (
+                                    <Draggable
+                                      key={qna.id}
+                                      draggableId={qna.id.toString()}
+                                      index={index}
                                     >
-                                      {qna.categoryId === faq.id && (
-                                        <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
-                                          <div
-                                            className="w-full"
-                                            onClick={() => toggleFQA(index)}
-                                          >
-                                            <p className="flex gap-3">
-                                              <span className="ml-2">
-                                                <Dots />
-                                              </span>
+                                      {(provided) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          className="flex w-full justify-between border border-gray-50"
+                                        >
+                                          {qna.categoryId === faq.id && (
+                                            <div className="bg-white w-full hover:bg-gray-200 rounded-lg border-t border-gray-200 p-2 gap-3 flex items-center">
+                                              <div
+                                                className="w-full"
+                                                onClick={() => toggleFQA(index)}
+                                              >
+                                                <p className="flex gap-3">
+                                                  <span className="ml-2">
+                                                    <Dots />
+                                                  </span>
 
-                                              {qna.question}
-                                            </p>
-                                            {showFQA[index] && (
-                                              <div className="py-5">
-                                                <div className="px-5">
-                                                  <p className="text-gray-700">
-                                                    Answers: {qna.answer}
-                                                  </p>
-                                                </div>
+                                                  {qna.question}
+                                                </p>
+                                                {showFQA[index] && (
+                                                  <div className="py-5">
+                                                    <div className="px-5">
+                                                      <p className="text-gray-700">
+                                                        Answers: {qna.answer}
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                )}
                                               </div>
-                                            )}
-                                          </div>
-                                          <p className="flex gap-5 px-2">
-                                            <span
-                                              onClick={() => openEditModal(qna)}
-                                              className="cursor-pointer"
-                                            >
-                                              <EditIcon />
-                                            </span>
-                                            <span
-                                              onClick={() =>
-                                                handleDeleteFAQ(qna.id)
-                                              }
-                                              className="cursor-pointer"
-                                            >
-                                              <DeleteIcon />
-                                            </span>
-                                          </p>
+                                              <p className="flex gap-5 px-2">
+                                                <span
+                                                  onClick={() =>
+                                                    openEditModal(qna)
+                                                  }
+                                                  className="cursor-pointer"
+                                                >
+                                                  <EditIcon />
+                                                </span>
+                                                <span
+                                                  onClick={() =>
+                                                    handleDeleteFAQ(qna.id)
+                                                  }
+                                                  className="cursor-pointer"
+                                                >
+                                                  <DeleteIcon />
+                                                </span>
+                                              </p>
+                                            </div>
+                                          )}
                                         </div>
                                       )}
-                                    </div>
-                                  )}
-                                </Draggable>
+                                    </Draggable>
+                                  ))}
+                                </div>
                               ))}
                             </div>
-                          ))}
+                          </div>
+                          {provided.placeholder}
                         </div>
-                      </div>
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+                </div>
+              </div>
+              {isEditing && (
+                <EditFqaJunologix
+                  faqToEdit={editFAQ}
+                  onClose={closeEditModal}
+                  onFAQUpdated={handleFAQUpdated}
+                />
+              )}
             </div>
-          </div>
-          {isEditing && (
-            <EditFqaJunologix
-              faqToEdit={editFAQ}
-              onClose={closeEditModal}
-              onFAQUpdated={handleFAQUpdated}
-            />
           )}
-        </div>
+        </>
+      )}
+      {paperLinkFAQs.length === 0 && !loading && (
+        // when there are no records
+        <Add activeTab={activeTab} setModalOne={setModalOne} />
       )}
     </div>
   );
