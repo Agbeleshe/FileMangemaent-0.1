@@ -28,20 +28,20 @@ import DateRangePickerCalendarExample from "../../hooks/Others/DateRangePicker";
 import { Console } from "console";
 import Empty from "./resources/Empty";
 
-const makeStyle = (status: string) => {
-  if (status === "complete") {
+const makeStyle = (action: string) => {
+  if (action === "complete") {
     return {
       color: "green",
     };
-  } else if (status === "sign") {
+  } else if (action === "sign") {
     return {
       color: "skyblue",
     };
-  } else if (status === "confirm") {
+  } else if (action === "confirm") {
     return {
       color: "blue",
     };
-  } else if (status === "Delete") {
+  } else if (action === "Delete") {
     return {
       color: "red",
     };
@@ -101,8 +101,12 @@ const User = () => {
   const totalPages = calculateTotalPages(users);
 
   const handleSearch = (value: string) => {
-    setSearchValue(value);
+    // Remove extra spaces by using regex
+    const cleanedValue = value.replace(/\s+/g, " ").trim();
     setFilterAll(!filterAll);
+
+    setSearchValue(cleanedValue);
+    // setFilterAll(true);
   };
 
   // Page calculation
@@ -356,7 +360,7 @@ const User = () => {
                                   onClick={() => handleTabs(user.id)}
                                   className=" border-t py-4 p-2 text-blue-800 active:text-green-400 text-left hover:text-red-500 font-Poppins text-sm font-normal"
                                 >
-                                  {user.user.email}
+                                  {user.fileOwnerEmail}
                                 </td>
                                 <td className="border-t py-4 p-2 text-left text-lightGray hover:text-green-500 font-Poppins text-sm font-normal px-3">
                                   <a
@@ -373,9 +377,9 @@ const User = () => {
                                 <td className="border-t py-4 text-center text-lightGray font-Poppins text-sm font-normal px-3">
                                   <span
                                     className="status"
-                                    style={makeStyle(user.file.fileAction)}
+                                    style={makeStyle(user.action)}
                                   >
-                                    {user.file.fileAction}
+                                    {user.action}
                                   </span>
                                 </td>
                               </tr>
@@ -429,13 +433,13 @@ const User = () => {
                                 Pages: {user.file.pages}
                               </div>
                               <div className="text-black flex text-[12px]">
-                                User: {user.user.firstName}
+                                User: {user.guestName}
                               </div>
                               <span
                                 className="text-black text-[12px] font-extrabold"
-                                style={makeStyle(user.file.fileAction)}
+                                style={makeStyle(user.action)}
                               >
-                                {user.file.fileAction}
+                                {user.action}
                               </span>
                             </div>
                           </div>

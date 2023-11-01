@@ -19,11 +19,11 @@ const useBilling = (
       ? `&createdAt[$gte]=${startDate || ""}&createdAt[$lte]=${endDate || ""}`
       : "";
 
-  const userUrl =
-    searchValue
-      ? `${BASE_URL}/billings?$or[0][userId]=${searchValue}$or[1][user.companyName][$like]=${searchValue}$or[2][user.email][$like]=${searchValue}`
-      : `${BASE_URL}/billings?${datefilter}`;
-
+  const userUrl = searchValue
+    ? `${BASE_URL}/billings?$or[0][companyName][$like]=${searchValue}%&$or[1][companyEmail][$like]=${searchValue}%`
+    : `${BASE_URL}/billings?${datefilter}`;
+  console.log(searchValue, "here it is");
+  // {{base_url}}/billings?companyEmail[$like]=mystars70@gmail.com%
   useEffect(() => {
     setLoading(true);
     axios

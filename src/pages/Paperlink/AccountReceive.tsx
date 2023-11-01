@@ -78,9 +78,13 @@ const AccountReceive = () => {
     isDatePicked!
   );
 
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-  };
+const handleSearch = (value: string) => {
+  // Remove extra spaces by using regex
+  const cleanedValue = value.replace(/\s+/g, " ").trim();
+
+  setSearchValue(cleanedValue);
+  // setFilterAll(true);
+};
 
   const handleInputClick = () => {
     setInputClick(!inputClick);
@@ -258,10 +262,10 @@ const AccountReceive = () => {
                                 onClick={() => handleTabs(user.id)}
                                 className="border-t border-gray-100 py-4 text-left  text-blue-800 hover:underline hover:text-red-500 font-Poppins text-sm font-normal"
                               >
-                                {user.user.email}
+                                {user.companyEmail}
                               </td>
                               <td className="border-t border-gray-100 py-4 text-left text-lightGray  font-Poppins text-sm font-normal">
-                                {user.user.companyName}
+                                {user.companyName}
                               </td>
 
                               <td className="border-t py-4  border-gray-100 text-left text-lightGray font-Poppins text-sm font-normal px-6 flex items-center">

@@ -4,6 +4,8 @@ export interface Billing {
   paperlink: number;
   teamMember: number;
   businessPage: number;
+  companyEmail: string;
+  companyName: string;
   discount: number;
   total: number;
   reciept: string;

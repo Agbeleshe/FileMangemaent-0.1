@@ -78,9 +78,13 @@ const Teams = () => {
   };
 
   const handleSearch = (value: string) => {
-    setSearchValue(value);
+    // Remove extra spaces by using regex
+    const cleanedValue = value.replace(/\s+/g, " ").trim();
+
+    setSearchValue(cleanedValue);
     // setFilterAll(true);
   };
+
 
   // Page calculation
   function calculateTotalPages(users: UserData[]) {
