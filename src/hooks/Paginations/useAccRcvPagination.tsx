@@ -25,14 +25,22 @@ const useAccRcvPagination = (
       : filterAll
       ? users?.slice(firstPostIndex, lastPostIndex).filter(
           (user: any) =>
-            user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.companyEmail
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            user.companyName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
             user.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||
             user.user.role.toLowerCase().includes(searchValue.toLowerCase())
           // || user.status.toLowerCase().includes(searchValue.toLowerCase())
         )
       : users?.slice(firstPostIndex, lastPostIndex).filter(
           (users: any) =>
-            users.user.email
+            users.companyEmail
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            users.companyName
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
             users.updatedAt.toLowerCase().includes(searchValue.toLowerCase()) ||

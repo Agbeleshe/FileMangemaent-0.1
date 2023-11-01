@@ -5,6 +5,8 @@ export interface Ledger {
   fileName: string;
   action: string;
   guestName: string;
+  fileOwnerEmail:string;
+
   isGuest: boolean;
   createdAt: string;
   updatedAt: string;

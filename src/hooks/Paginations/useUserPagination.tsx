@@ -32,16 +32,15 @@ const useUserPagination = (
             users.user.firstName
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
-            users.user.email
+            users.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            users.fileOwnerEmail
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
             users.file.paperLink
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
-           // users.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
-            users.file.fileAction
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
+            // users.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            users.action.toLowerCase().includes(searchValue.toLowerCase())
           //.includes(selectedFilter.toLowerCase())
         )
       : users?.slice(firstPostIndex, lastPostIndex).filter(
@@ -49,14 +48,15 @@ const useUserPagination = (
             user.user.firstName
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
-            user.user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.fileOwnerEmail
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            user.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
             user.file.paperLink
               .toLowerCase()
               .includes(searchValue.toLowerCase()) ||
             //user.guestName.toLowerCase().includes(searchValue.toLowerCase()) ||
-            user.file.fileAction
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
+            user.action.toLowerCase().includes(searchValue.toLowerCase())
           // .includes(selectedFilter.toLowerCase())
         );
 

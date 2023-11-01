@@ -34,8 +34,12 @@ const useLedger = (
 
     // Use your Axios instance to make authenticated requests
     axiosInstance
-      .get(`/ledger?fileName[$like]=%${searchValue}%${datefilter}`)
-      //$or[0][guestName][$like]=Janet%
+      .get(
+        `/ledger?$or[0][guestName][$like]=${searchValue}%&$or[1][fileName][$like]=${searchValue}%&$or[2][fileOwnerEmail][$like]=${searchValue}%&$or[3][action][$like]=${selectedFilter}%${datefilter}`
+      )
+      //$or[0][fileAction][$like]=%
+      //          `/ledger?$or[3][action][$like]=${searchValue}%`
+
       .then((res) => {
         setUsers(res.data.data as Ledger[]);
         setError(null);
@@ -65,7 +69,7 @@ const useLedger = (
 
   // console.log(loading);
   // console.log(error);
- // console.log(users,"checking");
+  // console.log(users,"checking");
   return {
     loading,
     users,

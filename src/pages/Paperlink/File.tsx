@@ -93,10 +93,13 @@ const File = () => {
 
   const totalPages = calculateTotalPages(users);
 
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-    setFilterAll(!filterAll);
-  };
+const handleSearch = (value: string) => {
+  // Remove extra spaces by using regex
+  const cleanedValue = value.replace(/\s+/g, " ").trim();
+
+  setSearchValue(cleanedValue);
+  // setFilterAll(true);
+};
 
   //this is the client side logic for search just incase something happens to the server the admin can still fetch available users
 
