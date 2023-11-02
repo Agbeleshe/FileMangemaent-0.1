@@ -11,6 +11,8 @@ import { TfiFaceSad } from "react-icons/tfi";
 import { BASE_URL } from "../../../../utils/axios-util";
 import axiosInstance from "../../../../utils/axiosInstance";
 import { Infor } from "../Infor";
+import { TabUser } from "../Infor";
+import Loader from "../Loader";
 interface Option {
   value: string;
   label: string;
@@ -43,18 +45,24 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState(false);
-  const [tabUser, setTabUser] = useState<Infor[]>([]);
+  const [tabUser, setTabUser] = useState< TabUser[]>([]);
+  const [matchingTabUser, setMatchingTabUser] = useState<TabUser | null>(null);
 
-  //Axsios call fro api
+  //add this for loading state 
+  const [accessable, setAccessable] = useState<boolean>(false)
+
+  //Axsios call fro api NECCESSARY!
   const Api = BASE_URL + `/users?$sort[createdAt]=-1&role=paid_user`;
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get<{ data: Infor[] }>(Api)
+      .get<{ data:  TabUser[] }>(Api)
       .then((res) => {
         setTabUser(res.data.data);
         console.log("res", res.data.data);
+        console.log(tabUser, "TB")
+        setAccessable(true)
       })
       .catch((err) => {
         console.log("there was an issue: ", err);
@@ -68,18 +76,52 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
   console.log("selectedUser", selectedUser);
   console.log("users: ", users);
 
-  //
+  //condition 
+  useEffect(() => {
+    if (accessable) {
+      const user = tabUser.find((user) => user.id === selectedUser.userId);
+      if (user) {
+        setMatchingTabUser(user);
+        console.log('matching user: ', user);
+        console.log('matching userTab: ', matchingTabUser);
+      }
+    }
+  }, [tabUser, selectedUser, accessable]);
+  
+  
+  const IsDataAvailable = accessable && matchingTabUser
+
+ // Add this useEffect for updating formData when matchingTabUser changes
+ useEffect(() => {
+  if (matchingTabUser) {
+    setFormData({
+      email: matchingTabUser.email || "",
+      companyName: matchingTabUser.companyName || "",
+      firstName: matchingTabUser.firstName || "",
+      phone: matchingTabUser.phone || "",
+      timezone: matchingTabUser.timezone || "",
+      profile_picture: matchingTabUser.profilePicture || "",
+    });
+  }
+}, [matchingTabUser]);
+
+
+
+
+
+
 
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [formData, setFormData] = useState({
-    email: selectedUser.user.email || null,
-    companyName: selectedUser.user.company_name || null,
-    firstName: selectedUser.user.firstName || null,
-    lastName: selectedUser.user.lastName || null,
-    timezone: selectedUser.timezone || null,
-    profile_picture: selectedUser.user.profile_picture,
+    email: matchingTabUser?.email || "",
+    companyName: matchingTabUser?.companyName || "",
+    firstName: matchingTabUser?.firstName || "",
+    phone: matchingTabUser?.phone || "",
+    timezone: matchingTabUser?.timezone || "",
+    profile_picture: matchingTabUser?.profilePicture || "",
   });
-  // console.log('selected user id: ',selectedUser);
+  
+  // console.log('selected user id: ',matchingTabUser);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showTimeZoneTooltip, setShowTimeZoneTooltip] = useState(false);
@@ -134,49 +176,41 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
       return;
     }
 
-    const UpdateAccountUrl = BASE_URL + `/files/${selectedUser.id}`;
+    //Patching the data
+const UpdateAccountUrl = BASE_URL + `/users/${matchingTabUser?.id}`;
 
-    // Set the request headers with the bearer token
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json", // Adjust the content type as needed
-    };
+axios
+  .patch(UpdateAccountUrl, {
+    email:formData.email,
+    companyName:formData.companyName,
+    firstName: formData.firstName,
+    phone:formData.phone,
+    status:selectedOption,
+    timezone:formData.timezone,
+    profilePicture:formData.profile_picture,
+  })
+  .then((res) => {
+    setSuccess(true);
+    setErrorMsg(false);
+    console.log("PATCH request successful", res.data);
+    setInitialFormData({ ...formData }); // Reset initialFormData to saved data
+    setLoading(false);
+  })
+  .catch((err) => {
+    console.error("Error updating data: ", err);
+    if (err.response) {
+      console.error("Response data: ", err.response.data);
+      setSuccess(false);
+      setErrorMsg(true);
+      // setLoading(false);
+    }
+  })
+  .finally(() => {
+    setLoading(false);
+  });
+};
 
-    axios
-      .patch(
-        UpdateAccountUrl,
-        {
-          email: formData.email,
-          companyName: formData.companyName,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          fileAction: selectedOption,
-          timezone: formData.timezone,
-          profile_picture: formData.profile_picture,
-        },
-        {
-          headers: headers, // Include the headers in the request
-        }
-      )
-      .then((res) => {
-        setSuccess(true);
-        setErrorMsg(false);
-        console.log("PATCH request successful", res.data);
-        setInitialFormData({ ...formData }); // Reset initialFormData to saved data
-      })
-      .catch((err) => {
-        console.error("Error updating data: ", err);
-        if (err.response) {
-          console.error("Response data: ", err.response.data);
-          setSuccess(false);
-          setErrorMsg(true);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
+   
   //const handleCancel = () => {
   //  setShowCancelModal(true);
   // };
@@ -206,7 +240,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
         <div className="fixed inset-0 backdrop-blur-md bg-gray-800 bg-opacity-50 z-50"></div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4 md:p-5 md:w-full ">
+     {IsDataAvailable ? <form onSubmit={handleSubmit} className="space-y-4 md:p-5 md:w-full ">
         <div className="inline-block md:flex md:justify-between mr-6 ml-6  w-full items-center text-center justify-center">
           <div className="mt-4 flex gap-5 w-full md:w-auto  items-center mb-5 justify-center">
             <label
@@ -225,8 +259,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                   onChange={handleSelectChange}
                   className="bg-[#EFEFEF]  text-red-500 rounded-lg outline-none px-8 py-2 border-none focus:ring-0 w-full p-0 shadow-sm sm:text-sm appearance-none custom-select"
                 >
-                  <option className="" value={selectedUser.fileAction}>
-                    {selectedUser.fileAction}
+                  <option className="" value={matchingTabUser?.status}>
+                    {matchingTabUser?.status}
                   </option>
                   {options.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -239,7 +273,7 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
                 </div>
               </div>
             ) : (
-              <span>{selectedUser.fileAction}</span>
+              <span>{matchingTabUser?.status}</span>
             )}
           </div>
 
@@ -342,8 +376,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             </label>
             <input
               type="text"
-              name="lastName"
-              value={formData.lastName}
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
               className="md:w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-300 focus:outline-none"
               required
@@ -451,7 +485,8 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
             ""
           )}
         </div>
-      </form>
+      </form>  : <Loader/>}
+
       {/**The clear modal */}
       {showCancelModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -486,3 +521,4 @@ const Tab1: React.FC<Tab1Props> = ({ selectedUser, users }) => {
 };
 
 export default Tab1;
+

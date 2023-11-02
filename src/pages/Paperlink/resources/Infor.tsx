@@ -41,3 +41,48 @@ export interface Infor {
     updatedAt: string;
     memberId: null | number;
 }
+
+export interface TabUser {
+    address: string | null;
+    allowCopy: number;
+    briefIntro: string | null;
+    businessPage: string;
+    companyName: string;
+    country: string | null;
+    createdAt: string;
+    email: string;
+    firstName: string;
+    hook: string | null;
+    id: number;
+    initialURL: string | null;
+    isAdmin: number;
+    isEmailVerified: number;
+    isReferreePaid: number;
+    isTutorialPassed: number;
+    lastName: string;
+    mainAccountId: string | null;
+    memberId: string | null;
+    numberOfReferrals: number;
+    phone: string;
+    profilePicture: string | null;
+    referralCode: string;
+    referreeId: string | null;
+    role: string;
+    secret: string | null;
+    signatureURL: string | null;
+    slogan: string | null;
+    socialId: string | null;
+    socialLogin: string | null;
+    state: string | null;
+    status: string;
+    stripeCustomerId: string | null;
+    subscriptionId: number;
+    teamAccess: string | null;
+    teamId: string;
+    timezone: string | null;
+    totalCreditsEarned: number;
+    totalLeavesEarned: number;
+    totalPages: number;
+    updatedAt: string;
+  }
+  
