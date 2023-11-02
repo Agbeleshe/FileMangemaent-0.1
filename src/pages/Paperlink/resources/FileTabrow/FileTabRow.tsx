@@ -4,7 +4,7 @@ import Tab1 from "./FileTab1";
 import Tab2 from "./FileTab2";
 
 interface FileTabRowProps {
-  selectedUserId: any;
+  selectedUserId: number | null;
   users: any[]; // Replace 'YourUserType' with the actual type of your users
 }
 

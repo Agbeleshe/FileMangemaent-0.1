@@ -8,7 +8,7 @@ interface TabrowProps {
   users: any[]; // Replace 'YourUserType' with the actual type of your users
 }
 
-const Tabrow: React.FC<TabrowProps> = ({ selectedUserId, users }) => {
+const UserTabrow: React.FC<TabrowProps> = ({ selectedUserId, users }) => {
   const selectedUser = users.find((user) => user.id === selectedUserId);
   const [activeTab, setActiveTab] = useState("tab1");
   console.log(selectedUserId);
@@ -88,4 +88,4 @@ const Tabrow: React.FC<TabrowProps> = ({ selectedUserId, users }) => {
   );
 };
 
-export default Tabrow;
+export default UserTabrow;

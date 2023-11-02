@@ -259,7 +259,7 @@ const handleSearch = (value: string) => {
                                 {convertDateTime(user.createdAt)}
                               </td>
                               <td
-                                onClick={() => handleTabs(user.id)}
+                                onClick={() => handleTabs(user.userId)}
                                 className="border-t border-gray-100 py-4 text-left  text-blue-800 hover:underline hover:text-red-500 font-Poppins text-sm font-normal"
                               >
                                 {user.companyEmail}

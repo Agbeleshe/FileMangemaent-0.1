@@ -390,7 +390,10 @@ const User = () => {
                       {/* the correct logic to show no users please make this a hook next time to avoid copy and paste */}
                       {!error && users.length === 0 && !loading && (
                         // when there are no records
-                         <Empty activeTab={activeTab} searchValue={searchValue}/>
+                        <Empty
+                          activeTab={activeTab}
+                          searchValue={searchValue}
+                        />
                       )}
                       {error && <ErrorMessage message={error} />}
                     </div>
@@ -408,7 +411,7 @@ const User = () => {
                       {recordFound &&
                         currentPost.map((user: any) => (
                           <div
-                            onClick={() => handleMobileUserClick(user.id)} // Handle user row click
+                            onClick={() => handleMobileUserClick(user.userId)} // Handle user row click
                             key={user.id}
                             className="flex gap-2 justify-between p-3 shadow-lg hover:shadow-2xl hover:bg-gray-200 rounded-md my-2"
                           >
@@ -466,7 +469,7 @@ const User = () => {
                 </div>
               </>
             ) : (
-             <Empty activeTab={activeTab} searchValue={undefined}/>
+              <Empty activeTab={activeTab} searchValue={undefined} />
             )}
           </div>
         </div>

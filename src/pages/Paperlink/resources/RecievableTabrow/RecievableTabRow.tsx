@@ -8,7 +8,7 @@ interface FileTabRowProps {
   users: any[]; // Replace 'YourUserType' with the actual type of your users
 }
 
-const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
+const RecievableTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
   const selectedUser = users.find((user) => user.userId === selectedUserId);
   const [activeTab, setActiveTab] = useState("tab1");
 
@@ -88,4 +88,4 @@ const FileTabRow: React.FC<FileTabRowProps> = ({ selectedUserId, users }) => {
   );
 };
 
-export default FileTabRow;
+export default RecievableTabRow;
