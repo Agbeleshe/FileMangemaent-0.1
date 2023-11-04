@@ -463,6 +463,10 @@ const User = () => {
                     </div>
                   )}
                 </div>
+                {!error && currentPost.length === 0 && !loading && (
+                  // when there are no records
+                  <Empty activeTab={activeTab} searchValue={searchValue} />
+                )}
                 {/* Pagination for all view */}
                 <div className="w-full bg-slate-100 flex justify-center">
                   {prevButton} {paginationButtons} {viewAllButton} {nextButton}

@@ -102,7 +102,7 @@ const QnAJunologix = () => {
   const resetData = () => {
     setLoading(true);
     axiosInstance
-      .get(`/categories?$sort[position]=1&for=`)
+      .get(`/categories?$sort[position]=1&for=TaxIO`)
       .then((response) => {
         // console.log(endpoint, "......outside the axios call ");
         setPaperLinkFAQs(response.data as PaperLinkFAQ[]);
@@ -365,6 +365,7 @@ const QnAJunologix = () => {
 
   const refreshData = () => {
     fetchData();
+    resetData()
   };
 
   return (

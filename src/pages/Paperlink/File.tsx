@@ -100,8 +100,6 @@ const handleSearch = (value: string) => {
   // setFilterAll(true);
 };
 
-  //this is the client side logic for search just incase something happens to the server the admin can still fetch available users
-
   console.log(users);
   // Page calculation
   function calculateTotalPages(users: UsersInfo[]) {
@@ -383,6 +381,9 @@ const handleSearch = (value: string) => {
                   <Empty activeTab={activeTab} searchValue={searchValue} />
                 )}
               </div>
+
+
+              
               {/* Mobile view */}
               <div className="md:hidden overflow-y-auto">
                 {loading ? (
@@ -436,13 +437,13 @@ const handleSearch = (value: string) => {
                     ))}
                   </div>
                 )}
-                {!records ? (
+                {/* {!records ? (
                   ""
                 ) : (
                   <div className="text-center py-4 w-full bg-green-300 text-2xl text-green-700">
                     Search complete. No record found
                   </div>
-                )}
+                )} */}
               </div>
               <div className="w-full bg-slate-100 flex justify-center mt-3 ">
                 {prevButton} {paginationButtons} {viewAllButton} {nextButton}{" "}
